@@ -1,0 +1,29 @@
+.app-sidebar__user-avatar {
+    width: 45px;
+    background: gray;
+    padding: 3px;
+}
+.headerUpdate {
+    background: #383a58;
+    color: white;
+}
+.headerRegister {
+    background: #040950;
+    color: white;
+}
+.material-half-bg {
+	height: 100%;
+    background-repeat: no-repeat;
+    background: url(../images/uploads/login-bg.JPG) no-repeat center center fixed;
+    background-size: 100% 100%;
+}
+.required {
+    color: red;
+    font-size: 13pt;
+    font-weight: bold;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+    background-color: #14406f;
+    border-color: #0e2e52;
+}

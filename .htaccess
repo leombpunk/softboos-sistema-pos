@@ -1,0 +1,61 @@
+# Disable directory browsing
+Options All -Indexes
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# AGREGADOS
+# Comprime los archivos especificados para una carga mas rapida 
+# no funciono
+# AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/x-javascript
+
+# Deny access to all .htaccess files
+<files ~ "^.*\.([Hh][Tt][Aa])">
+order allow,deny
+deny from all
+satisfy all
+</files>
+
+# Restricted access to files
+<FilesMatch "((\.(lock|cache|db))|CHANGELOG.md|README.md|^(.*\.config|.*\.example)(.*?))$">
+	# Apache < 2.3
+	#<IfModule !mod_authz_core.c>
+	#	Order allow,deny
+	#	Deny from all
+	#	Satisfy All
+	#</IfModule>
+
+	# Apache ≥ 2.3
+	<IfModule mod_authz_core.c>
+		Require all denied
+	</IfModule>
+</FilesMatch>
+
+# Block one or more IP address.
+# Replace IP_ADDRESS_* with the IP you want to block
+<Limit GET POST>
+order allow,deny
+# deny from IP_ADDRESS_1
+# deny from IP_ADDRESS_2
+allow from all
+</Limit>
+
+# Deny other methods diferent a GET POST
+<LimitExcept POST GET>
+Order deny,allow
+Deny from all
+</LimitExcept>
+
+# Prevent image hotlinking script. Replace last URL with any image link you want.
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?127.0.0.1:8080/practicaMVC [NC]
+# RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?yourotherwebsite.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif)$ http://i.imgur.com/MlQAH71.jpg [NC,R,L]
+
+# Redirect all traffic to maintenance.html file
+# RewriteEngine on
+# RewriteCond %{REQUEST_URI} !/maintenance.html$
+# RewriteCond %{REMOTE_ADDR} !^123\.123\.123\.123
+# RewriteRule $ /maintenance.html [R=302,L] 

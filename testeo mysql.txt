@@ -1,0 +1,82 @@
+/*PRIMER INTENTO*/
+SELECT * 
+FROM mercaderias m 
+INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+WHERE m.MERCADERIA_ID = 1
+
+/*paso 2*/
+SELECT m.MERCADERIA_ID, m.CODIGO, m.NOMBRE, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, m.FECHA_ALTA, m.FECHA_BAJA, m.IVA_ID, i.IVA_NOMBRE, m.ESTADO_ID, e.DESCRIPCION, r.RUBRO_ID, r.NOMBRE, um.UNIMEDIDA_ID, um.NOMBRE, mca.CANTIDAD_ACTUAL, mca.CANTIDAD_ACTUAL AS cantidad_total 
+FROM mercaderias m 
+INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID
+INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+WHERE m.MERCADERIA_ID = 1
+
+/*paso 3*/
+SELECT m.MERCADERIA_ID, m.CODIGO, m.NOMBRE, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, m.FECHA_ALTA, m.FECHA_BAJA, m.IVA_ID, i.IVA_NOMBRE, m.ESTADO_ID, e.DESCRIPCION, (CASE WHEN mr.ENTRADA = 1 THEN r.NOMBRE ELSE '' END) rnom1, (CASE WHEN mr.ENTRADA = 2 THEN r.NOMBRE ELSE '' END) rnom2, (CASE WHEN mr.ENTRADA = 3 THEN r.NOMBRE ELSE '' END) rnom3, (CASE WHEN mu.PRIORIDAD = 1 THEN um.NOMBRE ELSE '' END) umnom1, (CASE WHEN mu.PRIORIDAD = 2 THEN um.NOMBRE ELSE '' END) umnom2, (CASE WHEN mu.PRIORIDAD = 3 THEN um.NOMBRE ELSE '' END) umnom3, mca.CANTIDAD_ACTUAL, mca.CANTIDAD_ACTUAL AS cantidad_total 
+FROM mercaderias m 
+INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+WHERE m.MERCADERIA_ID = 1
+GROUP BY m.MERCADERIA_ID
+
+/*paso 4*/
+SELECT m.MERCADERIA_ID, m.CODIGO, m.NOMBRE, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, m.FECHA_ALTA, m.FECHA_BAJA, m.IVA_ID, i.IVA_NOMBRE, m.ESTADO_ID, e.DESCRIPCION, (CASE WHEN mr.ENTRADA = 1 THEN r.NOMBRE WHEN mr.ENTRADA = 2 THEN r.NOMBRE WHEN mr.ENTRADA = 3 THEN r.NOMBRE ELSE '' END) rnom, (CASE WHEN mu.PRIORIDAD = 1 THEN um.NOMBRE WHEN mu.PRIORIDAD = 2 THEN um.NOMBRE WHEN mu.PRIORIDAD = 3 THEN um.NOMBRE ELSE '' END) umnom, mca.CANTIDAD_ACTUAL 
+FROM mercaderias m 
+INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+WHERE m.MERCADERIA_ID = 1
+
+/*la ultima opcion es la mas acertada y que con las demas no me devuelve correctamente
+los datos que necesito, igul es medio choto esto porque esta limitado a X cantidad de 
+categorias (rubros) y unidades de medida; esta consulta devolveria como maximo 3 registros
+por las limitaciones*/
+
+/*paso 5*/
+SELECT m.MERCADERIA_ID, m.CODIGO, m.NOMBRE, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, m.FECHA_ALTA, m.FECHA_BAJA, m.IVA_ID, i.IVA_NOMBRE, m.ESTADO_ID, e.DESCRIPCION, r.RUBRO_ID, r.NOMBRE, um.UNIMEDIDA_ID, um.NOMBRE, mca.CANTIDAD_ACTUAL 
+FROM mercaderias m 
+INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID
+INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+WHERE m.MERCADERIA_ID = 1
+
+/*mejor ocupa la opcion cinco y arreglo la salida por medio del backend con php*/
+
+/*uno mas completo (con sucursales)*/
+
+SELECT m.MERCADERIA_ID, m.CODIGO, m.NOMBRE, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, 
+		m.FECHA_ALTA, m.FECHA_BAJA, m.IVA_ID, i.IVA_NOMBRE, m.ESTADO_ID, e.DESCRIPCION, r.RUBRO_ID, 
+		r.NOMBRE, um.UNIMEDIDA_ID, um.NOMBRE, mca.CANTIDAD_ACTUAL, s.SUCURSAL_ID, s.CODIGO_SUCURSAL 
+		FROM mercaderias m 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID
+		INNER JOIN iva i ON m.IVA_ID = i.IVA_ID 
+		INNER JOIN estado e ON m.ESTADO_ID = e.ESTADO_ID 
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID 
+		LEFT JOIN sucursales s ON mca.SUCURSAL_ID = s.SUCURSAL_ID 
+		WHERE m.MERCADERIA_ID = {$productoID}

@@ -1,0 +1,6 @@
+para que el proyecto este completo debo hacer lo siguiente:
+- procedimientos y funciones almacenadas en general
+- permisos (agregar tablas en db, crear modelos, ajax, y algo mas seguro)
+- usuarios (agregar el codigo de modelos, ajax, y control de datos)
+- login (crear variables de session que me falten, hacer la parte de ajax, validacion de datos y demas)
+- controlar el acceso a los modulos en el sistema por parte de los usuarios, limitar la creacion de nuevos usuarios, borrado y actualizacion
