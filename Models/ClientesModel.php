@@ -36,7 +36,7 @@ class ClientesModel extends Mysql {
 		return $request;
 	}
 	public function deleteCliente(int $id){
-		$sql = "UPDATE clientes SET FECHA_BAJA = NOW() WHERE CLIENTE_ID = {$id}";
+		$sql = "UPDATE clientes SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE CLIENTE_ID = {$id}";
 		$request = $this->delete($sql);
 		if($request){
 			$request = "ok";

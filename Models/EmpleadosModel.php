@@ -43,6 +43,7 @@ class EmpleadosModel extends Mysql{
 		return $request;
 	} 
 	public function deleteEmpleado(int $id){
+		//verifica que el empleado a borrar no sea un administrador
 		$sql = "SELECT 1 FROM empleados e WHERE e.EMPLEADO_ID = {$id} AND e.CARGO_ID = 1";
 		$request = $this->select_all($sql);
 		if (empty($request)){
