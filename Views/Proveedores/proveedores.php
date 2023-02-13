@@ -1,16 +1,16 @@
 <?php headerAdmin($data);
-getModal("modalClientes", $data);
-getModal("modalClientesVer",$data); ?>
+getModal("modalProveedores", $data);
+getModal("modalProveedoresVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
             <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#clientesModalCenter">
-                <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Cliente
+                <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Proveedor
             </button></h1>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="<?= base_url(); ?>clientes"><?= $data['page_title']; ?></a></li>
+            <li class="breadcrumb-item"><a href="<?= base_url(); ?>proveedores"><?= $data['page_title']; ?></a></li>
         </ul>
     </div>
     <div class="row">

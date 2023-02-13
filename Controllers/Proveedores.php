@@ -1,5 +1,5 @@
 <?php 
-class Clientes extends Controllers{
+class Proveedores extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
@@ -16,19 +16,19 @@ class Clientes extends Controllers{
 			header("location: ".base_url()."Dashboard");
 		}
 	}
-	public function Clientes(){
+	public function Proveedores(){
 		// if (empty($_SESSION["permisosMod"]["r"])){
 		// 	header("location:".base_url()."dashboard");
 		// }
 		$data["page_id"] = 6;
-		$data["page_tag"] = "Clientes | SoftBoos";
-		$data["page_title"] = "Clientes";
-		$data["page_name"] = "clientes";
-		$data["page_filejs"] = "function_clientes.js";
-		$this->views->getView($this,"clientes",$data);
+		$data["page_tag"] = "Proveedores | SoftBoos";
+		$data["page_title"] = "Proveedores";
+		$data["page_name"] = "proveedores";
+		$data["page_filejs"] = "function_proveedores.js";
+		$this->views->getView($this,"proveedores",$data);
 	}
-	public function getClientes(){
-		$arrData = $this->model->selectClientes();
+	public function getProveedores(){
+		$arrData = $this->model->selectProveedores();
         for ($i=0; $i < count($arrData); $i++) { 
 			if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
                 $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';

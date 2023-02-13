@@ -20,8 +20,8 @@ class ProveedoresModel extends Mysql {
 	}
 	public function insertProveedor(array $datos){
 		$sql = "INSERT INTO proveedores(RAZONSOCIAL, CUIT, MAIL, TELEFONO, WEB, DIRECCION, ESTADO_ID, FECHA_ALTA) 
-		VALUES(?, ?, ?, ?, IF('".$datos[4]."'='',NULL,?), IF('".$datos[5]."'='',NULL,?), 
-		IF('".$datos[6]."'='',NULL,?), IF('".$datos[7]."'='',NULL,?), ?, NOW())";
+		VALUES(?, IF('".$datos[1]."'='',NULL,?), IF('".$datos[2]."'='',NULL,?), IF('".$datos[3]."'='',NULL,?), IF('".$datos[4]."'='',NULL,?), 
+		IF('".$datos[5]."'='',NULL,?), ?, NOW())";
 		$request = $this->insert($sql,$datos);
 		return $request;
 	}
