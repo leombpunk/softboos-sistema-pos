@@ -1,8 +1,8 @@
-<div class="modal fade" id="clientesVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="clientesVerModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="proveedoresVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="proveedoresVerModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="clientesVerModalCenterTitle"><i class="fa fa-user" aria-hidden="true"></i> Datos del Cliente</h5>
+                <h5 class="modal-title" id="proveedoresVerModalCenterTitle"><i class="fa fa-user" aria-hidden="true"></i> Datos del Proveedor</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -17,24 +17,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>DNI</td>
-                            <td id="tblDNI"></td>
+                            <td>Razon Social</td>
+                            <td id="tblRazonSocial"></td>
                         </tr>
                         <tr>
-                            <td>Nombres</td>
-                            <td id="tblNombre"></td>
-                        </tr>
-                        <tr>
-                            <td>Apellidos</td>
-                            <td id="tblApellido"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha de Nacimiento</td>
-                            <td id="tblFechanac"></td>
-                        </tr>
-                        <tr>
-                            <td>CUIL</td>
-                            <td id="tblCUIL"></td>
+                            <td>CUIT</td>
+                            <td id="tblCUIT"></td>
                         </tr>
                         <tr>
                             <td>Telefono</td>
@@ -43,6 +31,10 @@
                         <tr>
                             <td>E-Mail</td>
                             <td id="tblMail"></td>
+                        </tr>
+                        <tr>
+                            <td>Web</td>
+                            <td id="tblWeb"></td>
                         </tr>
                         <tr>
                             <td>Direccion</td>

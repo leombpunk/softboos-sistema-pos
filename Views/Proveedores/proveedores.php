@@ -4,7 +4,7 @@ getModal("modalProveedoresVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#clientesModalCenter">
+            <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#proveedoresModalCenter">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Proveedor
             </button></h1>
         </div>
@@ -17,37 +17,15 @@ getModal("modalProveedoresVer",$data); ?>
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
-                    <p>
-                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        Filtros avanzados</button>
-                    </p>
-                    <div class="collapse" id="collapseExample">
-                      <div class="card card-body">
-                        <form>
-                            <div class="form-group">
-                                <label class="control-label" for="fecha_alta">Fecha de Alta: </label>
-                                <input type="date" name="fecha_alta" id="fecha_alta" class="form-control">
-                            </div>
-                        </form>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="tile">
-                <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-hover table-striped table-sm" id="clientesTable">
+                        <table class="table table-hover table-striped table-sm" id="proveedoresTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>DNI</th>
-                                    <th>NOMBRES</th>
-                                    <th>APELLIDOS</th>
+                                    <th>RAZON SOCIAL</th>
+                                    <th>CUIT</th>
                                     <th>EMAIL</th>
                                     <th>TELEFONO</th>
+                                    <th>WEB</th>
                                     <th>ESTADO</th>
                                     <th>ACCIONES</th>
                                 </tr>

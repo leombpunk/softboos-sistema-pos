@@ -44,18 +44,18 @@ class Proveedores extends Controllers{
                 $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
             }
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verCliente('.$arrData[$i]['CLIENTE_ID'].');" class="btn btn-info btn-sm btnVercliente" rl="'.$arrData[$i]['CLIENTE_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="editarCliente('.$arrData[$i]['CLIENTE_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['CLIENTE_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarCliente('.$arrData[$i]['CLIENTE_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['CLIENTE_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
+            <button onclick="verProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-info btn-sm btnVerproveedor" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
+            <button onclick="editarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
+            <button onclick="borrarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
             </div>'; 
         }
         // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 	}
-	public function getCliente(int $clienteID){ // pasa el id del cliente por GET
-		$id = intval(strClear($clienteID));
+	public function getProveedor(int $proveedorID){ // pasa el id del proveedor por GET
+		$id = intval(strClear($proveedorID));
 		if ($id > 0){
-			$arrData = $this->model->selectCliente($id);
+			$arrData = $this->model->selectProveedor($id);
 			if (empty($arrData)){
 				$arrResponse = array("status" => false, "message" => "Lista vacia.");
 			}
@@ -66,44 +66,33 @@ class Proveedores extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function setCliente(){
+	public function setProveedor(){
 		if ($_POST){
-			if (!empty($_POST["cliente_id"]) and is_numeric($_POST["cliente_id"]) and intval($_POST["cliente_id"]) > 0){ 
-				$id = intval($_POST["cliente_id"]);
+			if (!empty($_POST["proveedor_id"]) and is_numeric($_POST["proveedor_id"]) and intval($_POST["proveedor_id"]) > 0){ 
+				$id = intval($_POST["proveedor_id"]);
 				$option = 1;
 			}
 			else {
 				$option = 2;
 			}
 			// podria asignar variables antes de validarlas
-			$dni = empty($_POST["clientedni"]) ? "" : strClear($_POST["clientedni"]);
-			$fechanac = empty($_POST["clientefechanac"]) ? "" : strClear($_POST["clientefechanac"]);
-			$nombre = empty($_POST["clientenombre"]) ? "" : mb_strtoupper(strClear($_POST["clientenombre"]));
-			$apellido = empty($_POST["clienteapellido"]) ? "" : mb_strtoupper(strClear($_POST["clienteapellido"]));
-			$cuil = empty($_POST["clientecuil"]) ? "" : str_ireplace("-","",strClear($_POST["clientecuil"]));
-			$mail = empty($_POST["clientemail"]) ? "" : strClear($_POST["clientemail"]);
-			$telefono = empty($_POST["clientetelefono"]) ? "" : strClear($_POST["clientetelefono"]);
-			$direccion = empty($_POST["clientedireccion"]) ? "" : mb_strtoupper(strClear($_POST["clientedireccion"]));
-			$estado = intval(empty($_POST["clienteestado"]) ? 0 : strClear($_POST["clienteestado"]));
+			$razonsocial = empty($_POST["proveedorrazonSocial"]) ? "" : mb_strtoupper(strClear($_POST["proveedorrazonSocial"]));
+			$cuit = empty($_POST["proveedorcuit"]) ? "" : str_ireplace("-","",strClear($_POST["proveedorcuit"]));
+			$mail = empty($_POST["proveedormail"]) ? "" : strClear($_POST["proveedormail"]);
+			$telefono = empty($_POST["proveedortelefono"]) ? "" : strClear($_POST["proveedortelefono"]);
+			$direccion = empty($_POST["proveedordireccion"]) ? "" : mb_strtoupper(strClear($_POST["proveedordireccion"]));
+			$web = empty($_POST["proveedorweb"]) ? "" : strClear($_POST["proveedorweb"]);
+			$estado = intval(empty($_POST["proveedorestado"]) ? 0 : strClear($_POST["proveedorestado"]));
 			// primero se validan los campos obligatorios
-			if (empty($dni) or !validar($dni,2,7,8)){
-				$arrResponse = array("status" => false, "message" => "El numero de DNI ingresado no es valido o esta vacío.");
-			}
-			elseif (empty($nombre) or !validar($nombre,1,2,50)) {
-				$arrResponse = array("status" => false, "message" => "El nombre ingresado no es valido o esta vacío.");
-			}
-			elseif (empty($apellido) or !validar($apellido,1,2,50)) {
-				$arrResponse = array("status" => false, "message" => "El apellido ingresado no es valido o esta vacío.");
-			}
-			elseif (empty($fechanac) or !validar($fechanac,11)) {
-				$arrResponse = array("status" => false, "message" => "La fecha de nacimiento ingresada no es valida o esta vacía.");
+			if (empty($razonsocial) or !validar($razonsocial,1,3,20)){
+				$arrResponse = array("status" => false, "message" => "La razon social ingresada no es valida o esta vacía.");
 			}
 			// aca comienza la validacion de los campos que no son obligatorios
-			elseif (!empty($cuil) and !validar($cuil,2,10,11)) {
-				$arrResponse = array("status" => false, "message" => "El CUIL ingresado no es valido o esta vacío.");
+			elseif (!empty($cuit) and !validar($cuit,2,10,11)) {
+				$arrResponse = array("status" => false, "message" => "El CUIT ingresado no es valido o esta vacío.");
 			}
 			elseif (!empty($mail) and (!validar($mail,7) or (strlen($mail) < 10 or strlen($mail) > 30))) {
-				$arrResponse = array("status" => false, "message" => "El cargo seleccionado no es valido o no selecciono ninguno.");
+				$arrResponse = array("status" => false, "message" => "El correo electronico no es valido o no selecciono ninguno.");
 			}
 			elseif (!empty($telefono) and !validar($telefono,3,6,20)) {
 				$arrResponse = array("status" => false, "message" => "El nuemro de telefono ingresado no es valido o está vacío.");
@@ -111,25 +100,27 @@ class Proveedores extends Controllers{
 			elseif (!empty($direccion) and !validar($direccion,9,10,100)) {
 				$arrResponse = array("status" => false, "message" => "La direccion ingresada no es valida o está vacía.");
 			}
+			elseif (!empty($web) and !validar($web,13,5,100)) {
+				$arrResponse = array("status" => false, "message" => "La direccion web ingresada no es valida o esta vacía.");
+			}
 			elseif (!empty($estado) and !validar($estado,2,1,11)) {
 				$arrResponse = array("status" => false, "message" => "El estado ingresado no es valida o está vacía.");
 			}
 			else {
 				if ($option == 1){ // actualizar
-					$arrData = array($dni, $nombre, $apellido, $fechanac,$cuil, $telefono, $mail, $direccion, $estado,$id);
-					$requestCliente = $this->model->updateCliente($arrData);
-					if ($requestCliente > 0){
-						$arrResponse = array("status" => true, "message" => "El cliente se ha actualizado satisfactoriamente.", "data" => $requestCliente);
+					$arrData = array($razonsocial, $cuit, $mail, $telefono, $web, $direccion, $estado, $id);
+					$requestProveedor = $this->model->updateProveedor($arrData);
+					if ($requestProveedor > 0){
+						$arrResponse = array("status" => true, "message" => "El proveedor se ha actualizado satisfactoriamente.", "data" => $requestProveedor);
 					}
 				}
 				else { // insertar
-					$arrData = array($dni, $nombre, $apellido, $fechanac, $cuil, $telefono, $mail, $direccion, $estado);
-					$requestCliente = $this->model->insertCliente($arrData);
-					if ($requestCliente > 0){
-						$arrResponse = array("status" => true, "message" => "El cliente se ha dado de alta satisfactoriamente.", "data" => $requestCliente);
+					$arrData = array($razonsocial, $cuit, $mail, $telefono, $web, $direccion, $estado);
+					$requestProveedor = $this->model->insertProveedor($arrData);
+					if ($requestProveedor > 0){
+						$arrResponse = array("status" => true, "message" => "El proveedor se ha dado de alta satisfactoriamente.", "data" => $requestProveedor);
 					}
 				}
-				
 			}
 		}
 		else {
@@ -138,10 +129,10 @@ class Proveedores extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function delCliente(){
+	public function delProveedor(){
 		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
 			$this->id = intval($_POST["id"]);
-			$arrRequest = $this->model->deleteCliente($this->id);
+			$arrRequest = $this->model->deleteProveedor($this->id);
 			if ($arrRequest == "ok"){
                 $arrResponse = array("status" => true, "message" => "Cliente borrado correctamente.");
             }

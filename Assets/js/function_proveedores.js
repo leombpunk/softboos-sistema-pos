@@ -1,20 +1,20 @@
 var tabalFalopa;
 $(document).ready(function () {
-    tabalFalopa = $("#clientesTable").DataTable({
+    tabalFalopa = $("#proveedoresTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
             "url": base_url+"Assets/Spanish.json"
         },
         "ajax": {
-            "url": base_url+"Clientes/getClientes",
+            "url": base_url+"Proveedores/getProveedores",
             "dataSrc":""},
         "columns": [
-            { "data": "DNI" },
-            { "data": "NOMBRE" },
-            { "data": "APELLIDO" },
+            { "data": "RAZONSOCIAL" },
+            { "data": "CUIT" },
             { "data": "MAIL" },
             { "data": "TELEFONO" },
+            { "data": "WEB" },
             { "data": "estado"},
             { "data": "actions" }
         ],
@@ -23,19 +23,19 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-    $("#formClientes").submit(function(e){
+    $("#formProveedores").submit(function(e){
         e.preventDefault();
         var data = $(this).serialize();
         console.log(data);
         $.ajax({
             type: "POST",
-            url: base_url+"Clientes/setCliente/",
+            url: base_url+"Proveedores/setProveedor/",
             data: data,
             dataType: "json",
             success: function (response) {
                 if (response.status){
                     tabalFalopa.ajax.reload();
-                    $("#clientesModalCenter").modal("hide");
+                    $("#proveedoresModalCenter").modal("hide");
                     swal("Bien!",response.message,"success");
                 }
                 else {
@@ -46,33 +46,32 @@ $(document).ready(function () {
     });
 });
 function openModal(){
-	$("#cliente_id").val("");
-    $("#clientesModalCenterTitle").html("Nuevo Cliente");
+	$("#proveedor_id").val("");
+    $("#proveedorModalCenterTitle").html("Nuevo Proveedor");
     $(".modal-header").addClass("headerRegister").removeClass("headerUpdate"); 
     $("#btnText").html("Guardar");
     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
-    $("#formClientes").trigger("reset");
-    $("#clientesModalCenter").modal("show");
+    $("#formProveedores").trigger("reset");
+    $("#proveedoresModalCenter").modal("show");
 }
-function verCliente(id){
+function verProveedor(id){
+    console.log({id:id})
     $.ajax({
         type: "GET",
-        url: base_url+"Clientes/getCliente/"+id,
+        url: base_url+"Proveedores/getProveedor/"+id,
         dataType: "json",
         success: function (response) {
             console.log(response);
             if (response.status){
-                $("#tblDNI").html(response.data.DNI);
-                $("#tblNombre").html(response.data.NOMBRE);
-                $("#tblApellido").html(response.data.APELLIDO);
-                $("#tblFechanac").html(response.data.FECHA_NACIMIENTO);
-                $("#tblCUIL").html(response.data.CUIL);
+                $("#tblRazonSocial").html(response.data.RAZONSOCIAL);
+                $("#tblCUIT").html(response.data.CUIT);
                 $("#tblTelefono").html(response.data.TELEFONO);
                 $("#tblMail").html(response.data.MAIL);
                 $("#tblDireccion").html(response.data.DIRECCION);
+                $("#tblWeb").html(response.data.WEB);
                 $("#tblFechaalta").html(response.data.FECHA_ALTA);
                 $("#tblEstado").html(response.data.ESTADO);
-                $("#clientesVerModalCenter").modal("show");
+                $("#proveedoresVerModalCenter").modal("show");
             }
             else {
                 swal("Atención!",response.message,"error");
@@ -92,7 +91,7 @@ function editarCliente(id){
     	success: function(data){
     		console.log(data);
     		if (data.status){
-    			$("#cliente_id").val(data.data.CLIENTE_ID);
+    			$("#proveedor_id").val(data.data.PROVEEDOR_ID);
     			$("#clientedni").val(data.data.DNI);
     			$("#clientefechanac").val(data.data.FECHA_NACIMIENTO);
     			$("#clientenombre").val(data.data.NOMBRE);
