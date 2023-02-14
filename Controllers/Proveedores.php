@@ -134,13 +134,10 @@ class Proveedores extends Controllers{
 			$this->id = intval($_POST["id"]);
 			$arrRequest = $this->model->deleteProveedor($this->id);
 			if ($arrRequest == "ok"){
-                $arrResponse = array("status" => true, "message" => "Cliente borrado correctamente.");
+                $arrResponse = array("status" => true, "message" => "Proveedor borrado correctamente.");
             }
-            // elseif ($arrRequest == 'exist'){
-            //     $arrResponse = array("status" => false, "message" => "No es posible eliminar al Administrador del sistema.");
-            // }
             else {
-                $arrResponse = array("status" => false, "message" => "Error al eliminar al cliente.");
+                $arrResponse = array("status" => false, "message" => "Error al eliminar al proveedor.");
             }
 		}
 		else {

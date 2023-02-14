@@ -79,28 +79,26 @@ function verProveedor(id){
         }
     });
 }
-function editarCliente(id){
-    $("#clientesModalCenterTitle").html("Editar Cliente");
+function editarProveedor(id){
+    $("#proveedoresModalCenterTitle").html("Editar Proveedor");
     $(".modal-header").addClass("headerUpdate").removeClass("headerRegister"); 
     $("#btnText").html("Actualizar");
     $("#btnGuardar").addClass("btn-info").removeClass("btn-primary");
     $.ajax({
-    	url: base_url+'Clientes/getCliente/'+id,
+    	url: base_url+'Proveedores/getProveedor/'+id,
     	type: 'GET',
     	dataType: 'json',
     	success: function(data){
     		console.log(data);
     		if (data.status){
     			$("#proveedor_id").val(data.data.PROVEEDOR_ID);
-    			$("#clientedni").val(data.data.DNI);
-    			$("#clientefechanac").val(data.data.FECHA_NACIMIENTO);
-    			$("#clientenombre").val(data.data.NOMBRE);
-    			$("#clienteapellido").val(data.data.APELLIDO);
-    			$("#clientecuil").val(data.data.CUIL);
-    			$("#clientemail").val(data.data.MAIL);
-    			$("#clientetelefono").val(data.data.TELEFONO);
-    			$("#clientedireccion").val(data.data.DIRECCION);
-    			$("#clientesModalCenter").modal("show");
+    			$("#proveedorrazonSocial").val(data.data.RAZONSOCIAL);
+    			$("#proveedorcuit").val(data.data.CUIT);
+    			$("#proveedorweb").val(data.data.WEB);
+    			$("#proveedormail").val(data.data.MAIL);
+    			$("#proveedortelefono").val(data.data.TELEFONO);
+    			$("#proveedordireccion").val(data.data.DIRECCION);
+    			$("#proveedoresModalCenter").modal("show");
     		}
     		else {
     			swal("Atención!",data.message,"error");
@@ -108,10 +106,10 @@ function editarCliente(id){
     	}
     });
 }
-function borrarCliente(id){
+function borrarProveedor(id){
     swal({
-        title: "Eliminar Cliente",
-        text: "¿Quiere eliminar al Cliente?",
+        title: "Eliminar Proveedor",
+        text: "¿Quiere eliminar al Proveedor?",
         icon: "warning",
         buttons: true,
         dangerMode: true,
@@ -119,7 +117,7 @@ function borrarCliente(id){
         if(isConfirm){
             $.ajax({
                 type: "POST",
-                url: base_url+"Clientes/delCliente/",
+                url: base_url+"Proveedores/delProveedor/",
                 data: "id="+id,
                 dataType: "json",
                 success: function (response) {

@@ -64,7 +64,7 @@
                     <div class="form-row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="control-label" for="">Direccion</label>
+                                <label class="control-label" for="proveedordireccion">Direccion</label>
                                 <textarea id="proveedordireccion" name="proveedordireccion" class="form-control" maxlength="100" placeholder="Escriba el domicilio aquí por favor..."></textarea>
                                 <div class="invalid-feedback">Complete este campo!</div>
                             </div>
