@@ -41,12 +41,12 @@ function getUdMedidaBase(){
         url: base_url+"UdMedidas/getUMBase",
         dataType: "json",
         success: function (response) {
-            $("#udMeidaequal").html("");
+            $("#udMedidaequal").html("");
             console.log(response);
             if (response.status){
-                $("#udMedidaequal").append("<option value='' selected></option>");
+                $("#udMedidaequal").append("<option value='' selected>Seleccione...</option>");
                 response.data.forEach(function(element, index) {
-                    $("#udMedidaequal").append("<option value='"+element.id+"''>"+element.de+"</option>");
+                    $("#udMedidaequal").append("<option value='"+element.id+"'>"+element.de+"</option>");
                 });
             }
             else {
@@ -123,6 +123,7 @@ function editarUdMedida(id){
                 $("#udMedida_id").val(response.data.id);
                 $("#udMedidanombre").val(response.data.de);
                 $("#udMedidaabr").val(response.data.abr);
+                // $("#udMedidaequal").html("");
                 $("#udMedidaequal").val(response.data.unid).trigger("change");
                 $("#udMedidaval").val(response.data.val);
                 $("#udMedidaestado").val(response.data.estado).trigger("change");
