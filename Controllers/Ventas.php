@@ -1,5 +1,5 @@
 <?php 
-class Proveedores extends Controllers{
+class Ventas extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
@@ -11,21 +11,21 @@ class Proveedores extends Controllers{
 		else {
 			header('location: '.base_url().'login');
 		}
-		getPermisos(9);
+		getPermisos(10);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
 			header("location: ".base_url()."Dashboard");
 		}
 	}
-	public function Proveedores(){
+	public function Ventas(){
 		// if (empty($_SESSION["permisosMod"]["r"])){
 		// 	header("location:".base_url()."dashboard");
 		// }
-		$data["page_id"] = 9;
-		$data["page_tag"] = "Proveedores | SoftBoos";
-		$data["page_title"] = "Proveedores";
-		$data["page_name"] = "proveedores";
-		$data["page_filejs"] = "function_proveedores.js";
-		$this->views->getView($this,"proveedores",$data);
+		$data["page_id"] = 10;
+		$data["page_tag"] = "Ventas | SoftBoos";
+		$data["page_title"] = "Ventas";
+		$data["page_name"] = "ventas";
+		$data["page_filejs"] = "function_ventas.js";
+		$this->views->getView($this,"ventas",$data);
 	}
 	public function getProveedores(){
 		$arrData = $this->model->selectProveedores();

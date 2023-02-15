@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-	<meta charset="UTF-8">
-	<title>Pagina no encontrada</title>
-</head>
-<body>
-	<h1>Not found pagina pe!</h1>
-</body>
-</html>
+<?php headerAdmin($data); ?>
+<main class="app-content">
+	<div class="page-error tile">
+	<h1><i class="fa fa-exclamation-circle"></i> Error 404: Page not found</h1>
+	<p>The page you have requested is not found.</p>
+	<p><a class="btn btn-primary" href="javascript:window.history.back();">Go Back</a></p>
+	</div>
+</main>
+<?php footerAdmin($data); ?>
