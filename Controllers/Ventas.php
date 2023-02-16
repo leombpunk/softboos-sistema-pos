@@ -27,26 +27,26 @@ class Ventas extends Controllers{
 		$data["page_filejs"] = "function_ventas.js";
 		$this->views->getView($this,"ventas",$data);
 	}
-	public function getProveedores(){
-		$arrData = $this->model->selectProveedores();
+	public function getVentas(){
+		$arrData = $this->model->selectVentas();
         for ($i=0; $i < count($arrData); $i++) { 
-			if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
-                $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
-            }
-            elseif ($arrData[$i]["ESTADO_ID"] == 2){ // inactivo
-                $arrData[$i]["estado"] = '<span class="badge badge-danger">Inactivo</span>';
-            }
-            elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
-                $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
-            }
-            else { // dato no controlado
-                $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
-            }
+			// if ($arrData[$i]["FORMAPAGO1"] == 1){ // activo
+            //     $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
+            // }
+            // elseif ($arrData[$i]["FORMAPAGO2"] == 2){ // inactivo
+            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">Inactivo</span>';
+            // }
+            // elseif ($arrData[$i]["FORMAPAGO3"] == 3){ // borrado
+            //     $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
+            //     // agregar el cambio de funcion y boton de borrar a restablecer
+            // }
+            // else { // dato no controlado
+            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
+            // }
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-info btn-sm btnVerproveedor" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="editarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
+            <button onclick="verProveedor('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm btnVerproveedor" rl="'.$arrData[$i]['FACTURAVENTA_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
+            <button onclick="editarProveedor('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['FACTURAVENTA_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
+            <button onclick="borrarProveedor('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['FACTURAVENTA_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
             </div>'; 
         }
         // dep($arrData);

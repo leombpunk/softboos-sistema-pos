@@ -7,15 +7,13 @@ $(document).ready(function () {
             "url": base_url+"Assets/Spanish.json"
         },
         "ajax": {
-            "url": base_url+"Proveedores/getProveedores",
+            "url": base_url+"Ventas/getVentas",
             "dataSrc":""},
         "columns": [
-            { "data": "RAZONSOCIAL" },
-            { "data": "CUIT" },
-            { "data": "MAIL" },
-            { "data": "TELEFONO" },
-            { "data": "WEB" },
-            { "data": "estado"},
+            { "data": "NUMERO_FACTURA" },
+            { "data": "FECHA_EMISION" },
+            { "data": "FORMAPAGO1" },
+            { "data": "TOTAL" },
             { "data": "actions" }
         ],
         "responsive": true,

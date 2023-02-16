@@ -3,7 +3,7 @@ getModal("modalVentasVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#ventasModalCenter">
+            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#ventasModalCenter">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nueva Venta
             </button></h1>
         </div>
@@ -20,8 +20,9 @@ getModal("modalVentasVer",$data); ?>
                         <table class="table table-hover table-striped table-sm" id="ventasTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>FECHA</th>
                                     <th>N° FACTURA</th>
+                                    <th>FECHA</th>
+                                    <th>FORMA PAGO</th>
                                     <th>TOTAL</th>
                                     <th>ACCIONES</th>
                                 </tr>
