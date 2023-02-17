@@ -1,14 +1,14 @@
-<div class="modal fade" id="proveedoresVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="proveedoresVerModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="ventasVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="ventasVerModalCenterTitle" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="proveedoresVerModalCenterTitle"><i class="fa fa-user" aria-hidden="true"></i> Datos del Proveedor</h5>
+                <h5 class="modal-title" id="ventasVerModalCenterTitle"><i class="fa fa-file-text-o" aria-hidden="true"></i> Datos de la Factura de Venta</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body table-responsive">
-                <table class="table table-sm table-striped">
+                <!-- <table class="table table-sm table-striped">
                     <thead class="thead-dark">
                         <tr>
                             <th style="width: 170px;">Atributos</th>
@@ -47,6 +47,39 @@
                         <tr>
                             <td>Estado</td>
                             <td id="tblEstado"></td>
+                        </tr>
+                    </tbody>
+                </table> -->
+                <table class="table table-lg">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Numero factura</td>
+                            <td>Tipo factura</td>
+                            <td>Fecha emision</td>
+                        </tr>
+                        <tr>
+                            <td>000000014</td>
+                            <td>A</td>
+                            <td>17/02/2023</td>
+                        </tr>
+                        <tr>
+                            <td>Forma de Pago</td>
                         </tr>
                     </tbody>
                 </table>

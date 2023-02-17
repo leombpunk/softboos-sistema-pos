@@ -21,11 +21,7 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function selectVenta(int $id){
-		$sql = "SELECT p.PROVEEDOR_ID, p.RAZONSOCIAL, p.CUIT, p.MAIL, p.TELEFONO, p.WEB, p.DIRECCION, p.FECHA_ALTA,
-		e.DESCRIPCION AS ESTADO
-		FROM facturas_venta p 
-		INNER JOIN estado e on p.ESTADO_ID = e.ESTADO_ID 
-		WHERE p.PROVEEDOR_ID = {$id}";
+		$sql = "SELECT 1";
 		$request = $this->select($sql);
 		return $request;
 	}

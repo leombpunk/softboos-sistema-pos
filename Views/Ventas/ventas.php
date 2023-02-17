@@ -3,9 +3,9 @@ getModal("modalVentasVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#ventasModalCenter">
+            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <a href="<?= base_url(); ?>ventas/nuevaVenta"><button class="btn btn-primary" type="button">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nueva Venta
-            </button></h1>
+            </button></a></h1>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
