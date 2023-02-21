@@ -28,7 +28,9 @@ class Productos extends Controllers{
 	}
 	public function getProductos(){
 		$arrData = $this->model->selectProductos();
-		for ($i=0; $i < count($arrData); $i++) { 
+		for ($i=0; $i < count($arrData); $i++) {
+			$arrData[$i]["cant"] = formatDecimal($arrData[$i]["cant"]);
+			$arrData[$i]["precioventa"] = formatMoney($arrData[$i]["precioventa"]); 
             if ($arrData[$i]["est"] == 1){ // activo
                 $arrData[$i]["est"] = '<span class="badge badge-success">Activo</span>';
             }
@@ -75,6 +77,11 @@ class Productos extends Controllers{
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
             else {
+				$arrData["preciocosto"] = formatMoney($arrData["preciocosto"]);
+				$arrData["precioventa"] = formatMoney($arrData["precioventa"]);
+				$arrData["cmin"] = formatDecimal($arrData["cmin"]);
+				$arrData["cmax"] = formatDecimal($arrData["cmax"]);
+				$arrData["cant"] = formatDecimal($arrData["cant"]);
                 $arrResponse = array('status' => true, 'data' => $arrData);
             }
             echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
@@ -141,7 +148,11 @@ class Productos extends Controllers{
 			$cantmin = empty($_POST["productocantmin"]) ? "" : strClear($_POST["productocantmin"]);
 			$cantmax = empty($_POST["productocantmax"]) ? "" : strClear($_POST["productocantmax"]);
 			$iva = empty($_POST["productoiva"]) ? "" : strClear($_POST["productoiva"]);
-            $estado = empty($_POST["productoestado"]) ? "" : intval(strClear($_POST["productoestado"]));
+			$precioventa = empty($_POST["productopventa"]) ? 0.00 : floatval(strClear($_POST["productopventa"]));
+			$preciocosto = empty($_POST["productopcosto"]) ? 0.00 : floatval(strClear($_POST["productopcosto"]));
+			$insumo = empty($_POST["productoinsumo"]) ? 0 : intval($_POST["productoinsumo"]);
+			$vendible = empty($_POST["productoventa"]) ? 0 : intval($_POST["productoventa"]);
+            $estado = empty($_POST["productoestado"]) ? 0 : intval(strClear($_POST["productoestado"]));
             $imagen = "";
             // Validaciones
             if (empty($producto) or !validar($producto,9,2,50)){
@@ -156,31 +167,60 @@ class Productos extends Controllers{
 			elseif (empty($udmedida) or !validar($udmedida,2,1,11)){
 				$arrResponse = array("status" => false, "message" => "La unidad de medida seleccionado es incorrecto o esta vacio.");
 			}
-			elseif(empty($cantmin) or !validar($cantmin,10)){
+			elseif (empty($cantmin) or !validar($cantmin,10)){
 				$arrResponse = array("status" => false, "message" => "La cantidad minima ingresada es incorrecta o esta vacia.");
 			}
-			elseif(empty($cantmax) or !validar($cantmax,10)){
+			elseif (empty($cantmax) or !validar($cantmax,10)){
 				$arrResponse = array("status" => false, "message" => "La cantidad maxima ingresada es incorrecta o esta vacia.");
 			}
 			elseif (empty($iva) or !validar($iva,2,1,11)){
 				$arrResponse = array("status" => false, "message" => "El IVA seleccionado es incorrecto o esta vacio.");
 			}
-            elseif (empty($estado) or (intval($estado)>2 and intval($estado)<1)){
-				$arrResponse = array("status" => false, "message" => "El estado seleccionado no es valido o no selecciono ninguno.");
+			elseif (empty($preciocosto) or !validar($preciocosto,10)){
+				$arrResponse = array("status" => false, "message" => "El precio de costo es incorrecto o esta vacio.");
+			}
+			elseif (empty($precioventa) or !validar($precioventa,10)){
+				$arrResponse = array("status" => false, "message" => "El precio de venta es incorrecto o esta vacio.");
+			}
+			elseif (!validar($insumo,16)){
+				$arrResponse = array("status" => false, "message" => "El valor de Insumo es incorrecto.");
+			}
+			elseif (!validar($vendible,16)){
+				$arrResponse = array("status" => false, "message" => "El valor de Venta es incorrecto.");
+			}
+            elseif (empty($estado) or (intval($estado)>2 or intval($estado)<1)){
+				$arrResponse = array("status" => false, "message" => "El estado seleccionado no es valido.");
             }
             else {
                 if ($option == 1){ // actualizar
-					$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $estado, $id);
-					$requestRubro = $this->model->updateProducto($arrData);
-					if ($requestRubro > 0){
-						$arrResponse = array("status" => true, "message" => "El producto se ha actualizado satisfactoriamente.");
+					try {
+						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado, $id);
+						// $arrResponse = array("status" => false, "message" => $arrData);
+						$requestProducto = $this->model->updateProducto($arrData);
+						// $arrResponse = array("status" => false, "message" => json_encode($requestProducto,JSON_UNESCAPED_UNICODE));
+						if ($requestProducto){
+							$arrResponse = array("status" => true, "message" => "El producto se ha actualizado satisfactoriamente. {$requestProducto}");
+						}
+						else {
+							$arrResponse = array("status" => false, "message" => "requestUpdate: {$requestProducto}");
+						}
+					} catch (Exception $e) {
+						$arrResponse = array("status" => false, "message" => "{$e}");
 					}
 				}
 				else { // insertar
-					$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $estado);
-					$requestRubro = $this->model->insertProducto($arrData);
-					if ($requestRubro > 0){
-						$arrResponse = array("status" => true, "message" => "El producto se ha dado de alta satisfactoriamente.");
+					try {
+						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado);
+						// $arrResponse = array("status" => false, "message" => $arrData);
+						$requestProducto = $this->model->insertProducto($arrData);
+						if ($requestProducto > 0){
+							$arrResponse = array("status" => true, "message" => "El producto se ha dado de alta satisfactoriamente.");
+						}
+						else {
+							$arrResponse = array("status" => false, "message" => "requestInsert: {$requestProducto}");
+						}
+					} catch (Exception $e) {
+						$arrResponse = array("status" => false, "message" => "{$e}");
 					}
 				}
             }

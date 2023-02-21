@@ -28,6 +28,7 @@ $(document).ready(function(){
             { "data": "rnom" },
             { "data": "umnom" },
             { "data": "cant" },
+            { "data": "precioventa" },
 			{ "data": "est" },
             { "data": "actions" }
         ],
@@ -46,7 +47,7 @@ $(document).ready(function(){
 $("#formProductos").submit(function(e){
     e.preventDefault();
     console.log($(this).serialize());
-    datos = $(this).serialize()
+    datos = $(this).serialize();
     // var form = document.getElementById("formProductos");
     // var formData = new FormData(form);
     // formData.set('productodescripcion', CKEDITOR.instances['productodescripcion'].getData());
@@ -101,7 +102,7 @@ function openModal(){
     $(".modal-header").addClass("headerRegister").removeClass("headerUpdate"); 
     $("#btnText").html("Guardar");
     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
-    $("#formEmpleados").trigger("reset");
+    $("#formProductos").trigger("reset");
     $("#productosModalCenter").modal("show");
 }
 function editarProducto(id){
@@ -121,10 +122,14 @@ function editarProducto(id){
                 $("#productocodigo").val(data.data.cod);
                 $("#productorubro").val(data.data.rid).trigger("change");
                 $("#productoudmedida").val(data.data.umid).trigger("change");
-                $("#productocantmin").val(data.data.cmin);
-                $("#productocantmax").val(data.data.cmax);
+                $("#productocantmin").val(data.data.cmin.replace(",","."));
+                $("#productocantmax").val(data.data.cmax.replace(",","."));
                 $("#productoiva").val(data.data.iva).trigger("change");
                 $("#productoestado").val(data.data.est).trigger("change");
+                $("#productopventa").val(data.data.precioventa.replace(",","."));
+                $("#productopcosto").val(data.data.preciocosto.replace(",","."));
+                $("#productoinsumo").val(data.data.esinsumo).trigger("change");
+                $("#productoventa").val(data.data.esvendible).trigger("change");
                 $("#productosModalCenter").modal("show");
             }
             else {
@@ -164,23 +169,26 @@ function borrarProducto(id){
 }
 function verProducto(id){
     $.ajax({
-		url: base_url+'Productos/getProductoFull/'+id,
+		url: base_url+'Productos/getProducto/'+id,
 		type: 'GET',
 		dataType: 'json',
 		success: function(data){
 			console.log(data);
 			if (data.status){
-				$("#tblDNI").html(data.data.DNI);
-				$("#tblNombre").html(data.data.NOMBRE);
-				$("#tblApellido").html(data.data.APELLIDO);
-				$("#tblFechanac").html(data.data.FECHA_NACIMIENTO);
-				$("#tblCUIL").html(data.data.CUIL);
-				$("#tblTelefono").html(data.data.TELEFONO);
-				$("#tblMail").html(data.data.MAIL);
-				$("#tblDireccion").html(data.data.DIRECCION);
-				$("#tblCargo").html(data.data.CARGO_DESCRIPCION);
-				$("#tblSucursal").html(data.data.CODIGO_SUCURSAL);
-				$("#empleadosVerModalCenter").modal("show");
+				$("#tblCodigo").html(data.data.cod);
+				$("#tblDescripcion").html(data.data.nom);
+				$("#tblRubro").html(data.data.rnom);
+				$("#tblUnidadMedida").html(data.data.umnom);
+				$("#tblCMAX").html(data.data.cmax);
+				$("#tblCMIN").html(data.data.cmin);
+				$("#tblCActual").html(data.data.cant);
+				$("#tblIVA").html(data.data.ivanom);
+				$("#tblPCosto").html(data.data.preciocosto);
+                $("#tblPVenta").html(data.data.precioventa);
+                $("#tblInsumo").html((data.data.esinsumo == 1 ? 'Si' : 'No'));
+                $("#tblVendible").html((data.data.esvendible == 1 ? 'Si' : 'No'));
+				$("#tblEstado").html((data.data.est == 1 ? 'Activo' : 'Inactivo'));
+				$("#productosVerModalCenter").modal("show");
 			}
 			else {
 				swal("Atención!",data.message,"error");

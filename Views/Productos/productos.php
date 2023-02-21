@@ -49,6 +49,7 @@ getModal("modalProductosVer", $data); ?>
                                     <th>RUBRO</th>
                                     <th>U. MEDIDA</th>
                                     <th>CANTIDAD</th>
+                                    <th>PRECIO VENTA</th>
                                     <th>ESTADO</th>
                                     <th>ACCIONES</th>
                                 </tr>

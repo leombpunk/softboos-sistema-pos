@@ -88,96 +88,97 @@ function getModal(string $nameModal, $data){
     require_once($view_modal); 
 }
 function validar($value, int $option, int $minlength=1, int $maxlength=100){
-    if(empty($value)){
-        return false;
-    }
-    else {
-        $regExp = "";
-        switch ($option) {
-            case 1: // valida una cadena (mayusculas minusculas y carateres con acento y eñe) segun longitudes proporcionadas
-                $regExp = '/^([a-zA-Z\sÑñÁáÉéÍíÓóÚú]){'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 2: // valida nuemro enteros positivos mayores que cero
-                $regExp = '/^(?!0)[0-9]{'.$minlength.','.$maxlength.'}+$/';
-                if (is_numeric($value) or is_string($value)){ 
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 3: // valida enteros positivos incluido el cero
-                $regExp = '/^[0-9]{'.$minlength.','.$maxlength.'}+$/';
-                if (is_numeric($value) or is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 4: // valida numeros enteros negativos solamente
-                $regExp = '/^\-\d{'.$minlength.','.$maxlength.'}+$/';
-                if (is_numeric($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 5: // valida numeros enteros positivos y negativos incluido el cero
-                $regExp = '/^\-?\d{'.$minlength.','.$maxlength.'}+$/';
-                if (is_numeric($value) or is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 6: // valida contraseñas segun el formato
-                $regExp = '/^[A-Z,a-z,0-9_\.]{'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value) or is_numeric($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 7: // valida que la cadena sea un correo electronico valido
-                $regExp = '/^\w+([-._]\w+)*@\w+([-._]\w+)*\.\w+$/';
-                if (is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 8: // valida nombres de usuario 
-                $regExp = '/^[\w\.]{'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 9: // valida una cadena de caracteres tipo oracion, numeros y letras y carateres con acento
-                $regExp = '/^([a-zA-Z0-9\/\sÑñÁáÉéÍíÓóÚú-]){'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 10: // valida numeros con decimales positivos y negativos
-                $regExp = '/^\-?((\d{1,8})*|(\.|\,)(\d{1,2}))+$/'; //^\-?\d{1,5}+([,.]\d{1,2})?+$
-                if (is_float($value) or is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 11: // valida una fecha en el formato yyyy-mm-dd
-                $regExp = '/^(\d{4}(\/|-)(0[1-9]|1[0-2])\2([0-2][0-9]|3[0-1]))$/'; //yyyy-mm-dd
+    $regExp = "";
+    switch ($option) {
+        case 1: // valida una cadena (mayusculas minusculas y carateres con acento y eñe) segun longitudes proporcionadas
+            $regExp = '/^([a-zA-Z\sÑñÁáÉéÍíÓóÚú]){'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value)){
                 return preg_match_all($regExp,$value);
-            case 12: // valida una fecha incluida la hora
-                $regExp = '/^([0-2][0-9]|3[0-1])(\/|-)(0[1-9]|1[0-2])\2(\d{4})(\s)([0-1][0-9]|2[0-3])(:)([0-5][0-9])(:)([0-5][0-9])$/';
+            }
+            return false;
+        case 2: // valida nuemro enteros positivos mayores que cero
+            $regExp = '/^(?!0)[0-9]{'.$minlength.','.$maxlength.'}+$/';
+            if (is_numeric($value) or is_string($value)){ 
                 return preg_match_all($regExp,$value);
-            case 13: // valida una url o direccion de una pagina web
-                $regExp = '/^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z-])*(:(0-9)*)*(\/?)( [a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$/';
+            }
+            return false;
+        case 3: // valida enteros positivos incluido el cero
+            $regExp = '/^[0-9]{'.$minlength.','.$maxlength.'}+$/';
+            if (is_numeric($value) or is_string($value)){
                 return preg_match_all($regExp,$value);
-            case 14: // valida una cadena de caracteres tipo oracion, letras y carateres con acento y algunos caracteres especiales
-                $regExp = '/^([a-zA-Z\/\sÑñÁáÉéÍíÓóÚú-]){'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            case 15: //valida numeros letras mayusculas y minusculas (pensado para codigo de producto)
-                $regExp = '/^[a-z,A-Z,0-9]{'.$minlength.','.$maxlength.'}+$/';
-                if (is_string($value) or is_numeric($value)){
-                    return preg_match_all($regExp,$value);
-                }
-                return false;
-            default: // entra por defecto si no coincide con ninguna opcion
-                return false;
-        }
+            }
+            return false;
+        case 4: // valida numeros enteros negativos solamente
+            $regExp = '/^\-\d{'.$minlength.','.$maxlength.'}+$/';
+            if (is_numeric($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 5: // valida numeros enteros positivos y negativos incluido el cero
+            $regExp = '/^\-?\d{'.$minlength.','.$maxlength.'}+$/';
+            if (is_numeric($value) or is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 6: // valida contraseñas segun el formato
+            $regExp = '/^[A-Z,a-z,0-9_\.]{'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value) or is_numeric($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 7: // valida que la cadena sea un correo electronico valido
+            $regExp = '/^\w+([-._]\w+)*@\w+([-._]\w+)*\.\w+$/';
+            if (is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 8: // valida nombres de usuario 
+            $regExp = '/^[\w\.]{'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 9: // valida una cadena de caracteres tipo oracion, numeros y letras y carateres con acento
+            $regExp = '/^([a-zA-Z0-9\/\sÑñÁáÉéÍíÓóÚú-]){'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 10: // valida numeros con decimales positivos y negativos
+            $regExp = '/^\-?((\d{1,8})*|(\.|\,)(\d{1,2}))+$/'; //^\-?\d{1,5}+([,.]\d{1,2})?+$
+            if (is_float($value) or is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 11: // valida una fecha en el formato yyyy-mm-dd
+            $regExp = '/^(\d{4}(\/|-)(0[1-9]|1[0-2])\2([0-2][0-9]|3[0-1]))$/'; //yyyy-mm-dd
+            return preg_match_all($regExp,$value);
+        case 12: // valida una fecha incluida la hora
+            $regExp = '/^([0-2][0-9]|3[0-1])(\/|-)(0[1-9]|1[0-2])\2(\d{4})(\s)([0-1][0-9]|2[0-3])(:)([0-5][0-9])(:)([0-5][0-9])$/';
+            return preg_match_all($regExp,$value);
+        case 13: // valida una url o direccion de una pagina web
+            $regExp = '/^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z-])*(:(0-9)*)*(\/?)( [a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$/';
+            return preg_match_all($regExp,$value);
+        case 14: // valida una cadena de caracteres tipo oracion, letras y carateres con acento y algunos caracteres especiales
+            $regExp = '/^([a-zA-Z\/\sÑñÁáÉéÍíÓóÚú-]){'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 15: //valida numeros letras mayusculas y minusculas (pensado para codigo de producto)
+            $regExp = '/^[a-z,A-Z,0-9]{'.$minlength.','.$maxlength.'}+$/';
+            if (is_string($value) or is_numeric($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        case 16: //boolean 1 ó 0 
+            $regExp = '/^[0|1]{1,1}+$/';
+            if (is_string($value) or is_numeric($value)){
+                return preg_match_all($regExp,$value);
+            }
+            return false;
+        default: // entra por defecto si no coincide con ninguna opcion
+            return false;
     }
 }
 function mensajeSQL($PDOobj){

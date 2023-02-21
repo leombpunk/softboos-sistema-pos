@@ -1,8 +1,8 @@
-<div class="modal fade" id="empleadosVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="empleadosVerModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="productosVerModalCenter" tabindex="-1" role="dialog" aria-labelledby="productosVerModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="empleadosVerModalCenterTitle"><i class="fa fa-user" aria-hidden="true"></i> Datos del Empleado</h5>
+                <h5 class="modal-title" id="productosVerModalCenterTitle"><i class="fa fa-barcode" aria-hidden="true"></i> Datos del Producto</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -17,44 +17,56 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>DNI</td>
-                            <td id="tblDNI"></td>
+                            <td>Codigo</td>
+                            <td id="tblCodigo"></td>
                         </tr>
                         <tr>
-                            <td>Nombres</td>
-                            <td id="tblNombre"></td>
+                            <td>Descripcion</td>
+                            <td id="tblDescripcion"></td>
                         </tr>
                         <tr>
-                            <td>Apellidos</td>
-                            <td id="tblApellido"></td>
+                            <td>Rubro</td>
+                            <td id="tblRubro"></td>
                         </tr>
                         <tr>
-                            <td>Fecha de Nacimiento</td>
-                            <td id="tblFechanac"></td>
+                            <td>Unidad de Medida</td>
+                            <td id="tblUnidadMedida"></td>
                         </tr>
                         <tr>
-                            <td>CUIL</td>
-                            <td id="tblCUIL"></td>
+                            <td>Cantidad Maxima</td>
+                            <td id="tblCMAX"></td>
                         </tr>
                         <tr>
-                            <td>Telefono</td>
-                            <td id="tblTelefono"></td>
+                            <td>Cantidad Minima</td>
+                            <td id="tblCMIN"></td>
                         </tr>
                         <tr>
-                            <td>E-Mail</td>
-                            <td id="tblMail"></td>
+                            <td>Cantidad Actual</td>
+                            <td id="tblCActual"></td>
                         </tr>
                         <tr>
-                            <td>Direccion</td>
-                            <td id="tblDireccion"></td>
+                            <td>IVA</td>
+                            <td id="tblIVA"></td>
                         </tr>
                         <tr>
-                            <td>Cargo</td>
-                            <td id="tblCargo"></td>
+                            <td>Precio de Costo</td>
+                            <td id="tblPCosto"></td>
                         </tr>
                         <tr>
-                            <td>Sucursal Cod.</td>
-                            <td id="tblSucursal"></td>
+                            <td>Precio de Venta</td>
+                            <td id="tblPVenta"></td>
+                        </tr>
+                        <tr>
+                            <td>Se usa como Insumo</td>
+                            <td id="tblInsumo"></td>
+                        </tr>
+                        <tr>
+                            <td>Está a la Venta</td>
+                            <td id="tblVendible"></td>
+                        </tr>
+                        <tr>
+                            <td>Estado</td>
+                            <td id="tblEstado"></td>
                         </tr>
                     </tbody>
                 </table>
