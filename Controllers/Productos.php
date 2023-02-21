@@ -26,6 +26,15 @@ class Productos extends Controllers{
 		$data["page_specialjs"] = array('<script src="'.media().'js/ckeditor/ckeditor.js" type="text/javascript"></script>');
 		$this->views->getView($this,"productos",$data);
 	}
+	public function getProductosFactura(){
+		$arrData = $this->model->selectProductos();
+		for ($i=0; $i < count($arrData); $i++){
+			$arrData[$i]["cant"] = '<input type="number" name="prodcutoCant'.$arrData[$i]['id'].'" id="prodcutoCant'.$arrData[$i]['id'].'" class="form-control" value=0.0 />';
+			$arrData[$i]["action"] = '<div class="text-center"><button type="button" onclick="agregarProducto('.$arrData[$i]['id'].');" title="Agregar Producto" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></button></div>';
+		}
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
 	public function getProductos(){
 		$arrData = $this->model->selectProductos();
 		for ($i=0; $i < count($arrData); $i++) {

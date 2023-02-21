@@ -32,11 +32,11 @@ class Ventas extends Controllers{
 		// if (empty($_SESSION["permisosMod"]["r"])){
 		// 	header("location:".base_url()."dashboard");
 		// }
-		$data["page_id"] = 10;
+		$data["page_id"] = 100;
 		$data["page_tag"] = "Nueva Venta | SoftBoos";
 		$data["page_title"] = "Nueva Venta";
 		$data["page_name"] = "nueva venta";
-		$data["page_filejs"] = "function_venta.js";
+		$data["page_filejs"] = "function_ventas.js";
 		$this->views->getView($this,"nuevaVenta",$data);
 	}
 

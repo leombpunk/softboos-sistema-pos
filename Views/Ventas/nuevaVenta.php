@@ -1,5 +1,6 @@
 <?php headerAdmin($data);
-getModal("modalVentasVer",$data); ?>
+getModal("modalVentasVer",$data);
+getModal("modalProductosBuscar",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -16,7 +17,7 @@ getModal("modalVentasVer",$data); ?>
                 <div class="tile-body">
                     <form id="formNuevaVenta" name="formNuevaVenta">
                         <div class="table-responsive">
-                            <table class="table table-hover" id="ventasCabeceraTable">
+                            <table class="table" id="ventasCabeceraTable">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th colspan="5" class="h4"> Factura de Venta</th>
@@ -26,7 +27,7 @@ getModal("modalVentasVer",$data); ?>
                                 <tbody>
                                     <tr>
                                         <td><img class="img-fluid img-thumbnail" src="<?= media();?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
-                                        <td class="font-weight-bold align-middle h5">Misiones Yogurt</td>
+                                        <td class="font-weight-bold align-middle h5">Soy Él Negocio</td>
                                         <td class="font-weight-bold align-middle">Factura N°</td>
                                         <td class="align-middle">0000000000014</td>
                                         <td class="font-weight-bold align-middle">Forma de Pago</td>
@@ -59,12 +60,12 @@ getModal("modalVentasVer",$data); ?>
                             </table>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-hover" id="ventasDetalleTable">
+                            <table class="table" id="ventasDetalleTable">
                                 <!-- <caption>Detalle</caption> -->
                                 <thead class="thead-dark">
                                     <tr>
                                         <th class="align-middle h5" colspan="7">Detalle</th>
-                                        <th class="text-right align-middle h5"><button type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Añadir</button></th>
+                                        <th class="text-right align-middle h5"><button onclick="openModal();" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Añadir</button></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -79,7 +80,7 @@ getModal("modalVentasVer",$data); ?>
                                         <th class="text-center align-middle">Total</th>
                                     </tr>
                                     <tr>
-                                        <td class="text-center align-middle"><button class="btn btn-danger"><i class="fa fa-trash"></i></button></td>
+                                        <td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
                                         <td class="text-center align-middle">1</td>
                                         <td class="align-middle">item 1</td>
                                         <td class="text-center align-middle">10,5</td>
@@ -87,10 +88,9 @@ getModal("modalVentasVer",$data); ?>
                                         <td class="text-center align-middle">unidad</td>
                                         <td class="text-center align-middle">10</td>
                                         <td class="text-right align-middle">30</td>
-                                        
                                     </tr>
                                     <tr>
-                                        <td class="text-center align-middle"><button class="btn btn-danger"><i class="fa fa-trash"></i></button></td>
+                                        <td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
                                         <td class="text-center align-middle">2</td>
                                         <td class="align-middle">item 2</td>
                                         <td class="text-center align-middle">21</td>
@@ -98,7 +98,6 @@ getModal("modalVentasVer",$data); ?>
                                         <td class="text-center align-middle">unidad</td>
                                         <td class="text-center align-middle">15</td>
                                         <td class="text-right align-middle">75</td>
-                                        
                                     </tr>
                                 </tbody>
                                 <tfoot>
@@ -120,79 +119,7 @@ getModal("modalVentasVer",$data); ?>
                                 </tfoot>
                             </table>
                         </div>
-
-                        <!-- <div class="table-responsive" hidden>
-                            <table class="table table-hover table-striped table-sm" id="ventasFPagoTable">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th class="h5" colspan="6">Forma de Pago</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" class="font-weight-bold text-right align-middle h6">Efectivo</td>
-                                        <td class="text-right align-middle">Cant. Pagos
-                                            <select name="" id="">
-                                                <option value="1">1 cuota</option>
-                                                <option value="1">3 cuotas</option>
-                                                <option value="1">6 cuotas</option>
-                                                <option value="1">9 cuotas</option>
-                                                <option value="1">12 cuotas</option>
-                                                <option value="1">18 cuotas</option>
-                                                <option value="1">24 cuotas</option>
-                                                <option value="1">36 cuotas</option>
-                                            </select>
-                                        </td>
-                                        <td class="text-right align-middle">
-                                            $ <input type="number" value="0.0">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="font-weight-bold text-right align-middle h6">Debito</td>
-                                        <td class="text-right align-middle">Cant. Pagos
-                                            <select name="" id="">
-                                                <option value="1">1 cuota</option>
-                                                <option value="1">3 cuotas</option>
-                                                <option value="1">6 cuotas</option>
-                                                <option value="1">9 cuotas</option>
-                                                <option value="1">12 cuotas</option>
-                                                <option value="1">18 cuotas</option>
-                                                <option value="1">24 cuotas</option>
-                                                <option value="1">36 cuotas</option>
-                                            </select>
-                                        </td>
-                                        <td class="text-right align-middle">
-                                            $ <input type="number" value="0.0">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="font-weight-bold text-right align-middle h6">Credito</td>
-                                        <td class="text-right align-middle">Cant. Pagos
-                                            <select name="" id="">
-                                                <option value="1">1 cuota</option>
-                                                <option value="1">3 cuotas</option>
-                                                <option value="1">6 cuotas</option>
-                                                <option value="1">9 cuotas</option>
-                                                <option value="1">12 cuotas</option>
-                                                <option value="1">18 cuotas</option>
-                                                <option value="1">24 cuotas</option>
-                                                <option value="1">36 cuotas</option>
-                                            </select>
-                                        </td>
-                                        <td class="text-right align-middle">
-                                            $ <input type="number" value="0.0">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="6" class="text-right align-middle"><button type="submit" class="btn btn-primary">Finalizar</button></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div> -->
                     </form>
-                    
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
-var tabalFalopa;
+var tablaFalopa;
+var tablaFalopa2;
 $(document).ready(function () {
-    tabalFalopa = $("#ventasTable").DataTable({
+    tablaFalopa = $("#ventasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -8,13 +9,38 @@ $(document).ready(function () {
         },
         "ajax": {
             "url": base_url+"Ventas/getVentas",
-            "dataSrc":""},
+            "dataSrc": ""
+        },
         "columns": [
             { "data": "NUMERO_FACTURA" },
             { "data": "FECHA_EMISION" },
             { "data": "FORMAPAGO" },
             { "data": "TOTAL" },
             { "data": "actions" }
+        ],
+        "responsive": true,
+        "bDestroy": true,
+        "iDisplayLength": 10,
+        "order": [[0,"asc"]]
+    });
+
+    tablaFalopa2 = $("#buscadorProductoTable").DataTable({
+        "aProcessing": true,
+        "aServerSide": true,
+        "language": {
+            "url": base_url+"Assets/Spanish.json"
+        },
+        "ajax": {
+            "url": base_url+"Productos/getProductosFactura",
+            "dataSrc": ""
+        },
+        "columns": [
+            { "data": "cod" },
+            { "data": "nom" },
+            { "data": "umnom" },
+            { "data": "precioventa" },
+            { "data": "cant" },
+            { "data": "action" }
         ],
         "responsive": true,
         "bDestroy": true,
@@ -44,15 +70,12 @@ $(document).ready(function () {
     //     });
     // });
 });
-// function openModal(){
-// 	$("#proveedor_id").val("");
-//     $("#proveedorModalCenterTitle").html("Nuevo Proveedor");
-//     $(".modal-header").addClass("headerRegister").removeClass("headerUpdate"); 
-//     $("#btnText").html("Guardar");
-//     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
-//     $("#formProveedores").trigger("reset");
-//     $("#proveedoresModalCenter").modal("show");
-// }
+function openModal(){
+    $("#prductosBuscarModalCenter").modal("show");
+}
+function agregarProducto(datos){
+    console.log(datos);
+}
 function verVenta(id){
     $("#ventasVerModalCenter").modal("show");
     // console.log({id:id})
