@@ -68,7 +68,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <th class="text-right align-middle h5"><button onclick="openModal();" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Añadir</button></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="detalleVentaTableBody">
                                     <tr>
                                         <th class="text-center align-middle">Acciones</th>
                                         <th class="text-center align-middle">#</th>
@@ -79,7 +79,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <th class="text-center align-middle">Precio</th>
                                         <th class="text-center align-middle">Total</th>
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
                                         <td class="text-center align-middle">1</td>
                                         <td class="align-middle">item 1</td>
@@ -98,20 +98,20 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="text-center align-middle">unidad</td>
                                         <td class="text-center align-middle">15</td>
                                         <td class="text-right align-middle">75</td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                                 <tfoot>
-                                    <tr>
+                                    <tr id="subtotal">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">Subtotal: $</td>
-                                        <td class="text-right align-middle  h6">9999</td>
+                                        <td class="text-right align-middle  h6">0,00</td>
                                     </tr>
-                                    <tr>
+                                    <tr id="totaliva">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">T. IVA: $</td>
-                                        <td class="text-right align-middle  h6">999</td>
+                                        <td class="text-right align-middle  h6">0,00</td>
                                     </tr>
-                                    <tr>
+                                    <tr id="total">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">Total: $</td>
-                                        <td class="text-right align-middle  h6">999999</td>
+                                        <td class="text-right align-middle  h6">0,00</td>
                                     </tr>
                                     <tr>
                                         <td colspan="8" class="text-right align-middle"><button type="submit" class="btn btn-primary">Finalizar</button></td>

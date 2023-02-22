@@ -20,7 +20,7 @@ class ProductosModel extends Mysql {
 	public function selectProducto(int $productoID){
 		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT cmin, m.ALERTA_MAXCANT cmax, 
 		um.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.RUBRO_ID rid, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, m.IVA_ID iva, i.IVA_NOMBRE ivanom, 
-		IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa, m.PARA_VENTA esvendible, m.PARA_INSUMO esinsumo
+		i.IVA_PORCENTAJE ivaporcent, IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa, m.PARA_VENTA esvendible, m.PARA_INSUMO esinsumo
 		FROM mercaderias m 
 		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
 		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 

@@ -1,5 +1,12 @@
 var tablaFalopa;
 var tablaFalopa2;
+const carrito = [];
+const totales = {
+    total: 0.00,
+    subtotal: 0.00,
+    iva: 0.00
+};
+
 $(document).ready(function () {
     tablaFalopa = $("#ventasTable").DataTable({
         "aProcessing": true,
@@ -48,33 +55,139 @@ $(document).ready(function () {
         "order": [[0,"asc"]]
     });
 
-    // $("#formProveedores").submit(function(e){
-    //     e.preventDefault();
-    //     var data = $(this).serialize();
-    //     console.log(data);
-    //     $.ajax({
-    //         type: "POST",
-    //         url: base_url+"Proveedores/setProveedor/",
-    //         data: data,
-    //         dataType: "json",
-    //         success: function (response) {
-    //             if (response.status){
-    //                 tabalFalopa.ajax.reload();
-    //                 $("#proveedoresModalCenter").modal("hide");
-    //                 swal("Bien!",response.message,"success");
-    //             }
-    //             else {
-    //                 swal("Atención!",response.message,"error");
-    //             }
-    //         }
-    //     });
-    // });
+    $("#formNuevaVenta").submit(function(e){
+        e.preventDefault();
+        var data = $(this).serialize();
+        console.log(data);
+        // $.ajax({
+        //     type: "POST",
+        //     url: base_url+"Proveedores/setProveedor/",
+        //     data: data,
+        //     dataType: "json",
+        //     success: function (response) {
+        //         if (response.status){
+        //             tabalFalopa.ajax.reload();
+        //             $("#proveedoresModalCenter").modal("hide");
+        //             swal("Bien!",response.message,"success");
+        //         }
+        //         else {
+        //             swal("Atención!",response.message,"error");
+        //         }
+        //     }
+        // });
+    });
 });
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
 }
-function agregarProducto(datos){
-    console.log(datos);
+function agregarProducto(id){
+    // console.log({id:id});
+    var inputcantidad = $("#prodcutoCant"+id).val();
+    if (inputcantidad > 0 || inputcantidad < 0) {
+        //ajax aqui
+        $.ajax({
+            type: "GET",
+            url: base_url+"Productos/getProducto/"+id,
+            dataType: "json",
+            success: function(data){
+                // console.log({data:data});
+                // console.log({cantidad:inputcantidad});
+                $("#prodcutoCant"+id).val("0.0");
+                $("#prductosBuscarModalCenter").modal("hide");
+                //hacer el append
+                $("#detalleVentaTableBody").append("<tr id='item-"+id+"'></tr>");
+                //boton
+                $("#item-"+id).append("<td class='text-center'><button type='button' onclick='eliminarItem(`"+id+"`)' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i></button></td>");
+                //codigo
+                $("#item-"+id).append("<td class='text-center align-middle'>"+data.data.cod+"</td>");
+                //descripcion - nombre
+                $("#item-"+id).append("<td class='align-middle'>"+data.data.nom+"</td>");
+                //iva
+                $("#item-"+id).append("<td class='text-center align-middle'>"+data.data.ivaporcent+"</td>");
+                //cantidad
+                $("#item-"+id).append("<td class='text-center align-middle'>"+inputcantidad+"</td>");
+                //unidad medida
+                $("#item-"+id).append("<td class='text-center align-middle'>"+data.data.rnom+"</td>");
+                //precio
+                $("#item-"+id).append("<td class='text-center align-middle'>"+data.data.precioventa+"</td>");
+                //total (cantidad*precio)
+                $("#item-"+id).append("<td class='text-right align-middle'>"+(parseFloat(inputcantidad)*parseFloat(data.data.precioventa))+"</td>");
+
+                //sumar total, subtotal e iva
+                totales.total += parseFloat(inputcantidad)*parseFloat(data.data.precioventa);
+                totales.iva += (parseFloat(inputcantidad)*parseFloat(data.data.precioventa))/parseFloat(data.data.ivaporcent);
+                totales.subtotal = totales.total - totales.iva; 
+                // console.log({totales});
+                //asignar
+                $("#subtotal").children().eq(1).text(totales.subtotal.toFixed(2));
+				$("#totaliva").children().eq(1).text(totales.iva.toFixed(2));
+				$("#total").children().eq(1).text(totales.total.toFixed(2));
+
+                //armo el carrito
+                carrito.push({
+                    id: parseInt(id),
+                    cod: data.data.cod,
+                    cantidad: parseFloat(inputcantidad),
+                    iva: (parseFloat(inputcantidad)*parseFloat(data.data.precioventa))/parseFloat(data.data.ivaporcent),
+                    total: parseFloat(inputcantidad)*parseFloat(data.data.precioventa)
+                });
+            }
+        });
+        
+        $.notify({
+            title: "Bien! ",
+            message: "El item se agrego a la lista",
+            icon: 'fa fa-check' 
+        },{
+            position: "absolute",
+            type: "success",
+            placement: {
+              from: "bottom",
+              align: "right"
+          },
+          z_index: 3000
+        });
+    }
+    else {
+        $.notify({
+            title: "Error! ",
+            message: "el input de cantidad esta vacio",
+            icon: 'fa fa-equis' 
+        },{
+            position: "absolute",
+            type: "danger",
+            placement: {
+              from: "bottom",
+              align: "right"
+          },
+          z_index: 3000
+        });
+    }
+    console.log(carrito);
+    //usar el get de producto
+}
+function eliminarItem(itemId){
+    // console.log({itemId: itemId});
+    //restar total, subtotal, e iva
+    const {iva, total} = carrito.find((item) => {
+        // console.log(item);
+        if (item.id == itemId) {
+            // console.log({item:item});
+            return item;
+        }
+    });
+
+    //restar total, subtotal e iva
+    totales.total -= parseFloat(total);
+    totales.iva -= parseFloat(iva);
+    totales.subtotal = totales.total - totales.iva; 
+    console.log({totales});
+    //asignar
+    $("#subtotal").children().eq(1).text(totales.subtotal.toFixed(2));
+    $("#totaliva").children().eq(1).text(totales.iva.toFixed(2));
+    $("#total").children().eq(1).text(totales.total.toFixed(2));
+    //remover
+    $("#item-"+itemId).remove();
 }
 function verVenta(id){
     $("#ventasVerModalCenter").modal("show");
