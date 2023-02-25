@@ -85,37 +85,75 @@ class Ventas extends Controllers{
 	public function setVenta(){
 		if ($_POST){
 			// $arrResponse = array("status" => true, "message" => $_POST);
-			$cliente = empty($_POST["clienteId"]) ? "" : intval(strClear($_POST["clienteId"]));
-			$formaPago = empty($_POST["proveedorcuit"]) ? "" : str_ireplace("-","",strClear($_POST["proveedorcuit"]));
-			$total = empty($_POST["proveedormail"]) ? "" : strClear($_POST["proveedormail"]);
-			$sutotal = empty($_POST["proveedortelefono"]) ? "" : strClear($_POST["proveedortelefono"]);
-			$iva = empty($_POST["proveedordireccion"]) ? "" : mb_strtoupper(strClear($_POST["proveedordireccion"]));
-			$detalle = empty($_POST["proveedorweb"]) ? "" : strClear($_POST["proveedorweb"]);
-	// 		// primero se validan los campos obligatorios
-			if (empty($razonsocial) or !validar($razonsocial,1,3,20)){
+			//total subtotal e iva podria calcularlos aqui
+			$cliente = empty($_POST["clienteId"]) ? 0 : intval(strClear($_POST["clienteId"]));
+			$formaPago = empty($_POST["formaPagoId"]) ? 0 : intval(strClear($_POST["formaPagoId"]));
+			$total = empty($_POST["total"]) ? 0.00 : floatval(strClear($_POST["total"]));
+			$subtotal = empty($_POST["subtotal"]) ? 0.00 : floatval(strClear($_POST["subtotal"]));
+			$iva = empty($_POST["iva"]) ? 0.00 : floatval(strClear($_POST["iva"]));
+			//validar la estructura del detalle
+			$detalle = empty($_POST["detalle"]) ? [] : $_POST["detalle"];
+	 		// primero se validan los campos obligatorios
+			if (empty($cliente) or !validar($cliente,2,1,11)){
 				$arrResponse = array("status" => false, "message" => "La razon social ingresada no es valida o esta vacía.");
 			}
-			// aca comienza la validacion de los campos que no son obligatorios
-			elseif (!empty($cuit) and !validar($cuit,2,10,11)) {
-				$arrResponse = array("status" => false, "message" => "El CUIT ingresado no es valido o esta vacío.");
+			elseif (empty($formaPago) and !validar($formaPago,2,1,11)) {
+				$arrResponse = array("status" => false, "message" => "La forma de pago ingresada no es valida o esta vacía.");
 			}
-			elseif (!empty($mail) and (!validar($mail,7) or (strlen($mail) < 10 or strlen($mail) > 30))) {
-				$arrResponse = array("status" => false, "message" => "El correo electronico no es valido o no selecciono ninguno.");
+			elseif (empty($total) and !validar($total,10)) {
+				$arrResponse = array("status" => false, "message" => "El monto total no es valido o está vacío.");
 			}
-			elseif (!empty($telefono) and !validar($telefono,3,6,20)) {
-				$arrResponse = array("status" => false, "message" => "El nuemro de telefono ingresado no es valido o está vacío.");
+			elseif (empty($subtotal) and !validar($subtotal,10)) {
+				$arrResponse = array("status" => false, "message" => "El monto subtotal no es valido o está vacío.");
 			}
-			elseif (!empty($direccion) and !validar($direccion,9,10,100)) {
-				$arrResponse = array("status" => false, "message" => "La direccion ingresada no es valida o está vacía.");
+			elseif (empty($iva) and !validar($iva,10)) {
+				$arrResponse = array("status" => false, "message" => "El monto IVA no es valido o está vacío.");
 			}
-			elseif (!empty($web) and !validar($web,13,5,100)) {
-				$arrResponse = array("status" => false, "message" => "La direccion web ingresada no es valida o esta vacía.");
+			elseif (empty($detalle)) {
+				$arrResponse = array("status" => false, "message" => "El detalle de la factura no es valido o esta vacío.");
 			}
 			else {
-				$arrData = array();
-				$requestProveedor = $this->model->insertProveedor($arrData);
-				if ($requestProveedor > 0){
-					$arrResponse = array("status" => true, "message" => "El proveedor se ha dado de alta satisfactoriamente.", "data" => $requestProveedor);
+				//dentro de este else validaria el detalle
+				// $arrResponse = array();
+				foreach ($detalle as $key => $value) {
+					// array_push($arrResponse, $value['productoId']);
+					if (empty($value['productoId']) and !validar($value['productoId'],2)) {
+						$arrResponse = array("status" => false, "message" => "El id del producto no es valido. {$value}");
+						break;
+					}
+					elseif (empty($value['cantidad']) and !validar($value['cantidad'],10)) {
+						$arrResponse = array("status" => false, "message" => "La cantidad del producto no es valido. {$value}");
+						break;
+					}
+					// se puede obviar este dato para guardarlo
+					elseif (empty($value['iva']) and !validar($value['iva'],10)) {
+						$arrResponse = array("status" => false, "message" => "El iva del producto no es valido. {$value}");
+						break;
+					}
+					elseif (empty($value['precio']) and !validar($value['precio'],10)) {
+						$arrResponse = array("status" => false, "message" => "El precio del producto no es valido. {$value}");
+						break;
+					}
+					elseif (empty($value['unidadMedidaId']) and !validar($value['unidadMedidaId'],2)) {
+						$arrResponse = array("status" => false, "message" => "La unidad de medida del producto no es valida. {$value}");
+						break;
+					}
+					elseif (empty($value['total']) and !validar($value['total'],10)) {
+						$arrResponse = array("status" => false, "message" => "El monto total del producto no es valido. {$value}");
+						break;
+					}
+				}
+				if (!isset($arrResponse)){
+					//si tiene todos los campos valido paso a guardar los datos (cabecera y detalle)
+					$arrData = array();
+					$requestVenta = 1;//$this->model->insertVenta($arrData);
+					if ($requestVenta > 0){
+						$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
+					}
+					//si hay algun campo incorrecto tiro el else de algo salio mal
+					else {
+						$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $requestVenta);
+					}
 				}
 			}
 		}

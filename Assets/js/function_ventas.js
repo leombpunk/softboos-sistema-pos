@@ -15,6 +15,7 @@ const totales = {
     iva: 0.00
 };
 $(document).ready(function () {
+    //faltan cargar los clientes, traer el siguiente numero de factura y el nombre del negocio (traerlo de la tabla sucursal 1 y fue)
     tablaFalopa = $("#ventasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -67,7 +68,7 @@ $(document).ready(function () {
         // var data = $(this).serialize();
         factura.clienteId = cliente.value;
         factura.formaPagoId = formaPago.value;
-        console.log(factura);
+        // console.log(factura);
         //completar la constante factura con los datos que falten, cliente-formapago-etc
         $.ajax({
             type: "POST",
@@ -75,14 +76,14 @@ $(document).ready(function () {
             data: factura,
             dataType: "json",
             success: function (response) {
-                if (response.status){
-                    console.log(response.message);
+                // if (response.status){
+                    console.log(response);
                     // swal("Bien!",response.message,"success");
-                }
-                else {
-                    // swal("Atención!",response.message,"error");
-                    console.log(response.message);
-                }
+                // }
+                // else {
+                //     // swal("Atención!",response.message,"error");
+                //     console.log(response.message);
+                // }
             }
         });
     });

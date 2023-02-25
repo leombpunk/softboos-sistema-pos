@@ -26,6 +26,7 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function insertVenta(array $datos){
+		//deberia de separar en funciones la cabecera y el detalle
 		$sql = "INSERT INTO facturas_venta(RAZONSOCIAL, CUIT, MAIL, TELEFONO, WEB, DIRECCION, ESTADO_ID, FECHA_ALTA) 
 		VALUES(?, ?, IF('".$datos[2]."'='',NULL,?), IF('".$datos[3]."'='',NULL,?), IF('".$datos[4]."'='',NULL,?), 
 		IF('".$datos[5]."'='',NULL,?), ?, NOW())";
