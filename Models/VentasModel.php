@@ -27,19 +27,25 @@ class VentasModel extends Mysql {
 	}
 	public function insertVenta(array $datos){
 		//deberia de separar en funciones la cabecera y el detalle
-		$sql = "INSERT INTO facturas_venta(RAZONSOCIAL, CUIT, MAIL, TELEFONO, WEB, DIRECCION, ESTADO_ID, FECHA_ALTA) 
-		VALUES(?, ?, IF('".$datos[2]."'='',NULL,?), IF('".$datos[3]."'='',NULL,?), IF('".$datos[4]."'='',NULL,?), 
-		IF('".$datos[5]."'='',NULL,?), ?, NOW())";
-		$request = $this->insert($sql,$datos);
+		//en buen transact
+		try {
+			$datosCabecera = array();
+			$datosDetalles = array();
+			$this->mysqlStartTransaction();
+			//querys
+
+			$request = $this->insertCabecera($datosCabecera);
+			$request = $this->insertDetalles($datosDetalles);
+
+			$this->mysqlCommit();
+			$request = "ok";
+		} catch (Exception $e) {
+			$this->mysqlRollback();
+			$request = "error. {$e}";
+		}
 		return $request;
+		
 	}
-	// public function updateVenta(array $datos){
-	// 	$sql = "UPDATE facturas_venta SET RAZONSOCIAL = ?, CUIT = IF('".$datos[1]."'='',NULL,?), MAIL = IF('".$datos[2]."'='',NULL,?), 
-	// 	TELEFONO = IF('".$datos[3]."'='',NULL,?), WEB=IF('".$datos[4]."'='',NULL,?), DIRECCION = IF('".$datos[5]."'='',NULL,?), 
-	// 	ESTADO_ID = ? WHERE PROVEEDOR_ID = ?";
-	// 	$request = $this->update($sql,$datos);
-	// 	return $request;
-	// }
 	public function deleteVenta(int $id){
 		$sql = "UPDATE facturas_venta SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE PROVEEDOR_ID = {$id}";
 		$request = $this->delete($sql);
@@ -56,5 +62,12 @@ class VentasModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectNumeroFactura(){
+		$sql = "SELECT MAX(NUMERO_FACTURA) AS numFactura FROM facturas_ventas";
+		$request = $this->select($sql);
+		return $request;
+	}
+	private function insertCabecera(array $datos){}
+	private function insertDetalles(array $datos){}
 } 
 ?>

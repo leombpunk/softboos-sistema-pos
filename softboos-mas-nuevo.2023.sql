@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-02-2023 a las 18:21:09
+-- Tiempo de generación: 25-02-2023 a las 20:45:22
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 8.1.2
 
@@ -544,15 +544,16 @@ CREATE TABLE `facturas_venta` (
   `FECHA_ALTA` datetime NOT NULL,
   `FECHA_EMISION` date NOT NULL,
   `DIRECCION_ENVIO` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
-  `TOTAL` decimal(8,2) NOT NULL
+  `TOTAL` decimal(8,2) NOT NULL,
+  `IVA_TOTAL` decimal(8,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `facturas_venta`
 --
 
-INSERT INTO `facturas_venta` (`FACTURAVENTA_ID`, `FACTURATIPO_ID`, `NUMERO_FACTURA`, `SUCURSAL_ID`, `CLIENTE_ID`, `EMPLEADO_ID`, `TESTIGO_ID`, `ESTADO_ID`, `FECHA_ALTA`, `FECHA_EMISION`, `DIRECCION_ENVIO`, `TOTAL`) VALUES
-(83, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15', 'algun lugar', '500.00');
+INSERT INTO `facturas_venta` (`FACTURAVENTA_ID`, `FACTURATIPO_ID`, `NUMERO_FACTURA`, `SUCURSAL_ID`, `CLIENTE_ID`, `EMPLEADO_ID`, `TESTIGO_ID`, `ESTADO_ID`, `FECHA_ALTA`, `FECHA_EMISION`, `DIRECCION_ENVIO`, `TOTAL`, `IVA_TOTAL`) VALUES
+(83, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15', 'algun lugar', '500.00', '0.00');
 
 -- --------------------------------------------------------
 
@@ -696,7 +697,8 @@ CREATE TABLE `mercaderias` (
 --
 
 INSERT INTO `mercaderias` (`MERCADERIA_ID`, `IVA_ID`, `ESTADO_ID`, `CODIGO`, `NOMBRE`, `CANTIDAD_INICIAL`, `ALERTA_MINCANT`, `ALERTA_MAXCANT`, `FECHA_ALTA`, `FECHA_BAJA`, `PARA_VENTA`, `PARA_INSUMO`) VALUES
-(44, 1, 1, '025456', 'PRODUCTO UNO', NULL, '5.000', '200.000', '2023-02-14 17:26:04', NULL, 1, 0);
+(44, 1, 1, '025456', 'PRODUCTO UNO', NULL, '5.000', '200.000', '2023-02-14 17:26:04', NULL, 1, 0),
+(45, 2, 1, '00000045', 'PRODUCTO FALOPA', NULL, '10.000', '20.000', '2023-02-21 12:59:23', NULL, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -719,7 +721,8 @@ CREATE TABLE `mercaderias_cantidad_actual` (
 --
 
 INSERT INTO `mercaderias_cantidad_actual` (`STOCKACTUAL_ID`, `MERCADERIA_ID`, `SUCURSAL_ID`, `CANTIDAD_ACTUAL`, `CANTIDAD_ANTERIOR`, `FECHA_ALTA`) VALUES
-(2, 44, 1, '0.000', '0.000', '2023-02-14 17:26:04');
+(2, 44, 1, '0.000', '0.000', '2023-02-14 17:26:04'),
+(3, 45, 1, '0.000', '0.000', '2023-02-21 12:59:23');
 
 -- --------------------------------------------------------
 
@@ -736,6 +739,13 @@ CREATE TABLE `mercaderias_precios` (
   `FECHA_ALTA` datetime NOT NULL,
   `FECHA_ULTIMA_MOD` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `mercaderias_precios`
+--
+
+INSERT INTO `mercaderias_precios` (`MP_ID`, `MERCADERIA_ID`, `PRECIO_COSTO`, `PRECIO_VENTA`, `FECHA_ALTA`, `FECHA_ULTIMA_MOD`) VALUES
+(1, 45, '100.00', '200.00', '2023-02-21 12:59:23', '2023-02-21 14:24:11');
 
 -- --------------------------------------------------------
 
@@ -755,7 +765,8 @@ CREATE TABLE `mercaderias_rubros` (
 --
 
 INSERT INTO `mercaderias_rubros` (`MERCADERIA_ID`, `RUBRO_ID`, `ENTRADA`) VALUES
-(44, 18, '1');
+(44, 18, '1'),
+(45, 18, '1');
 
 -- --------------------------------------------------------
 
@@ -776,7 +787,8 @@ CREATE TABLE `mercaderias_unidadesmedida` (
 --
 
 INSERT INTO `mercaderias_unidadesmedida` (`MERCAUNIMED_ID`, `MERCADERIA_ID`, `UNIMEDIDA_ID`, `PRIORIDAD`) VALUES
-(54, 44, 00000000038, 1);
+(54, 44, 00000000038, 1),
+(55, 45, 00000000038, 1);
 
 -- --------------------------------------------------------
 
@@ -1640,25 +1652,25 @@ ALTER TABLE `marcas`
 -- AUTO_INCREMENT de la tabla `mercaderias`
 --
 ALTER TABLE `mercaderias`
-  MODIFY `MERCADERIA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `MERCADERIA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `mercaderias_cantidad_actual`
 --
 ALTER TABLE `mercaderias_cantidad_actual`
-  MODIFY `STOCKACTUAL_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `STOCKACTUAL_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `mercaderias_precios`
 --
 ALTER TABLE `mercaderias_precios`
-  MODIFY `MP_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `MP_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `mercaderias_unidadesmedida`
 --
 ALTER TABLE `mercaderias_unidadesmedida`
-  MODIFY `MERCAUNIMED_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `MERCAUNIMED_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `modulos`
