@@ -27,3 +27,30 @@
     background-color: #14406f;
     border-color: #0e2e52;
 }
+
+/*estilos para el datalist tag*/
+datalist {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #80bdff;
+    border-radius: 0 0 5px 5px;
+    border-top: none;
+    font-family: inherit;
+    width: 50%;
+    padding: 5px;
+    max-height: 10rem;
+    overflow-y: auto 
+}
+  
+datalist > option {
+    background-color: white;
+    padding: 4px;
+    color: #495057;
+    margin-bottom: 1px;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+datalist > option:hover,  .active{
+    background-color: lightblue;
+}

@@ -32,7 +32,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="align-middle">0000000000014</td>
                                         <td class="font-weight-bold align-middle">Forma de Pago</td>
                                         <td class="align-middle">
-                                            <select class="form-control" name="asd" id="asd">
+                                            <select class="form-control" name="formaPago" id="formaPago">
                                                 <option value="1" selected>Efectivo</option>
                                                 <option value="2">Debito</option>
                                                 <option value="3">Credito</option>
@@ -42,11 +42,11 @@ getModal("modalProductosBuscar",$data); ?>
                                     <tr>
                                         <td class="font-weight-bold text-center align-middle h5">Cliente:</td>
                                         <td colspan="5">
-                                            <input class="form-control" type="text" list="clientList" value="Varios">
-                                            <datalist id="clientList">
-                                                <option value="Varios"></option>
-                                                <option value="Cliente 1"></option>
-                                                <option value="Cliente 2"></option>
+                                            <input class="form-control" type="text" list="" value="99" id="cliente" name="cliente" autocomplete="off" role="combobox">
+                                            <datalist id="clientList" role="listbox">
+                                                <option value="99">Varios</option>
+                                                <option value="1">Cliente 1</option>
+                                                <option value="2">Cliente 2</option>
                                             </datalist>
                                         </td>
                                     </tr>
@@ -88,30 +88,20 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="text-center align-middle">unidad</td>
                                         <td class="text-center align-middle">10</td>
                                         <td class="text-right align-middle">30</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center align-middle"><button type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
-                                        <td class="text-center align-middle">2</td>
-                                        <td class="align-middle">item 2</td>
-                                        <td class="text-center align-middle">21</td>
-                                        <td class="text-center align-middle">5</td>
-                                        <td class="text-center align-middle">unidad</td>
-                                        <td class="text-center align-middle">15</td>
-                                        <td class="text-right align-middle">75</td>
                                     </tr> -->
                                 </tbody>
                                 <tfoot>
                                     <tr id="subtotal">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">Subtotal: $</td>
-                                        <td class="text-right align-middle  h6">0,00</td>
+                                        <td class="text-right align-middle h6">0,00</td>
                                     </tr>
                                     <tr id="totaliva">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">T. IVA: $</td>
-                                        <td class="text-right align-middle  h6">0,00</td>
+                                        <td class="text-right align-middle h6">0,00</td>
                                     </tr>
                                     <tr id="total">
                                         <td class="font-weight-bold text-right align-middle h6" colspan="7">Total: $</td>
-                                        <td class="text-right align-middle  h6">0,00</td>
+                                        <td class="text-right align-middle h6">0,00</td>
                                     </tr>
                                     <tr>
                                         <td colspan="8" class="text-right align-middle"><button type="submit" class="btn btn-primary">Finalizar</button></td>
