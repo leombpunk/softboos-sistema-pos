@@ -82,6 +82,7 @@ $(document).ready(function () {
             }
         });
     });
+    nombreSucursal(1);
     numeroFactura();
     cargarClientes();
 });
@@ -95,7 +96,7 @@ function cargarClientes(){
         success: function(response){
             console.log(response);
             response.forEach(element => {
-                clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+"</option>";
+                clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+" (ID: "+element.CLIENTE_ID+")</option>";
             });
 
             for (let option of clientList.options) {
@@ -104,7 +105,7 @@ function cargarClientes(){
                   clientList.style.display = "none"
                   cliente.style.borderRadius = "5px"
                 }
-              }
+            }
         }
     });
 }
@@ -119,6 +120,11 @@ function numeroFactura(){
             numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
         }
     });
+}
+function nombreSucursal(sucursalId){
+    let nombreSucursal = document.getElementById("nombreSucursal");
+    nombreSucursal.innerHTML = "Negocio de Falopa";
+
 }
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
