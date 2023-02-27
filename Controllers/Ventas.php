@@ -91,6 +91,14 @@ class Ventas extends Controllers{
 			$total = empty($_POST["total"]) ? 0.00 : floatval(strClear($_POST["total"]));
 			$subtotal = empty($_POST["subtotal"]) ? 0.00 : floatval(strClear($_POST["subtotal"]));
 			$iva = empty($_POST["iva"]) ? 0.00 : floatval(strClear($_POST["iva"]));
+			//datos que faltan agregar
+			$cantidadPagos = 1;
+			$empleadoId = 1;
+			$testigoId = 1;
+			$facturaTipoId = 1;
+			$sucursalId = 1;
+			$estadoId = 1;
+			$direccionEnvio = "";
 			//validar la estructura del detalle
 			$detalle = empty($_POST["detalle"]) ? [] : $_POST["detalle"];
 	 		// primero se validan los campos obligatorios
@@ -145,8 +153,11 @@ class Ventas extends Controllers{
 				}
 				if (!isset($arrResponse)){
 					//si tiene todos los campos valido paso a guardar los datos (cabecera y detalle)
-					$arrData = array();
-					$requestVenta = 1;//$this->model->insertVenta($arrData);
+					//datos que faltan empleadoId(quien se supone hizo la venta), sucursalId, estadoId, direccionEnvio(opcional), 
+					//tipoFactura, testigoId(es el empleado logeado que carga la factura)
+					//para formaPago cantidad de pagos creo que tambien necesita
+					$arrData = array($cliente, $formaPago, $total, $iva, $empleadoId, $testigoId, $facturaTipoId, $direccionEnvio, $sucursalId, $estadoId, $detalle);
+					$requestVenta = $this->model->insertVenta($arrData);
 					if ($requestVenta > 0){
 						$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
 					}
@@ -179,6 +190,10 @@ class Ventas extends Controllers{
 		}
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
+	}
+	public function getNumeroFactura(){
+		$request = $this->model->selectNumeroFactura();
+		echo json_encode($request,JSON_UNESCAPED_UNICODE);
 	}
 }
 ?>

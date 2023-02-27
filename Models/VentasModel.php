@@ -25,18 +25,31 @@ class VentasModel extends Mysql {
 		$request = $this->select($sql);
 		return $request;
 	}
-	public function insertVenta(array $datos){
+	public function insertVenta(array $datos){//falta testear este metodo
 		//deberia de separar en funciones la cabecera y el detalle
 		//en buen transact
 		try {
-			$datosCabecera = array();
-			$datosDetalles = array();
+			$datosCabecera = array($datos[6],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
+			$datosFormaPago = $datos[1];
+			$datosDetalles = $datos[10];
 			$this->mysqlStartTransaction();
-			//querys
-
 			$request = $this->insertCabecera($datosCabecera);
-			$request = $this->insertDetalles($datosDetalles);
+			$facturaId = intval($request);
+			if (is_int(intval($request)) and $request > 0) {
+			//	foreach ($datos[6] as $key => $value) {
+				$request = $this->insertFormaPago($facturaId, $datosFormaPago);
+			//	}
+			}
 
+			if (is_int(intval($request)) and $request > 0) {
+				foreach ($datosDetalles as $key => $value) {
+					$arrDatos = array($value['productoId'],$value['unidadMedidaId'],$value['cantidad'],$value['precio']);
+					$request = $this->insertDetalles($facturaId, $arrDatos);
+				}
+			}
+			else {
+				throw new Exception("Algo malio sal, y no se que pueda ser", 1);
+			}
 			$this->mysqlCommit();
 			$request = "ok";
 		} catch (Exception $e) {
@@ -44,7 +57,6 @@ class VentasModel extends Mysql {
 			$request = "error. {$e}";
 		}
 		return $request;
-		
 	}
 	public function deleteVenta(int $id){
 		$sql = "UPDATE facturas_venta SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE PROVEEDOR_ID = {$id}";
@@ -57,17 +69,36 @@ class VentasModel extends Mysql {
 		}
 		return $request;
 	}
-	public function selectDetalles(int $id){
+	public function selectDetalles(int $id){//falta terminar este metodo
 		$sql = "";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectNumeroFactura(){
-		$sql = "SELECT MAX(NUMERO_FACTURA) AS numFactura FROM facturas_ventas";
+		$sql = "SELECT MAX(NUMERO_FACTURA)+1 AS numFactura FROM facturas_venta";
 		$request = $this->select($sql);
 		return $request;
 	}
-	private function insertCabecera(array $datos){}
-	private function insertDetalles(array $datos){}
+	private function insertCabecera(array $datos){
+		//insertar tambien formas de pago en la tabla facturaventa_formapago
+		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
+		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, FECHA_EMISION, DIRECCION_ENVIO, TOTAL, IVA_TOTAL)
+		VALUES(?, ".intval($this->selectNumeroFactura()).", ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
+		$request = $this->insert($sql, $datos);
+		return $request;
+	}
+	private function insertFormaPago(int $facturaId, int $formaPago){ //agregar parametro cantidad cuando lo necesite
+		$arrDatos = array($facturaId, $formaPago);//agregar la cantidad
+		$sql = "INSERT INTO facturaventa_formapago(FACTURA_ID, FORMAPAGO_ID, CANTIDAD_PAGO) 
+		VALUES(?, ?, 1)";
+		$request = $this->insert($sql, $arrDatos);
+		return $request;
+	}
+	private function insertDetalles(int $facturaId, array $datos){
+		$sql = "INSERT INTO detalle_pedidos_venta(FACTURAVENTA_ID, MERCADERIA_ID, UNIMEDIDA_ID, CANTIDAD, CANTIDAD_REAL, PRECIO)
+		VALUES({$facturaId}, ?, ?, ?, 0, ?)";
+		$request = $this->insert($sql, $datos);
+		return $request;
+	}
 } 
 ?>

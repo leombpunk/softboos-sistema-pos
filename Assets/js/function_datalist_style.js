@@ -5,13 +5,13 @@ cliente.onfocus = function () {
   clientList.style.display = "block"
   cliente.style.borderRadius = "5px 5px 0 0"
 }
-for (let option of clientList.options) {
-  option.onclick = function () {
-    cliente.value = option.value
-    clientList.style.display = "none"
-    cliente.style.borderRadius = "5px"
-  }
-}
+// for (let option of clientList.options) {
+//   option.onclick = function () {
+//     cliente.value = option.value
+//     clientList.style.display = "none"
+//     cliente.style.borderRadius = "5px"
+//   }
+// }
 
 cliente.oninput = function () {
   currentFocus = -1

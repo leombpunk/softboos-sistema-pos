@@ -9,11 +9,6 @@ const factura = {
     subtotal: 0.00,
     detalle: []
 }
-const totales = {
-    total: 0.00,
-    subtotal: 0.00,
-    iva: 0.00
-};
 $(document).ready(function () {
     //faltan cargar los clientes, traer el siguiente numero de factura y el nombre del negocio (traerlo de la tabla sucursal 1 y fue)
     tablaFalopa = $("#ventasTable").DataTable({
@@ -68,7 +63,7 @@ $(document).ready(function () {
         // var data = $(this).serialize();
         factura.clienteId = cliente.value;
         factura.formaPagoId = formaPago.value;
-        // console.log(factura);
+        console.log(factura);
         //completar la constante factura con los datos que falten, cliente-formapago-etc
         $.ajax({
             type: "POST",
@@ -76,18 +71,55 @@ $(document).ready(function () {
             data: factura,
             dataType: "json",
             success: function (response) {
-                // if (response.status){
+                if (response.status){
                     console.log(response);
-                    // swal("Bien!",response.message,"success");
-                // }
-                // else {
-                //     // swal("Atención!",response.message,"error");
-                //     console.log(response.message);
-                // }
+                    swal("Bien!",response.message,"success");
+                }
+                else {
+                    // swal("Atención!",response.message,"error");
+                    console.log(response.message);
+                }
             }
         });
     });
+    numeroFactura();
+    cargarClientes();
 });
+function cargarClientes(){
+    //vamos a probar
+    let clienteDataList = document.getElementById('clientList');
+    $.ajax({
+        type: "GET",
+        url: base_url+"Clientes/getClientes",
+        dataType: "json",
+        success: function(response){
+            console.log(response);
+            response.forEach(element => {
+                clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+"</option>";
+            });
+
+            for (let option of clientList.options) {
+                option.onclick = function () {
+                  cliente.value = option.value
+                  clientList.style.display = "none"
+                  cliente.style.borderRadius = "5px"
+                }
+              }
+        }
+    });
+}
+function numeroFactura(){
+    let numeroFactura = document.getElementById('numeroFacturaV');
+    $.ajax({
+        type: "GET",
+        url: base_url+"Ventas/getNumeroFactura",
+        dataType: "json",
+        success: function(response){
+            console.log(response);
+            numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
+        }
+    });
+}
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
 }
