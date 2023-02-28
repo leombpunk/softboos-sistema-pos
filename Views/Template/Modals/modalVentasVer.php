@@ -17,13 +17,13 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th colspan="5" class="h4"> Factura de Venta</th>
-                                    <th class="h4">Emitida: <span>[No date]</span></th>
+                                    <th class="h4">Emitida: <span id="fechaEmision">[No date]</span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td><img class="img-fluid img-thumbnail" src="<?= media(); ?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
-                                    <td class="font-weight-bold align-middle h5" id="nombreSucursal">[No name]</td>
+                                    <td class="font-weight-bold align-middle h5" id="nombreSucursal"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></td>
                                     <td class="font-weight-bold align-middle">Factura N°</td>
                                     <td class="align-middle" id="numeroFacturaV">[No number]</td>
                                     <td class="font-weight-bold align-middle">Forma de Pago</td>

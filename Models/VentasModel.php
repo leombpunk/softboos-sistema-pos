@@ -29,7 +29,7 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function selectFormaPago(int $id){
-		$sql = "SELECT fvfp.CANTIDAD_PAGO, fp.FORMA_PAGO
+		$sql = "SELECT fvfp.CANTIDAD_PAGO, fp.FORMA_PAGO, fp.FORMAPAGO_ID
 		FROM facturaventa_formapago fvfp
 		INNER JOIN forma_pago fp ON fp.FORMAPAGO_ID = fvfp.FORMAPAGO_ID
 		WHERE fvfp.FACTURA_ID = {$id}";
@@ -37,7 +37,7 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function selectDetalle(int $id){
-		$sql = "SELECT m.CODIGO, m.NOMBRE, um.NOMBRE, i.IVA_PORCENTAJE, dpv.CANTIDAD, dpv.PRECIO, (dpv.PRECIO*dpv.CANTIDAD) AS TOTAL
+		$sql = "SELECT m.CODIGO, m.NOMBRE AS DESCRIPCION, um.NOMBRE AS UNIMEDIDA, i.IVA_PORCENTAJE, dpv.CANTIDAD, dpv.PRECIO, (dpv.PRECIO*dpv.CANTIDAD) AS TOTAL
 		FROM detalle_pedidos_venta dpv
 		INNER JOIN mercaderias m ON m.MERCADERIA_ID = dpv.MERCADERIA_ID
 		INNER JOIN unidades_medida um ON um.UNIMEDIDA_ID = dpv.UNIMEDIDA_ID

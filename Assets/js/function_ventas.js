@@ -82,7 +82,7 @@ $(document).ready(function () {
             }
         });
     });
-    sucursalData(1);
+    // sucursalData(1);
     numeroFactura();
     cargarClientes();
 });
@@ -270,18 +270,35 @@ function verVenta(id){
             if (response.status){
                 //poner los datos el los lugares especificos de la factura
                 //cabecera
-                
+                $("#fechaEmision").html(response.data.cabecera.FECHA_EMISION);
+                $("#numeroFacturaV").html(response.data.cabecera.NUMERO_FACTURA);
+                $("#cliente").val(response.data.cabecera.CLIENTE_ID);
+                $("#dniCliente").val(response.data.cabecera.DNI);
+                $("#nombreCliente").val(response.data.cabecera.NOMBRE+" "+response.data.cabecera.APELLIDO);
                 //forma pago
-
+                $("#formaPago").val(response.data.formaPago[0].FORMAPAGO_ID).trigger("change");
                 //detalles
-
+                $("#detalleVentaTableBody").html('');
+                response.data.detalle.forEach((element, index, array) => {
+                    console.log(element);
+                    $("#detalleVentaTableBody").append("<tr id='item-"+index+"'></tr>");
+                    $("#item-"+index).append("<td class='text-center align-middle'>"+element.CODIGO+"</td>");
+                    $("#item-"+index).append("<td class='align-middle'>"+element.DESCRIPCION+"</td>");
+                    $("#item-"+index).append("<td class='text-center align-middle'>"+element.IVA_PORCENTAJE+"</td>");
+                    $("#item-"+index).append("<td class='text-center align-middle'>"+element.CANTIDAD+"</td>");
+                    $("#item-"+index).append("<td class='text-center align-middle'>"+element.UNIMEDIDA+"</td>");
+                    $("#item-"+index).append("<td class='text-center align-middle'>"+element.PRECIO+"</td>");
+                    $("#item-"+index).append("<td class='text-right align-middle'>"+(parseFloat(element.CANTIDAD)*parseFloat(element.PRECIO)).toFixed(2)+"</td>");
+                });
                 //totales
-
+                $("#total").children().eq(1).text(parseInt(response.data.cabecera.TOTAL).toFixed(2));
+                $("#totaliva").children().eq(1).text(parseInt(response.data.cabecera.IVA_TOTAL).toFixed(2));
+                $("#subtotal").children().eq(1).text((response.data.cabecera.TOTAL-response.data.cabecera.IVA_TOTAL).toFixed(2));
                 //crear un efecto para transicionar entro un div y otro                
                 setTimeout(() => { 
                     $("#loaderDiv").hide('slow');
                     $("#dataDivTables").show('slow');
-                }, 1500);
+                }, 1000);
                 
             }
             else {
