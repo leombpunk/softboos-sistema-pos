@@ -44,7 +44,8 @@ class Ventas extends Controllers{
 	public function getVentas(){
 		$arrData = $this->model->selectVentas();
 		$pago = "";
-        for ($i=0; $i < count($arrData); $i++) { 
+        for ($i=0; $i < count($arrData); $i++) {  
+			$pago = "";
 			if ($arrData[$i]["FORMAPAGO1"] == 1){ // efectivo
 				$pago .= '<span class="badge badge-success">Efectivo</span> ';
             }
@@ -66,18 +67,25 @@ class Ventas extends Controllers{
         }
         // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
 	}
-	public function getVenta(int $ventaID){ // pasa el id del proveedor por GET
-		$id = intval(strClear($ventaID));
-		if ($id > 0){
-			$arrData = $this->model->selectVenta($id);
-			$arrDataDetalle = $this->model->selectDetalle($id);
-			if (empty($arrData)){
-				$arrResponse = array("status" => false, "message" => "Lista vacia.");
+	public function getVenta(int $ventaID){
+		try {
+			$facturaId = intval(strClear($ventaID));
+			if ($facturaId > 0){
+				$arrDataFactura = $this->model->selectVenta($facturaId);
+				$arrDataFormaPago = $this->model->selectFormaPago($facturaId);
+				$arrDataDetalle = $this->model->selectDetalle($facturaId);
+				if (empty($arrDataFactura)){
+					$arrResponse = array("status" => false, "message" => "Lista vacia.");
+				}
+				else {
+					$arrData = array("cabecera" => $arrDataFactura, "formaPago" => $arrDataFormaPago, "detalle" => $arrDataDetalle);
+					$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
+				}
 			}
-			else {
-				$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
-			}
+		} catch (Exception $e) {
+			$arrResponse = array("status" => false, "message" => "error. {$e}");
 		}
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
@@ -92,12 +100,13 @@ class Ventas extends Controllers{
 			$subtotal = empty($_POST["subtotal"]) ? 0.00 : floatval(strClear($_POST["subtotal"]));
 			$iva = empty($_POST["iva"]) ? 0.00 : floatval(strClear($_POST["iva"]));
 			//datos que faltan agregar
+			//$_SESSION['userDATA']
 			$cantidadPagos = 1;
-			$empleadoId = 1;
-			$testigoId = 1;
+			$empleadoId = intval($_SESSION['userDATA']['EMPLEADO_ID']);
+			$testigoId = intval($_SESSION['userDATA']['EMPLEADO_ID']);
 			$facturaTipoId = 1;
-			$sucursalId = 1;
-			$estadoId = 1;
+			$sucursalId = intval($_SESSION['userDATA']['SUCURSAL_ID']);
+			$estadoId = 3;
 			$direccionEnvio = "";
 			//validar la estructura del detalle
 			$detalle = empty($_POST["detalle"]) ? [] : $_POST["detalle"];
@@ -194,6 +203,7 @@ class Ventas extends Controllers{
 	public function getNumeroFactura(){
 		$request = $this->model->selectNumeroFactura();
 		echo json_encode($request,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 }
 ?>

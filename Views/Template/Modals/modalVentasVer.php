@@ -7,82 +7,91 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body table-responsive">
-                <!-- <table class="table table-sm table-striped">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th style="width: 170px;">Atributos</th>
-                            <th>Datos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Razon Social</td>
-                            <td id="tblRazonSocial"></td>
-                        </tr>
-                        <tr>
-                            <td>CUIT</td>
-                            <td id="tblCUIT"></td>
-                        </tr>
-                        <tr>
-                            <td>Telefono</td>
-                            <td id="tblTelefono"></td>
-                        </tr>
-                        <tr>
-                            <td>E-Mail</td>
-                            <td id="tblMail"></td>
-                        </tr>
-                        <tr>
-                            <td>Web</td>
-                            <td id="tblWeb"></td>
-                        </tr>
-                        <tr>
-                            <td>Direccion</td>
-                            <td id="tblDireccion"></td>
-                        </tr>
-                        <tr>
-                            <td>Fecha de Alta</td>
-                            <td id="tblFechaalta"></td>
-                        </tr>
-                        <tr>
-                            <td>Estado</td>
-                            <td id="tblEstado"></td>
-                        </tr>
-                    </tbody>
-                </table> -->
-                <table class="table table-lg">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                            <th> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Numero factura</td>
-                            <td>Tipo factura</td>
-                            <td>Fecha emision</td>
-                        </tr>
-                        <tr>
-                            <td>000000014</td>
-                            <td>A</td>
-                            <td>17/02/2023</td>
-                        </tr>
-                        <tr>
-                            <td>Forma de Pago</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="modal-body">
+                <div class="text-center" id="loaderDiv">
+                    <span class="h5"><img src="<?= media(); ?>/images/uploads/loader.gif" alt="Cargando"> <em>Cargando...</em></span>
+                </div>
+                <div id="dataDivTables" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="table" id="ventasCabeceraTable">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th colspan="5" class="h4"> Factura de Venta</th>
+                                    <th class="h4">Emitida: <span>[No date]</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><img class="img-fluid img-thumbnail" src="<?= media(); ?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
+                                    <td class="font-weight-bold align-middle h5" id="nombreSucursal">[No name]</td>
+                                    <td class="font-weight-bold align-middle">Factura N°</td>
+                                    <td class="align-middle" id="numeroFacturaV">[No number]</td>
+                                    <td class="font-weight-bold align-middle">Forma de Pago</td>
+                                    <td class="align-middle">
+                                        <select class="form-control" name="formaPago" id="formaPago" disabled>
+                                            <option value="1" selected>Efectivo</option>
+                                            <option value="2">Debito</option>
+                                            <option value="3">Credito</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold text-right align-middle h5">Cliente ID:</td>
+                                    <td colspan="5">
+                                        <input class="form-control" type="text" list="" id="cliente" name="cliente" autocomplete="off" role="combobox" disabled>
+                                        <datalist id="clientList" role="listbox">
+                                        </datalist>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="font-weight-bold text-right align-middle h6">DNI:</td>
+                                    <td class="align-middle">
+                                        <input type="text" class="form-control" id="dniCliente" name="dniCliente" disabled>
+                                    </td>
+                                    <td class="font-weight-bold text-right align-middle h6">Nombre:</td>
+                                    <td class="align-middle" colspan="4">
+                                        <input type="text" class="form-control" id="nombreCliente" name="nombreCliente" disabled>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table" id="ventasDetalleTable">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="align-middle h5" colspan="7">Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalleVentaTableBody">
+                                <tr>
+                                    <th class="text-center align-middle">#</th>
+                                    <th class="align-middle">Descripcion</th>
+                                    <th class="text-center align-middle">IVA</th>
+                                    <th class="text-center align-middle">Cantidad</th>
+                                    <th class="text-center align-middle">Unidad Medida</th>
+                                    <th class="text-center align-middle">Precio</th>
+                                    <th class="text-center align-middle">Total</th>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr id="subtotal">
+                                    <td class="font-weight-bold text-right align-middle h6" colspan="6">Subtotal: $</td>
+                                    <td class="text-right align-middle h6">0,00</td>
+                                </tr>
+                                <tr id="totaliva">
+                                    <td class="font-weight-bold text-right align-middle h6" colspan="6">T. IVA: $</td>
+                                    <td class="text-right align-middle h6">0,00</td>
+                                </tr>
+                                <tr id="total">
+                                    <td class="font-weight-bold text-right align-middle h6" colspan="6">Total: $</td>
+                                    <td class="text-right align-middle h6">0,00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

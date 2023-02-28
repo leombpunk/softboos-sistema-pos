@@ -63,7 +63,7 @@ $(document).ready(function () {
         // var data = $(this).serialize();
         factura.clienteId = cliente.value;
         factura.formaPagoId = formaPago.value;
-        console.log(factura);
+        // console.log(factura);
         //completar la constante factura con los datos que falten, cliente-formapago-etc
         $.ajax({
             type: "POST",
@@ -72,7 +72,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 if (response.status){
-                    console.log(response);
+                    // console.log(response);
                     swal("Bien!",response.message,"success");
                 }
                 else {
@@ -82,7 +82,7 @@ $(document).ready(function () {
             }
         });
     });
-    nombreSucursal(1);
+    sucursalData(1);
     numeroFactura();
     cargarClientes();
 });
@@ -94,7 +94,7 @@ function cargarClientes(){
         url: base_url+"Clientes/getClientes",
         dataType: "json",
         success: function(response){
-            console.log(response);
+            // console.log(response);
             response.forEach(element => {
                 clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+" (ID: "+element.CLIENTE_ID+")</option>";
             });
@@ -116,15 +116,15 @@ function numeroFactura(){
         url: base_url+"Ventas/getNumeroFactura",
         dataType: "json",
         success: function(response){
-            console.log(response);
+            // console.log(response);
             numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
         }
     });
 }
-function nombreSucursal(sucursalId){
+function sucursalData(sucursalId){
     let nombreSucursal = document.getElementById("nombreSucursal");
     nombreSucursal.innerHTML = "Negocio de Falopa";
-
+    //mostrar los datos desde las variables de sesion de php
 }
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
@@ -222,16 +222,16 @@ function agregarProducto(id){
             });
         }
     }
-    console.log({indiceDetalle:indiceDetalle});
-    console.log(factura);
+    // console.log({indiceDetalle:indiceDetalle});
+    // console.log(factura);
 }
 function eliminarItem(itemId, iDetalle){
     // console.log({itemId: itemId});
     //restar total, subtotal, e iva
     const {iva, total} = factura.detalle.find((item) => {
-        console.log({item:item});
+        // console.log({item:item});
         if (item.productoId == itemId) {
-            console.log({item:item});
+            // console.log({item:item});
             return item;
         }
     });
@@ -247,67 +247,50 @@ function eliminarItem(itemId, iDetalle){
     $("#item-"+iDetalle).remove();
     //remover de la constante factura
     indice = factura.detalle.findIndex((value, index, obj) => {
-        console.log({value: value, index: index, obj: obj});
+        // console.log({value: value, index: index, obj: obj});
         if (value.productoId == itemId) return (index+1);
         // return (value.productoId == itemId) && index;
     });
-    console.log({indice:indice});
+    // console.log({indice:indice});
     factura.detalle.splice(indice,1); //para quitar un elemento no me sirve el iDetalle
-    console.log(factura);
-    // indiceDetalle--;
+    // console.log(factura);
     // console.log(indiceDetalle);
 }
 function verVenta(id){
+    $("#loaderDiv").show();
+    $("#dataDivTables").hide();
     $("#ventasVerModalCenter").modal("show");
-    console.log({id:id});
     //cabecera de la factura de venta
-    // $.ajax({
-    //     type: "GET",
-    //     url: base_url+"Ventas/getVenta/"+id,
-    //     dataType: "json",
-    //     success: function (response) {
-    //         console.log(response);
-    //         if (response.status){
-    //             $("#tblRazonSocial").html(response.data.RAZONSOCIAL);
-    //             $("#tblCUIT").html(response.data.CUIT);
-    //             $("#tblTelefono").html(response.data.TELEFONO);
-    //             $("#tblMail").html(response.data.MAIL);
-    //             $("#tblDireccion").html(response.data.DIRECCION);
-    //             $("#tblWeb").html(response.data.WEB);
-    //             $("#tblFechaalta").html(response.data.FECHA_ALTA);
-    //             $("#tblEstado").html(response.data.ESTADO);
-    //             $("#proveedoresVerModalCenter").modal("show");
-    //         }
-    //         else {
-    //             swal("Atención!",response.message,"error");
-    //         }
-    //     }
-    // });
-    //para el detalle de la factura
-    // $.ajax({
-    //     type: "GET",
-    //     url: base_url+"Ventas/getVenta/"+id,
-    //     dataType: "json",
-    //     success: function (response) {
-    //         console.log(response);
-    //         if (response.status){
-    //             $("#tblRazonSocial").html(response.data.RAZONSOCIAL);
-    //             $("#tblCUIT").html(response.data.CUIT);
-    //             $("#tblTelefono").html(response.data.TELEFONO);
-    //             $("#tblMail").html(response.data.MAIL);
-    //             $("#tblDireccion").html(response.data.DIRECCION);
-    //             $("#tblWeb").html(response.data.WEB);
-    //             $("#tblFechaalta").html(response.data.FECHA_ALTA);
-    //             $("#tblEstado").html(response.data.ESTADO);
-    //             $("#proveedoresVerModalCenter").modal("show");
-    //         }
-    //         else {
-    //             swal("Atención!",response.message,"error");
-    //         }
-    //     }
-    // });
+    $.ajax({
+        type: "GET",
+        url: base_url+"Ventas/getVenta/"+id,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            if (response.status){
+                //poner los datos el los lugares especificos de la factura
+                //cabecera
+                
+                //forma pago
+
+                //detalles
+
+                //totales
+
+                //crear un efecto para transicionar entro un div y otro                
+                setTimeout(() => { 
+                    $("#loaderDiv").hide('slow');
+                    $("#dataDivTables").show('slow');
+                }, 1500);
+                
+            }
+            else {
+                swal("Atención!",response.message,"error");
+            }
+        }
+    });
 }
-// function borrarVenta(id){
+function invalidarVenta(id){
 //     swal({
 //         title: "Eliminar Proveedor",
 //         text: "¿Quiere eliminar al Proveedor?",
@@ -333,4 +316,4 @@ function verVenta(id){
 //             });
 //         }
 //     });
-// }
+}

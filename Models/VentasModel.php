@@ -21,13 +21,33 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function selectVenta(int $id){
-		$sql = "SELECT 1";
+		$sql = "SELECT fv.*, c.CLIENTE_ID, c.NOMBRE, c.APELLIDO, c.DNI
+		FROM facturas_venta fv
+		INNER JOIN clientes c ON fv.CLIENTE_ID = c.CLIENTE_ID
+		WHERE fv.FACTURAVENTA_ID = {$id}";
 		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectFormaPago(int $id){
+		$sql = "SELECT fvfp.CANTIDAD_PAGO, fp.FORMA_PAGO
+		FROM facturaventa_formapago fvfp
+		INNER JOIN forma_pago fp ON fp.FORMAPAGO_ID = fvfp.FORMAPAGO_ID
+		WHERE fvfp.FACTURA_ID = {$id}";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function selectDetalle(int $id){
+		$sql = "SELECT m.CODIGO, m.NOMBRE, um.NOMBRE, i.IVA_PORCENTAJE, dpv.CANTIDAD, dpv.PRECIO, (dpv.PRECIO*dpv.CANTIDAD) AS TOTAL
+		FROM detalle_pedidos_venta dpv
+		INNER JOIN mercaderias m ON m.MERCADERIA_ID = dpv.MERCADERIA_ID
+		INNER JOIN unidades_medida um ON um.UNIMEDIDA_ID = dpv.UNIMEDIDA_ID
+		INNER JOIN iva i ON i.IVA_ID = m.IVA_ID
+		WHERE dpv.FACTURAVENTA_ID = {$id}";
+		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function insertVenta(array $datos){//falta testear este metodo
 		//deberia de separar en funciones la cabecera y el detalle
-		//en buen transact
 		try {
 			$datosCabecera = array($datos[6],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
 			$datosFormaPago = $datos[1];
@@ -67,11 +87,6 @@ class VentasModel extends Mysql {
 		else {
 			$request = "error";
 		}
-		return $request;
-	}
-	public function selectDetalles(int $id){//falta terminar este metodo
-		$sql = "";
-		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectNumeroFactura(){
