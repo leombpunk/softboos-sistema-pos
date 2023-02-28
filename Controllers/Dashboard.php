@@ -17,7 +17,9 @@ class Dashboard extends Controllers{
 		$data["page_tag"] = "Dashboard e-Comerce";
 		$data["page_title"] = "Dashboard e-Comerce";
 		$data["page_name"] = "dashboard";
+		$data["page_filejs"] = "function_dashboard.js";
 		$this->views->getView($this,"dashboard",$data);
 	}
+	//metodos con los queries para mostrar los datos en el dashboard
 }
 ?>

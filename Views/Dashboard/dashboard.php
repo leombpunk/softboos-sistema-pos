@@ -7,8 +7,60 @@
         </div>
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-          <li class="breadcrumb-item"><a href="#">Blank Page</a></li>
+          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
         </ul>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-lg-3">
+          <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
+            <div class="info">
+              <h4>Ventas del día</h4>
+              <p>Cantidad: <b>5</b> unidades</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="widget-small info coloured-icon"><i class="icon fa fa-thumbs-o-up fa-3x"></i>
+            <div class="info">
+              <h4>Mas vendido del dia</h4>
+              <p>Producto 1: <b>10</b> unidades</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
+            <div class="info">
+              <h4>Ingresos del dia</h4>
+              <p>Pesos: <b>15.000</b>$</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
+            <div class="info">
+              <h4>Ingresos de la semana</h4>
+              <p>Pesos: <b>50.000</b>$</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Mas vendidos del mes (guita)</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="lineChartDemo"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Mas vendidos del mes (cantidad)</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="pieChartDemo"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-12">
