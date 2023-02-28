@@ -1,6 +1,23 @@
+//Que me interesa ver en el dashboard (resumenes de que informacion del negocio)?
+//Producto mas vendido (cantidad por dia, semana, mes)
+//Producto que mas dinero deja (dinero por día, semana, mes -> creo que al mes es lo mejor)
+//Top (5) de mejores productos, tanto en cantidad como en ganancia (puede usarse en un grafico, o sea 2 graficos)
+//Cantidad de productos a la venta (para tener como referencia y hacer comparaciones con el top 5 -> puede ser un top mas grande)
+//En el caso que existan varios clientes se puede hacer un top de clientes
+//total de productos vendidos hasta la fecha
 var data = {
     labels: ["January", "February", "March", "April", "May"],
     datasets: [
+        {
+            label: "me chupa tres huevos",
+            fillColor: "rgba(151,0,205,0.2)",
+            strokeColor: "rgba(151,0,205,1)",
+            pointColor: "rgba(151,0,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,0,205,1)",
+            data: [15, 100, 55, 68, 10]
+        },
         {
             label: "My First dataset",
             fillColor: "rgba(220,220,220,0.2)",
@@ -20,17 +37,8 @@ var data = {
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
             data: [28, 48, 40, 19, 86]
-        },
-        {
-            label: "me chupa tres huevos",
-            fillColor: "rgba(151,0,205,0.2)",
-            strokeColor: "rgba(151,0,205,1)",
-            pointColor: "rgba(151,0,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(151,0,205,1)",
-            data: [15, 100, 55, 68, 10]
         }
+        
     ]
 };
 var pdata = [
@@ -65,9 +73,57 @@ var pdata = [
         label: "test3"
     }
 ]
+const bdata = {
+    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    datasets: [
+        {
+            label: "My First dataset",
+            fillColor: "rgba(220,220,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(220,220,220,0.75)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: [65, 59, 80, 81, 56, 55, 40]
+        },
+        {
+            label: "My Second dataset",
+            fillColor: "rgba(151,187,205,0.5)",
+            strokeColor: "rgba(151,187,205,0.8)",
+            highlightFill: "rgba(151,187,205,0.75)",
+            highlightStroke: "rgba(151,187,205,1)",
+            data: [28, 48, 40, 19, 86, 27, 90]
+        }
+    ]
+};
+
+const ddata = [
+    {
+        value: 300,
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: "Red"
+    },
+    {
+        value: 50,
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "Green"
+    },
+    {
+        value: 100,
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "Yellow"
+    }
+];
 
 var ctxl = $("#lineChartDemo").get(0).getContext("2d");
 var lineChart = new Chart(ctxl).Line(data);
 
 var ctxp = $("#pieChartDemo").get(0).getContext("2d");
 var pieChart = new Chart(ctxp).Pie(pdata);
+
+var ctxb = $("#barChartDemo").get(0).getContext("2d");
+var barChart = new Chart(ctxb).Bar(bdata);
+
+var ctxd = $("#doughnutChartDemo").get(0).getContext("2d");
+var doughnutChart = new Chart(ctxd).Doughnut(ddata);

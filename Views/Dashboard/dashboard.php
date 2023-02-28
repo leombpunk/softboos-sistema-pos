@@ -14,8 +14,8 @@
         <div class="col-md-6 col-lg-3">
           <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
             <div class="info">
-              <h4>Ventas del día</h4>
-              <p>Cantidad: <b>5</b> unidades</p>
+              <h4>Productos a la venta</h4>
+              <p>Cantidad: <b>5</b> productos</p>
             </div>
           </div>
         </div>
@@ -38,8 +38,8 @@
         <div class="col-md-6 col-lg-3">
           <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
             <div class="info">
-              <h4>Ingresos de la semana</h4>
-              <p>Pesos: <b>50.000</b>$</p>
+              <h4>Total de ventas</h4>
+              <p>Cantidad: <b>1268</b> productos</p>
             </div>
           </div>
         </div>
@@ -58,6 +58,24 @@
             <h3 class="tile-title">Mas vendidos del mes (cantidad)</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="pieChartDemo"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Mas vendidos del mes (guita)</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="barChartDemo"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Mas vendidos del mes (cantidad)</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="doughnutChartDemo"></canvas>
             </div>
           </div>
         </div>
