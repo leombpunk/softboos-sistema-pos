@@ -74,23 +74,23 @@ var pdata = [
     }
 ]
 const bdata = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: ["Producto 1", "Producto 2", "Producto 3", "Producto 4", "Producto 5"],
     datasets: [
-        {
-            label: "My First dataset",
-            fillColor: "rgba(220,220,220,0.5)",
-            strokeColor: "rgba(220,220,220,0.8)",
-            highlightFill: "rgba(220,220,220,0.75)",
-            highlightStroke: "rgba(220,220,220,1)",
-            data: [65, 59, 80, 81, 56, 55, 40]
-        },
+        // {
+        //     label: "My First dataset",
+        //     fillColor: "rgba(220,220,220,0.5)",
+        //     strokeColor: "rgba(220,220,220,0.8)",
+        //     highlightFill: "rgba(220,220,220,0.75)",
+        //     highlightStroke: "rgba(220,220,220,1)",
+        //     data: [65, 59, 80, 81, 56]
+        // },
         {
             label: "My Second dataset",
             fillColor: "rgba(151,187,205,0.5)",
             strokeColor: "rgba(151,187,205,0.8)",
             highlightFill: "rgba(151,187,205,0.75)",
             highlightStroke: "rgba(151,187,205,1)",
-            data: [28, 48, 40, 19, 86, 27, 90]
+            data: [28, 48, 40, 19, 86]
         }
     ]
 };
@@ -100,30 +100,81 @@ const ddata = [
         value: 300,
         color:"#F7464A",
         highlight: "#FF5A5E",
-        label: "Red"
+        label: "Producto 1\ncantidad:"
     },
     {
         value: 50,
         color: "#46BFBD",
         highlight: "#5AD3D1",
-        label: "Green"
+        label: "Producto 2"
     },
     {
         value: 100,
         color: "#FDB45C",
         highlight: "#FFC870",
-        label: "Yellow"
+        label: "Producto 3"
     }
 ];
 
-var ctxl = $("#lineChartDemo").get(0).getContext("2d");
-var lineChart = new Chart(ctxl).Line(data);
+// var ctxl = $("#lineChartDemo").get(0).getContext("2d");
+// var lineChart = new Chart(ctxl).Line(data);
 
-var ctxp = $("#pieChartDemo").get(0).getContext("2d");
-var pieChart = new Chart(ctxp).Pie(pdata);
+// var ctxp = $("#pieChartDemo").get(0).getContext("2d");
+// var pieChart = new Chart(ctxp).Pie(pdata);
 
-var ctxb = $("#barChartDemo").get(0).getContext("2d");
-var barChart = new Chart(ctxb).Bar(bdata);
+// var ctxb = $("#barChartDemo").get(0).getContext("2d");
+// var barChart = new Chart(ctxb).Bar(bdata);
 
-var ctxd = $("#doughnutChartDemo").get(0).getContext("2d");
-var doughnutChart = new Chart(ctxd).Doughnut(ddata);
+// var ctxd = $("#doughnutChartDemo").get(0).getContext("2d");
+// var doughnutChart = new Chart(ctxd).Doughnut(ddata);
+
+
+//chart v4
+const ctx = document.getElementById('myChart');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+
+const ctx2 = document.getElementById('myChart2');
+new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: ['Red', 'Orange', 'Yellow', 'Green', 'Blue'],
+        datasets: [
+          {
+            label: 'Dataset 1',
+            data: [12, 19, 3, 5, 2],
+            backgroundColor: ['rgb(255, 99, 132)','rgb(255, 159, 64)','rgb(255, 205, 86)','rgb(75, 192, 192)','rgb(54, 162, 235)'],
+            
+          }
+        ]
+      },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right',
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Pie Chart'
+        }
+      }
+    },
+});

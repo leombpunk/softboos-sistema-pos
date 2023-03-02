@@ -18,6 +18,8 @@ class Dashboard extends Controllers{
 		$data["page_title"] = "Dashboard e-Comerce";
 		$data["page_name"] = "dashboard";
 		$data["page_filejs"] = "function_dashboard.js";
+		$data["page_specialjs"] = array('<script src="'.media().'js/plugins/chart.js" type="text/javascript"></script>',
+		'<script src="'.media().'js/plugins/chart.umd.js" type="text/javascript"></script>');
 		$this->views->getView($this,"dashboard",$data);
 	}
 	//metodos con los queries para mostrar los datos en el dashboard

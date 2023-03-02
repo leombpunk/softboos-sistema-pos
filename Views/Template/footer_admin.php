@@ -17,7 +17,7 @@
     <script src="<?= media(); ?>js/plugins/pace.min.js"></script>
     <script src="<?= media(); ?>js/plugins/dropzone.js" type="text/javascript"></script>
     <script src="<?= media(); ?>js/jquery.inputmask.min.js" type="text/javascript"></script>
-    <script src="<?= media(); ?>js/plugins/chart.js" type="text/javascript"></script>
+    <!-- <script src="<?//= media(); ?>js/plugins/chart.js" type="text/javascript"></script> -->
     <script src="<?= media(); ?>js/function_admin.js"></script>
     <!-- Page specific javascripts-->
     <?php 

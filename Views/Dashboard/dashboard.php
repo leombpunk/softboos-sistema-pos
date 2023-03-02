@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-md-6">
           <div class="tile">
             <h3 class="tile-title">Mas vendidos del mes (guita)</h3>
@@ -61,8 +61,25 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="row">
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Chart v4 equisde</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="myChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="tile">
+            <h3 class="tile-title">Chart v4 equisde 2</h3>
+            <div class="embed-responsive embed-responsive-16by9">
+              <canvas class="embed-responsive-item" id="myChart2" style="margin-left: 25%;"></canvas>
+            </div>
+          </div>
+      </div>
+      <!-- <div class="row">
         <div class="col-md-6">
           <div class="tile">
             <h3 class="tile-title">Mas vendidos del mes (guita)</h3>
@@ -79,14 +96,14 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
+      </div> -->
+      <!-- <div class="row">
         <div class="col-md-12">
           <div class="tile">
             <div class="tile-body">Create a beautiful dashboard</div>
-            <?php dep($_SESSION['userDATA']); ?>
+            <?php //dep($_SESSION['userDATA']); ?>
           </div>
         </div>
-      </div>
+      </div> -->
     </main>
 <?php footerAdmin($data);?>   
