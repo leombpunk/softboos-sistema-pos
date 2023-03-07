@@ -62,8 +62,6 @@
                                 <tr>
                                     <th class="align-middle h5" colspan="7">Detalle</th>
                                 </tr>
-                            </thead>
-                            <tbody id="detalleVentaTableBody">
                                 <tr>
                                     <th class="text-center align-middle">#</th>
                                     <th class="align-middle">Descripcion</th>
@@ -73,6 +71,9 @@
                                     <th class="text-center align-middle">Precio</th>
                                     <th class="text-center align-middle">Total</th>
                                 </tr>
+                            </thead>
+                            <tbody id="detalleVentaTableBody">
+                                
                             </tbody>
                             <tfoot>
                                 <tr id="subtotal">

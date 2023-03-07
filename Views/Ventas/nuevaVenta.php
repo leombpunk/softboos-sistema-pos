@@ -1,5 +1,4 @@
 <?php headerAdmin($data);
-getModal("modalVentasVer",$data);
 getModal("modalProductosBuscar",$data); ?>
 <main class="app-content">
     <div class="app-title">
@@ -27,9 +26,9 @@ getModal("modalProductosBuscar",$data); ?>
                                 <tbody>
                                     <tr>
                                         <td><img class="img-fluid img-thumbnail" src="<?= media();?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
-                                        <td class="font-weight-bold align-middle h5" id="nombreSucursal">[No name]</td>
+                                        <td class="font-weight-bold align-middle h5" id="nombreSucursal"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></td>
                                         <td class="font-weight-bold align-middle">Factura N°</td>
-                                        <td class="align-middle" id="numeroFacturaV">[No number]</td>
+                                        <td class="align-middle" id="numeroFacturaV"></td>
                                         <td class="font-weight-bold align-middle">Forma de Pago</td>
                                         <td class="align-middle">
                                             <select class="form-control" name="formaPago" id="formaPago">
@@ -43,7 +42,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="font-weight-bold text-center align-middle h5">Cliente ID:</td>
                                         <td colspan="5">
                                             <input class="form-control" type="text" list="" id="cliente" name="cliente" autocomplete="off" role="combobox">
-                                            <datalist id="clientList" role="listbox">
+                                            <datalist id="clientList" name="clientList" role="listbox">
                                                 <!-- <option value="99">Varios</option>
                                                 <option value="1">Cliente 1</option>
                                                 <option value="2">Cliente 2</option> -->

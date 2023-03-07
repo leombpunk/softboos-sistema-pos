@@ -88,13 +88,14 @@ $(document).ready(function () {
 });
 function cargarClientes(){
     //vamos a probar
-    let clienteDataList = document.getElementById('clientList');
+    let clienteDataList = document.getElementById("clientList");
+    console.log({clienteDataList});
     $.ajax({
         type: "GET",
         url: base_url+"Clientes/getClientes",
         dataType: "json",
         success: function(response){
-            // console.log(response);
+            console.log(response);
             response.forEach(element => {
                 clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+" (ID: "+element.CLIENTE_ID+")</option>";
             });
@@ -110,13 +111,13 @@ function cargarClientes(){
     });
 }
 function numeroFactura(){
-    let numeroFactura = document.getElementById('numeroFacturaV');
+    let numeroFactura = document.getElementById("numeroFacturaV");
     $.ajax({
         type: "GET",
         url: base_url+"Ventas/getNumeroFactura",
         dataType: "json",
         success: function(response){
-            // console.log(response);
+            console.log(response);
             numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
         }
     });
