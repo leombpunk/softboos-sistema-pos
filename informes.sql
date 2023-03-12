@@ -1,4 +1,5 @@
 --Informes SQL
+--POR DIA
 --Ventas del dia total ganancia (total sumatoria de todas las ventas del dia y su monto)
 SELECT `fv`.*, `ff`.*, `fp`.`FORMA_PAGO`, `total_ventas`.`cantidad` 
 FROM `facturas_venta` AS `fv`
@@ -23,7 +24,7 @@ INNER JOIN `detalle_pedidos_venta` AS `dpv` ON `dpv`.`FACTURAVENTA_ID` = `fv`.`F
 WHERE `fv`.`FECHA_EMISION` = NOW() AND `fv`.`ESTADO_ID` = 3
 GROUP BY `ff`.`FORMAPAGO_ID` ASC;
 
---Ventas del dia total cantidad agrupado por producto
+--Ventas del dia total cantidad agrupado por producto (esto no le veo el sentido de hacerlo tambien por forma de pago)
 SELECT `dpv`.`MERCADERIA_ID`, `mer`.`CODIGO`, `mer`.`NOMBRE`, sum(`dpv`.`CANTIDAD`) AS `cantidad`
 FROM `detalle_pedidos_venta` AS `dpv`
 INNER JOIN `mercaderias` AS `mer` ON `dpv`.`MERCADERIA_ID` = `mer`.`MERCADERIA_ID`
@@ -31,7 +32,7 @@ INNER JOIN `facturas_venta` AS `fv` ON `dpv`.`FACTURAVENTA_ID` = `fv`.`FACTURAVE
 WHERE `fv`.`FECHA_EMISION` = NOW() AND `fv`.`ESTADO_ID` = 3 
 GROUP BY `dpv`.`MERCADERIA_ID` ASC;
 
---Ventas del dia total ganancia agrupado por producto
+--Ventas del dia total ganancia agrupado por producto y forma de pago
 SELECT `dpv`.`MERCADERIA_ID`, `mer`.`CODIGO`, `mer`.`NOMBRE`, sum(`dpv`.`CANTIDAD`*`dpv`.`PRECIO`) AS `ingresos`, 
 `ff`.`FORMAPAGO_ID`, `fp`.`FORMA_PAGO`
 FROM `detalle_pedidos_venta` AS `dpv`
@@ -41,18 +42,22 @@ INNER JOIN `facturaventa_formapago` AS `ff` ON `ff`.`FACTURA_ID` = `fv`.`FACTURA
 INNER JOIN `forma_pago` AS `fp` ON `fp`.`FORMAPAGO_ID` = `ff`.`FORMAPAGO_ID`
 WHERE `fv`.`FECHA_EMISION` = NOW() AND `fv`.`ESTADO_ID` = 3 
 GROUP BY `dpv`.`MERCADERIA_ID` ASC, `ff`.`FORMAPAGO_ID` ASC;
+
+--POR SEMANA
 --Ventas de la semana total ganancia (total sumatoria de todas las ventas del dia y su monto)
 
 --Ventas de la semana total cantidad agrupado por producto
 
 --Ventas de la semana total ganancia agrupado por producto
 
+--POR MES
 --Ventas del mes total ganancia (total sumatoria de todas las ventas del dia y su monto)
 
 --Ventas del mes total cantidad agrupado por producto
 
 --Ventas del mes total ganancia agrupado por producto
 
+--POR RANGOS
 --Ventas (rango de fechas) total ganancia (total sumatoria de todas las ventas del dia y su monto)
 
 --Ventas (rango de fechas) total cantidad agrupado por producto

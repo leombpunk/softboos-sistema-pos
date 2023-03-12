@@ -308,30 +308,31 @@ function verVenta(id){
         }
     });
 }
-function invalidarVenta(id){
-//     swal({
-//         title: "Eliminar Proveedor",
-//         text: "¿Quiere eliminar al Proveedor?",
-//         icon: "warning",
-//         buttons: true,
-//         dangerMode: true,
-//     }).then(function(isConfirm){
-//         if(isConfirm){
-//             $.ajax({
-//                 type: "POST",
-//                 url: base_url+"Proveedores/delProveedor/",
-//                 data: "id="+id,
-//                 dataType: "json",
-//                 success: function (response) {
-//                     if(response.status){
-//                         swal("Eliminar!",response.message,"success");
-//                         tabalFalopa.ajax.reload(function(){});
-//                     }
-//                     else {
-//                         swal("Atencion!",response.message,"error");
-//                     }
-//                 }
-//             });
-//         }
-//     });
+function anularVenta(id){
+    swal({
+        title: "Eliminar Proveedor",
+        text: "¿Quiere eliminar al Proveedor?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if(isConfirm){
+            alert("equisde, coming son");
+            // $.ajax({
+            //     type: "POST",
+            //     url: base_url+"Proveedores/delProveedor/",
+            //     data: "id="+id,
+            //     dataType: "json",
+            //     success: function (response) {
+            //         if(response.status){
+            //             swal("Eliminar!",response.message,"success");
+            //             tabalFalopa.ajax.reload(function(){});
+            //         }
+            //         else {
+            //             swal("Atencion!",response.message,"error");
+            //         }
+            //     }
+            // });
+        }
+    });
 }

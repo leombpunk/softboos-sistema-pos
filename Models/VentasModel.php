@@ -13,7 +13,7 @@ class VentasModel extends Mysql {
 		fvfp2.FORMAPAGO_ID AS FORMAPAGO2, fvfp3.FORMAPAGO_ID AS FORMAPAGO3, fv.FECHA_EMISION, fv.TOTAL 
 		FROM facturas_venta AS fv 
 		INNER JOIN factura_tipo AS ft ON fv.FACTURATIPO_ID = ft.FACTURATIPO_ID 
-		INNER JOIN facturaventa_formapago AS fvfp1 ON fv.FACTURAVENTA_ID = fvfp1.FACTURA_ID AND fvfp1.FORMAPAGO_ID = 1 
+		LEFT JOIN facturaventa_formapago AS fvfp1 ON fv.FACTURAVENTA_ID = fvfp1.FACTURA_ID AND fvfp1.FORMAPAGO_ID = 1 
 		LEFT JOIN facturaventa_formapago AS fvfp2 ON fv.FACTURAVENTA_ID = fvfp2.FACTURA_ID AND fvfp2.FORMAPAGO_ID = 2 
 		LEFT JOIN facturaventa_formapago AS fvfp3 ON fv.FACTURAVENTA_ID = fvfp3.FACTURA_ID AND fvfp3.FORMAPAGO_ID = 3";
 		// $sql = "SELECT * FROM facturas_venta AS fv INNER JOIN facturaventa_formapago AS fvfp ON fv.FACTURAVENTA_ID = fvfp.FACTURA_ID";

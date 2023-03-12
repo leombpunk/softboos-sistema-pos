@@ -60,9 +60,8 @@ class Ventas extends Controllers{
 
 			$arrData[$i]["FORMAPAGO"] = $pago;
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="editarVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-primary btn-sm" title="Editar" type="button" hidden><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button" hidden><i class="fa fa-trash"></i></button>
+            <button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
+            <button onclick="anularVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular venta" type="button"><i class="fa fa-ban"></i></button>
             </div>'; 
         }
         // dep($arrData);

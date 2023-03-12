@@ -14,16 +14,16 @@
         <div class="col-md-6 col-lg-3">
           <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
             <div class="info">
-              <h4>Productos a la venta</h4>
-              <p>Cantidad: <b>5</b> productos</p>
+              <h4>En venta</h4>
+              <p><b>5</b> Productos</p>
             </div>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
           <div class="widget-small info coloured-icon"><i class="icon fa fa-thumbs-o-up fa-3x"></i>
             <div class="info">
-              <h4>Mas vendido del dia</h4>
-              <p>Producto 1: <b>10</b> unidades</p>
+              <h4>Más pedido</h4>
+              <p>Producto 1</p>
             </div>
           </div>
         </div>
@@ -39,7 +39,7 @@
           <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
             <div class="info">
               <h4>Total de ventas</h4>
-              <p>Cantidad: <b>1268</b> productos</p>
+              <p><b>1268</b> Productos</p>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Chart v4 equisde</h3>
+            <h3 class="tile-title">Cantidad de ventas por horas</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="myChart"></canvas>
             </div>
@@ -73,7 +73,7 @@
         </div>
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Chart v4 equisde 2</h3>
+            <h3 class="tile-title">Cantidad de ventas por producto</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="myChart2" style="margin-left: 25%;"></canvas>
             </div>
