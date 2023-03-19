@@ -1,5 +1,5 @@
 <?php 
-class FormasPago extends Controllers{
+class MovimientosCaja extends Controllers{
     private $permisoID;
     private $cargoID;
     private $arrPermiso;
@@ -21,43 +21,45 @@ class FormasPago extends Controllers{
 			header("location: ".base_url()."Dashboard");
 		}
 	}
-	public function formasPago(){
+	public function movimientosCaja(){
+        $apertura = isSetAperturaCaja();
 		$data["page_id"] = 11;
-		$data["page_tag"] = "Formas de pago | SoftBoos";
-		$data["page_title"] = "Formas de pago";
-		$data["page_name"] = "forma de pago";
-        $data["page_filejs"] = "function_formasPago.js";
-		$this->views->getView($this,"formasPago",$data);
+		$data["page_tag"] = "Caja | SoftBoos";
+		$data["page_title"] = "Caja";
+		$data["page_name"] = "caja";
+        $data["page_filejs"] = "function_movimientosCaja.js";
+        $data["button_name"] = $apertura ? 'Nuevo movimiento' : 'Apertura';
+        $data["alert_message"] = $apertura ? '' : 'No se encontro ninguna Apertura de Caja el dia de hoy, por favor hagalo!';
+		$this->views->getView($this,"movimientosCaja",$data);
 	}
-    public function getFormasPagos(){
-        $arrData = $this->model->selectFormasPagos();
+    public function getMovimientos(){
+        $arrData = $this->model->selectMovimientos();
         for ($i=0; $i < count($arrData); $i++) { 
-            if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
-                $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
-            }
-            elseif ($arrData[$i]["ESTADO_ID"] == 2){ // inactivo
-                $arrData[$i]["estado"] = '<span class="badge badge-danger">Inactivo</span>';
-            }
-            elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
-                $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
-            }
-            else { // dato no controlado
-                $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
-            }
+            // if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
+            //     $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
+            // }
+            // elseif ($arrData[$i]["ESTADO_ID"] == 2){ // inactivo
+            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">Inactivo</span>';
+            // }
+            // elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
+            //     $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
+            //     // agregar el cambio de funcion y boton de borrar a restablecer
+            // }
+            // else { // dato no controlado
+            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
+            // }
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="editarFormasPago('.$arrData[$i]['FORMAPAGO_ID'].');" class="btn btn-primary btn-sm" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarFormasPago('.$arrData[$i]['FORMAPAGO_ID'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
+            <button onclick="borrarMovimiento('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
             </div>'; 
         }
         // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function getFormasPago(int $cargoID){
+    public function getMovimiento(int $cargoID){
         $id = intval(strClear($cargoID));
         if ($id > 0){
-            $arrData = $this->model->selectFormasPago($id);
+            $arrData = $this->model->selectMovimiento($id);
             if (empty($arrData)){
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
@@ -68,7 +70,13 @@ class FormasPago extends Controllers{
         }
         die();
     }
-    public function setFormasPago(){
+    public function getTipoMovimiento(){
+        $arrData = $this->model->selectTipoMovimiento();
+        $arrResponse = array('status' => true, 'data' => $arrData);
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
+    public function setMovimiento(){
         // dep($_POST);
         $intID = intval(strClear($_POST['formasPago_id'])); //transforma el "" (vacio) en 0 (cero)
         $strNombre = mb_strtoupper(strClear($_POST['formasPagonombre']));
@@ -100,18 +108,18 @@ class FormasPago extends Controllers{
             try {
                 if ($intID == 0){
                     //crear
-                    $requestFormasPago = $this->model->insertFormasPago($strNombre,$intEstado);
+                    $requestMovimiento = $this->model->insertMovimiento($strNombre,$intEstado);
                     $option = 1;
                 }
                 else {
                     //actualizar
-                    $requestFormasPago = $this->model->updateFormasPago($intID,$strNombre,$intEstado);
+                    $requestMovimiento = $this->model->updateMovimiento($intID,$strNombre,$intEstado);
                     $option = 2;
                 }
             } catch (PDOException $e){
-                $requestFormasPago = mensajeSQL($e);
+                $requestMovimiento = mensajeSQL($e);
             }
-            if ($requestFormasPago > 0){ //done
+            if ($requestMovimiento > 0){ //done
                 if ($option == 1){
                     $arrResponse = array(
                         'status' => true,
@@ -127,7 +135,7 @@ class FormasPago extends Controllers{
                     );
                 }
             }
-            elseif ($requestFormasPago == 'falopa'){ //exist
+            elseif ($requestMovimiento == 'falopa'){ //exist
                 $arrResponse = array(
                     'status' => false,
                     'message' => '¡Atencion! La Forma de Pago ya existe.',
@@ -137,7 +145,7 @@ class FormasPago extends Controllers{
             else { //error
                 $arrResponse = array(
                     'status' => false,
-                    'message' => empty($requestFormasPago)?'No es posible almacenar los datos.':$requestFormasPago." Para el Forma de Pago: ".$strNombre,
+                    'message' => empty($requestMovimiento)?'No es posible almacenar los datos.':$requestMovimiento." Para el Forma de Pago: ".$strNombre,
                     'expected' => ''
                 );
             }
@@ -147,10 +155,10 @@ class FormasPago extends Controllers{
         echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function delFormasPago(){
+    public function delMovimiento(){
         if ($_POST){
             $id = intval(strClear($_POST['id']));
-            $requestDelete = $this->model->deleteFormasPago($id);
+            $requestDelete = $this->model->deleteMovimiento($id);
             if ($requestDelete == "ok"){
                 $arrResponse = array("status" => true, "message" => "Datos borrados.");
             }

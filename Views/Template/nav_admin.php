@@ -12,9 +12,9 @@
         <li><a class="app-menu__item" href="<?= base_url(); ?>ventas/nuevaVenta"><i class="app-menu__icon fa fa-shopping-cart" aria-hidden="true"></i><span class="app-menu__label">Nueva Venta</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-exchange" aria-hidden="true"></i><span class="app-menu__label">Movimientos</span><i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
+                <li><a class="treeview-item" href="<?= base_url(); ?>movimientosCaja"><i class="icon fa fa-circle-o"></i> Caja</a></li>
                 <li><a class="treeview-item" href="<?= base_url(); ?>ventas"><i class="icon fa fa-circle-o"></i> Ventas</a></li>
                 <!-- <li><a class="treeview-item" href="<?= base_url(); ?>clientes"><i class="icon fa fa-circle-o"></i> Compras</a></li> -->
-                <li><a class="treeview-item" href="<?= base_url(); ?>gastosVarios"><i class="icon fa fa-circle-o"></i> Gastos Varios</a></li>
                 <li><a class="treeview-item" href="<?= base_url(); ?>formasPago"><i class="icon fa fa-circle-o"></i> Formas de Pago</a></li>
             </ul>
         </li>

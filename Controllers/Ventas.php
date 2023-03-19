@@ -29,9 +29,9 @@ class Ventas extends Controllers{
 	}
 
 	public function nuevaVenta(){
-		// if (empty($_SESSION["permisosMod"]["r"])){
-		// 	header("location:".base_url()."dashboard");
-		// }
+		if (!isSetAperturaCaja()){
+			header("location:".base_url()."movimientosCaja");
+		}
 		$data["page_id"] = 100;
 		$data["page_tag"] = "Nueva Venta | SoftBoos";
 		$data["page_title"] = "Nueva Venta";

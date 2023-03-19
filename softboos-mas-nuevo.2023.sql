@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 25-02-2023 a las 20:45:22
+-- Tiempo de generación: 19-03-2023 a las 02:35:34
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 8.1.2
 
@@ -195,7 +195,7 @@ DROP PROCEDURE IF EXISTS `SpEmpleadosDatosSelect`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SpEmpleadosDatosSelect` (IN `emple_id` INT(11) UNSIGNED)  NO SQL
     COMMENT 'trae todos los datos del empleado'
 BEGIN
-SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.CONTRASENA, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION, e.CARGO_ID, c.NIVELACCESO_ID, c.CARGO_DESCRIPCION 
+SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.CONTRASENA, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION, s.LOGO_URL, e.CARGO_ID, c.NIVELACCESO_ID, c.CARGO_DESCRIPCION 
 FROM empleados e 
 INNER JOIN cargos c ON e.CARGO_ID = c.CARGO_ID 
 INNER JOIN sucursales s ON e.SUCURSAL_ID = s.SUCURSAL_ID 
@@ -412,7 +412,9 @@ CREATE TABLE `detalle_pedidos_venta` (
 --
 
 INSERT INTO `detalle_pedidos_venta` (`DPVENTA_ID`, `FACTURAVENTA_ID`, `MERCADERIA_ID`, `UNIMEDIDA_ID`, `CANTIDAD`, `CANTIDAD_REAL`, `PRECIO`) VALUES
-(153, 83, 44, 00000000038, '5.000', '5.000', '50.00');
+(153, 83, 44, 00000000038, '5.000', '5.000', '50.00'),
+(154, 87, 45, 00000000038, '2.000', '0.000', '200.00'),
+(155, 87, 44, 00000000038, '3.000', '0.000', '0.00');
 
 -- --------------------------------------------------------
 
@@ -542,7 +544,7 @@ CREATE TABLE `facturas_venta` (
   `TESTIGO_ID` int(11) UNSIGNED NOT NULL,
   `ESTADO_ID` int(11) UNSIGNED NOT NULL,
   `FECHA_ALTA` datetime NOT NULL,
-  `FECHA_EMISION` date NOT NULL,
+  `FECHA_EMISION` datetime NOT NULL,
   `DIRECCION_ENVIO` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `TOTAL` decimal(8,2) NOT NULL,
   `IVA_TOTAL` decimal(8,2) NOT NULL
@@ -553,7 +555,8 @@ CREATE TABLE `facturas_venta` (
 --
 
 INSERT INTO `facturas_venta` (`FACTURAVENTA_ID`, `FACTURATIPO_ID`, `NUMERO_FACTURA`, `SUCURSAL_ID`, `CLIENTE_ID`, `EMPLEADO_ID`, `TESTIGO_ID`, `ESTADO_ID`, `FECHA_ALTA`, `FECHA_EMISION`, `DIRECCION_ENVIO`, `TOTAL`, `IVA_TOTAL`) VALUES
-(83, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15', 'algun lugar', '500.00', '0.00');
+(83, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15 23:34:59', 'algun lugar', '500.00', '0.00'),
+(87, 1, 0000000000002, 1, 1000000056, 1, 1, 3, '2023-02-26 22:13:52', '2023-02-26 22:13:52', '', '400.00', '19.05');
 
 -- --------------------------------------------------------
 
@@ -574,8 +577,8 @@ CREATE TABLE `facturaventa_formapago` (
 --
 
 INSERT INTO `facturaventa_formapago` (`FACTURAVFP_ID`, `FACTURA_ID`, `FORMAPAGO_ID`, `CANTIDAD_PAGO`) VALUES
-(78, 83, 1, 1),
-(79, 83, 2, 1);
+(79, 83, 2, 1),
+(81, 87, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -607,17 +610,21 @@ INSERT INTO `factura_tipo` (`FACTURATIPO_ID`, `FACTURA_TIPO`) VALUES
 DROP TABLE IF EXISTS `forma_pago`;
 CREATE TABLE `forma_pago` (
   `FORMAPAGO_ID` int(11) UNSIGNED NOT NULL,
-  `FORMA_PAGO` varchar(50) COLLATE utf8_spanish_ci NOT NULL
+  `FORMA_PAGO` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `FECHA_ALTA` datetime DEFAULT NULL,
+  `ESTADO_ID` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `forma_pago`
 --
 
-INSERT INTO `forma_pago` (`FORMAPAGO_ID`, `FORMA_PAGO`) VALUES
-(1, 'EFECTIVO'),
-(2, 'TARJETA DEBITO'),
-(3, 'TARJETA CREDITO');
+INSERT INTO `forma_pago` (`FORMAPAGO_ID`, `FORMA_PAGO`, `FECHA_ALTA`, `ESTADO_ID`) VALUES
+(1, 'EFECTIVO', '2023-03-11 20:07:13', 1),
+(2, 'TARJETA DEBITO', '2023-03-11 20:07:19', 1),
+(3, 'TARJETA CREDITO', '2023-03-11 20:07:21', 1),
+(4, 'MERCADO PAGO', '2023-03-11 21:40:35', 1),
+(5, 'UALA', '2023-03-12 21:58:57', 1);
 
 -- --------------------------------------------------------
 
@@ -817,7 +824,8 @@ INSERT INTO `modulos` (`MODULO_ID`, `NOMBRE`, `ESTADO_ID`) VALUES
 (7, 'Unidades de Medida', 1),
 (8, 'Compras', 1),
 (9, 'Proveedores', 1),
-(10, 'Ventas', 1);
+(10, 'Ventas', 1),
+(11, 'Formas de Pago', 1);
 
 --
 -- Disparadores `modulos`
@@ -853,21 +861,26 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `movimiento_caja`
+-- Estructura de tabla para la tabla `movimientos_caja`
 --
 
-DROP TABLE IF EXISTS `movimiento_caja`;
-CREATE TABLE `movimiento_caja` (
-  `MC_ID` int(11) UNSIGNED NOT NULL,
+DROP TABLE IF EXISTS `movimientos_caja`;
+CREATE TABLE `movimientos_caja` (
+  `ID` int(11) UNSIGNED NOT NULL,
   `EMPLEADO_ID` int(11) UNSIGNED NOT NULL,
-  `FACTURAC_ID` int(11) UNSIGNED DEFAULT NULL,
-  `FACTURAV_ID` int(11) UNSIGNED DEFAULT NULL,
-  `SALDO_ACTUAL` decimal(8,2) NOT NULL DEFAULT 0.00,
-  `MC_MONTO_E_S` decimal(8,2) NOT NULL,
-  `FECHA_MOVIMIENTO` datetime NOT NULL,
-  `MOVIMIENTOTIPO_ID` int(11) UNSIGNED NOT NULL,
-  `DESCRIPCION` varchar(100) COLLATE utf8_spanish_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci ROW_FORMAT=COMPACT;
+  `DESCRIPCION` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `FECHA_ALTA` datetime NOT NULL,
+  `MONTO` decimal(8,2) UNSIGNED NOT NULL,
+  `ESTADO_ID` int(11) UNSIGNED NOT NULL,
+  `TIPO_ID` int(11) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `movimientos_caja`
+--
+
+INSERT INTO `movimientos_caja` (`ID`, `EMPLEADO_ID`, `DESCRIPCION`, `FECHA_ALTA`, `MONTO`, `ESTADO_ID`, `TIPO_ID`) VALUES
+(1, 1, 'test 1', '2023-03-18 21:29:27', '10000.00', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -887,12 +900,9 @@ CREATE TABLE `movimiento_tipo` (
 --
 
 INSERT INTO `movimiento_tipo` (`MOVIMIENTOTIPO_ID`, `DESCRIPCION`, `TM_TIPO`) VALUES
-(1, 'COMPRA', 2),
-(2, 'VENTA', 1),
-(3, 'INGRESO', 1),
-(4, 'EGRESO', 2),
-(5, 'APERTURA', 0),
-(6, 'CIERRE', 0);
+(1, 'INGRESO', 1),
+(2, 'EGRESO', 2),
+(3, 'APERTURA', 1);
 
 -- --------------------------------------------------------
 
@@ -981,7 +991,8 @@ INSERT INTO `permisos` (`PERMISO_ID`, `CARGO_ID`, `MODULO_ID`, `LEER`, `AGREGAR`
 (92, 1, 7, 1, 1, 1, 1),
 (93, 1, 8, 1, 1, 1, 1),
 (95, 1, 9, 1, 1, 1, 1),
-(96, 1, 10, 1, 1, 1, 1);
+(96, 1, 10, 1, 1, 1, 1),
+(97, 1, 11, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1163,7 +1174,7 @@ CREATE TABLE `sucursales` (
 --
 
 INSERT INTO `sucursales` (`SUCURSAL_ID`, `RAZONSOCIAL`, `CODIGO_SUCURSAL`, `CUIT`, `MAIL`, `TELEFONO`, `WEB`, `DIRECCION`, `LOGO_URL`, `FECHA_ALTA`, `FECHA_BAJA`) VALUES
-(1, 'YOSUKO PIZZAS', '00001', '123456789012', 'yosukopizzas@yosuko.com', '543764123456', NULL, 'av siempre viva', NULL, '2021-05-04 08:00:00', NULL);
+(1, 'YOSUKO PIZZAS', '00001', '123456789012', 'yosukopizzas@yosuko.com', '543764123456', NULL, 'av siempre viva', 'images/uploads/logo-icon2.png', '2021-05-04 08:00:00', NULL);
 
 -- --------------------------------------------------------
 
@@ -1352,7 +1363,8 @@ ALTER TABLE `factura_tipo`
 -- Indices de la tabla `forma_pago`
 --
 ALTER TABLE `forma_pago`
-  ADD PRIMARY KEY (`FORMAPAGO_ID`);
+  ADD PRIMARY KEY (`FORMAPAGO_ID`),
+  ADD KEY `forma_pago_ibfk_1` (`ESTADO_ID`);
 
 --
 -- Indices de la tabla `iva`
@@ -1423,14 +1435,13 @@ ALTER TABLE `modulos`
   ADD KEY `modulos_ibfk_1` (`ESTADO_ID`);
 
 --
--- Indices de la tabla `movimiento_caja`
+-- Indices de la tabla `movimientos_caja`
 --
-ALTER TABLE `movimiento_caja`
-  ADD PRIMARY KEY (`MC_ID`) USING BTREE,
-  ADD KEY `PERSONA_ID` (`EMPLEADO_ID`),
-  ADD KEY `TIPO` (`MOVIMIENTOTIPO_ID`),
-  ADD KEY `FACTURA_ID` (`FACTURAV_ID`),
-  ADD KEY `FACTURID_AC` (`FACTURAC_ID`);
+ALTER TABLE `movimientos_caja`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `IX_EMPLEADO_ID` (`EMPLEADO_ID`) USING BTREE,
+  ADD KEY `gastos_varios_ibfk_2` (`ESTADO_ID`),
+  ADD KEY `movimientos_caja_ibfk_3` (`TIPO_ID`);
 
 --
 -- Indices de la tabla `movimiento_tipo`
@@ -1574,7 +1585,7 @@ ALTER TABLE `detalle_pedidos_compra`
 -- AUTO_INCREMENT de la tabla `detalle_pedidos_venta`
 --
 ALTER TABLE `detalle_pedidos_venta`
-  MODIFY `DPVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
+  MODIFY `DPVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
@@ -1610,13 +1621,13 @@ ALTER TABLE `facturas_compra`
 -- AUTO_INCREMENT de la tabla `facturas_venta`
 --
 ALTER TABLE `facturas_venta`
-  MODIFY `FACTURAVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `FACTURAVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT de la tabla `facturaventa_formapago`
 --
 ALTER TABLE `facturaventa_formapago`
-  MODIFY `FACTURAVFP_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
+  MODIFY `FACTURAVFP_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_tipo`
@@ -1628,7 +1639,7 @@ ALTER TABLE `factura_tipo`
 -- AUTO_INCREMENT de la tabla `forma_pago`
 --
 ALTER TABLE `forma_pago`
-  MODIFY `FORMAPAGO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `FORMAPAGO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `iva`
@@ -1676,13 +1687,13 @@ ALTER TABLE `mercaderias_unidadesmedida`
 -- AUTO_INCREMENT de la tabla `modulos`
 --
 ALTER TABLE `modulos`
-  MODIFY `MODULO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `MODULO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `movimiento_caja`
+-- AUTO_INCREMENT de la tabla `movimientos_caja`
 --
-ALTER TABLE `movimiento_caja`
-  MODIFY `MC_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
+ALTER TABLE `movimientos_caja`
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_tipo`
@@ -1706,7 +1717,7 @@ ALTER TABLE `notas_creditos`
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `PERMISO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `PERMISO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -1831,6 +1842,12 @@ ALTER TABLE `facturaventa_formapago`
   ADD CONSTRAINT `facturaventa_formapago_ibfk_2` FOREIGN KEY (`FACTURA_ID`) REFERENCES `facturas_venta` (`FACTURAVENTA_ID`) ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `forma_pago`
+--
+ALTER TABLE `forma_pago`
+  ADD CONSTRAINT `forma_pago_ibfk_1` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado` (`ESTADO_ID`) ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `lista_insumos`
 --
 ALTER TABLE `lista_insumos`
@@ -1879,13 +1896,12 @@ ALTER TABLE `modulos`
   ADD CONSTRAINT `modulos_ibfk_1` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado` (`ESTADO_ID`) ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `movimiento_caja`
+-- Filtros para la tabla `movimientos_caja`
 --
-ALTER TABLE `movimiento_caja`
-  ADD CONSTRAINT `movimiento_caja_ibfk_1` FOREIGN KEY (`EMPLEADO_ID`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `movimiento_caja_ibfk_3` FOREIGN KEY (`MOVIMIENTOTIPO_ID`) REFERENCES `movimiento_tipo` (`MOVIMIENTOTIPO_ID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `movimiento_caja_ibfk_4` FOREIGN KEY (`FACTURAV_ID`) REFERENCES `facturas_venta` (`FACTURAVENTA_ID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `movimiento_caja_ibfk_5` FOREIGN KEY (`FACTURAC_ID`) REFERENCES `facturas_compra` (`FACTURACOMPRA_ID`) ON UPDATE CASCADE;
+ALTER TABLE `movimientos_caja`
+  ADD CONSTRAINT `movimientos_caja_ibfk_1` FOREIGN KEY (`EMPLEADO_ID`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `movimientos_caja_ibfk_2` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado` (`ESTADO_ID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `movimientos_caja_ibfk_3` FOREIGN KEY (`TIPO_ID`) REFERENCES `movimiento_tipo` (`MOVIMIENTOTIPO_ID`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `notas_creditos`

@@ -3,7 +3,7 @@ getModal("modalFormasPago",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-dollar" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#cargosModalCenter">
+            <h1><i class="fa fa-money" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#cargosModalCenter">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nueva Forma de Pago
             </button></h1>
         </div>

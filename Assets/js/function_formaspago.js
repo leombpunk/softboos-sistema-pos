@@ -25,10 +25,9 @@ $(document).ready(function () {
     $("#formFormasPago").submit(function (e) { 
         e.preventDefault();
         // var id = $("#cargo_id").val();
-        var nombre = $("#cargonombre").val();
-        var nivelacceso = $("#cargonacceso").val();
-        var estado = $("#cargoestado").val();
-        if (nombre == "" || nivelacceso == "" || estado == "") {
+        var nombre = $("#formasPagonombre").val();
+        var estado = $("#formasPagoestado").val();
+        if (nombre == "" || estado == "") {
             swal("Atención","Todos los campos son obligatorios","error");
             return false;
         }
@@ -43,7 +42,7 @@ $(document).ready(function () {
                 success: function (response) {
                     // console.log(response);
                     if (response.status){
-                        $("#cargosModalCenter").modal("hide");
+                        $("#formasPagosModalCenter").modal("hide");
                         $("#formFormasPago").trigger("reset");
                         swal("Resultado",response.message,"success");
                         tabalFalopa.ajax.reload(function(){});

@@ -188,4 +188,18 @@ function mensajeSQL($PDOobj){
     }
     return $mensaje;
 }
+//verificar que en la tabla de movimientos de caja exista una apertura de caja para el dia de hoy
+//si ya hay una apertura para hoy devuelve verdadero
+//si aun no hay ninguna apertura para hoy devuelve falso
+function isSetAperturaCaja(){
+    require_once("Libraries/Core/Mysql.php");
+    $con = new Mysql();
+    $sql = "SELECT 1 FROM `movimientos_caja` AS mc
+    WHERE mc.TIPO_ID = 3 AND DATE(mc.FECHA_ALTA) = DATE(NOW())";
+    $result = $con->select($sql);
+    if (!empty($result)) {
+        return true;
+    }
+    return false;
+}
 ?>
