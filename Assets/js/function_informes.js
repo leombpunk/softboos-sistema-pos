@@ -4,7 +4,6 @@ const today = () => {
     return date.getFullYear() + "-" +((date.getMonth()+1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth()+1)) + "-" + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
 }
 $(document).ready(function () {
-
     tabalFalopa = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -57,7 +56,6 @@ $(document).ready(function () {
                         $("#formMovimientos").trigger("reset");
                         swal("Resultado",response.message,"success");
                         tabalFalopa.ajax.reload(function(){});
-                        cargarTipoMovimiento();
                     }
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
@@ -66,69 +64,4 @@ $(document).ready(function () {
             });
         }
     });
-    cargarTipoMovimiento();
-    
 });
-function cargarTipoMovimiento() {
-    $("#movimientoTipo").html('');
-    $.ajax({
-        type: "GET",
-        url: base_url+"MovimientosCaja/getTipoMovimiento",
-        dataType: "json",
-        success: function (response) {
-            // console.log(response);
-            if(response.status){
-                response.data.forEach(element => {
-                    $("#movimientoTipo").append('<option value="'+element.id+'">'+element.descripcion+'</option>');
-                });
-            } else {
-                swal("Error","Surgió un error al cargar el tipo de movimiento!","error");
-            }
-            
-            
-        }
-    });
-}
-function movimientoCaja(){
-    //ver si existe una apertura
-    //si no existe obligarme a hacerla
-    //si existe puedo agregar ingresos u egresos
-}
-function openModal(){
-    $("#movimientosModalCenterTitle").html("Nueva movimiento");
-    $(".modal-header").addClass("headerRegister").removeClass("headerUpdate"); 
-    $("#btnText").html("Guardar");
-    $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
-    $("#formMovimientos").trigger("reset");
-    $("#movimiento_id").val("");
-    $("#movimientosModalCenter").modal("show");
-}
-function borrarMovimiento(id){
-    swal({
-        title: "Eliminar Movimiento",
-        text: "¿Quiere eliminar este Movimiento de Caja?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then(function(isConfirm){
-        if(isConfirm){
-            $.ajax({
-                type: "POST",
-                url: base_url+"MovimientosCaja/delMovimiento/",
-                data: "id="+id,
-                dataType: "json",
-                success: function (response) {
-                    if(response.status){
-                        swal("Eliminar!",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
-                        
-                        });
-                    }
-                    else {
-                        swal("Atencion!",response.message,"error");
-                    }
-                }
-            });
-        }
-    });
-}

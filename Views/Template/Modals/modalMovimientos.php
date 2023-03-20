@@ -19,10 +19,7 @@
                     <div class="form-group">
                         <label class="control-label" for="movimientoTipo">Tipo</label>
                         <select class="form-control" name="movimientoTipo" id="movimientoTipo" required>
-                            <option value="0" selected>Seleccionar...</option>
-                            <option value="3" hidden>SALDO INICIAL</option>
-                            <option value="1">INGRESO</option>
-                            <option value="2">EGRESO</option>
+
                         </select>
                         <div class="invalid-feedback">Complete este campo!</div>
                     </div>

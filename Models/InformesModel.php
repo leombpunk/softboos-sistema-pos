@@ -1,5 +1,5 @@
 <?php 
-class MovimientosCajaModel extends Mysql {
+class InformesModel extends Mysql {
 	private $arrDatos;
 	public function __construct(){
 		parent::__construct();
@@ -30,30 +30,6 @@ class MovimientosCajaModel extends Mysql {
 			WHERE MOVIMIENTOTIPO_ID = 3";//saldo inicial o apertura de caja queseyo
 		}
 		$request = $this->select_all($sql);
-		return $request;
-	}
-	public function insertMovimiento(string $descripcion, int $tipo, $monto){
-		$sql = "INSERT INTO movimientos_caja(EMPLEADO_ID, DESCRIPCION, FECHA_ALTA, ESTADO_ID, TIPO_ID, MONTO) 
-		VALUES(?,?,NOW(),1,?,?)";
-		$arrValues = array($_SESSION['userID'],$descripcion,$tipo,$monto);
-		$request = $this->insert($sql,$arrValues);
-		return $request;
-	}
-	public function updateMovimiento(int $id, string $nombre){
-		$sql = "UPDATE movimientos_caja SET DESCRIPCION = ?, ESTADO_ID = 5 WHERE ID = {$id}";
-		$arrValues = array($nombre);
-		$request = $this->update($sql,$arrValues);
-		return $request;
-	}
-	public function deleteMovimiento(int $id){
-		$sql = "UPDATE movimientos_caja SET ESTADO_ID = 3, FECHA_BAJA = NOW(), BAJA_EMPLEADO_ID = {$_SESSION['userID']} WHERE ID = {$id}";
-		$request = $this->delete($sql);
-		if($request){
-			$request = "ok";
-		}
-		else {
-			$request = "error";
-		}
 		return $request;
 	}
 }

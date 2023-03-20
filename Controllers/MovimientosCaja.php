@@ -1,10 +1,5 @@
 <?php 
 class MovimientosCaja extends Controllers{
-    private $permisoID;
-    private $cargoID;
-    private $arrPermiso;
-    private $arrModuloPermiso;
-    private $arrTablePer;
 	public function __construct(){
 		parent::__construct();
         session_start();
@@ -16,7 +11,7 @@ class MovimientosCaja extends Controllers{
         else {
             header('location: '.base_url().'login');
         }
-        getPermisos(11);
+        getPermisos(12);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
 			header("location: ".base_url()."Dashboard");
 		}
@@ -28,7 +23,6 @@ class MovimientosCaja extends Controllers{
 		$data["page_title"] = "Caja";
 		$data["page_name"] = "caja";
         $data["page_filejs"] = "function_movimientosCaja.js";
-        $data["button_name"] = $apertura ? 'Nuevo movimiento' : 'Apertura';
         $data["alert_message"] = $apertura ? '' : 'No se encontro ninguna Apertura de Caja el dia de hoy, por favor hagalo!';
 		$this->views->getView($this,"movimientosCaja",$data);
 	}
@@ -56,8 +50,8 @@ class MovimientosCaja extends Controllers{
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
         die();
     }
-    public function getMovimiento(int $cargoID){
-        $id = intval(strClear($cargoID));
+    public function getMovimiento(int $id){
+        $id = intval(strClear($id));
         if ($id > 0){
             $arrData = $this->model->selectMovimiento($id);
             if (empty($arrData)){
@@ -77,81 +71,57 @@ class MovimientosCaja extends Controllers{
         die();
     }
     public function setMovimiento(){
-        // dep($_POST);
-        $intID = intval(strClear($_POST['formasPago_id'])); //transforma el "" (vacio) en 0 (cero)
-        $strNombre = mb_strtoupper(strClear($_POST['formasPagonombre']));
-        $intEstado = intval(strClear($_POST['formasPagoestado']));   
-        //agregar validar datos
-        // var_dump($intID);
-        if ($intID != 0 and !validar($intID,2,1,11)){
+        $descripcion = strClear($_POST['movimientoDescripcion']);
+        $tipo = intval(strClear($_POST['movimientoTipo']));
+        $monto = floatval(strClear($_POST['movimientoMonto']));   
+        if (empty($descripcion) or !validar($descripcion,9,5)){
             $arrResponse = array(
                 'status' => false,
-                'message' => 'Datos incorrectos para el ID notifique al administrador.',
-                'expected' => 'Se espera un valor numérico mayor que 0 (cero).'
-            );
-        }
-        elseif (empty($strNombre) or !validar($strNombre,1,3,50)){
-            $arrResponse = array(
-                'status' => false,
-                'message' => 'Datos incorrectos para el Nombre de la forma de pago.',
+                'message' => 'Datos incorrectos para la descripcion del movimiento de caja.',
                 'expected' => 'Se espera una cadena de texto (alfabetica) de entre 3 a 50 carateres.'
             );
         }
-        elseif (empty($intEstado) or !validar($intEstado,2,1,11)){
+        elseif (empty($tipo) or !validar($tipo,2,1,11)){
             $arrResponse = array(
                 'status' => false,
-                'message' => 'Datos incorrectos para el estado de la forma de pago.',
-                'expected' => 'Se espera un valor numérico mayor que 0 (cero) entre 1 ó 2.'
+                'message' => 'Datos incorrectos para tipo de movimiento de caja.',
+                'expected' => 'Se espera un valor numérico mayor que 0 (cero). Entre 1 y 3.'
+            );
+        }
+        elseif (empty($monto) or !validar($monto,10,1,8)){
+            $arrResponse = array(
+                'status' => false,
+                'message' => 'Datos incorrectos para el monto del movimiento.',
+                'expected' => 'Se espera un valor numérico mayor que 0 (cero). Entre 1 y 999999,99.'
             );
         }
         else { //poner desde el try hasta antes de echo json_encode
             try {
-                if ($intID == 0){
-                    //crear
-                    $requestMovimiento = $this->model->insertMovimiento($strNombre,$intEstado);
-                    $option = 1;
+                $requestMovimiento = $this->model->insertMovimiento($descripcion,$tipo,$monto);
+                if ($requestMovimiento > 0){
+                    $arrResponse = array(
+                        'status' => true,
+                        'message' => 'Datos grabados correctamente.',
+                        'expected' => ''
+                    );
                 }
                 else {
-                    //actualizar
-                    $requestMovimiento = $this->model->updateMovimiento($intID,$strNombre,$intEstado);
-                    $option = 2;
+                    $arrResponse = array(
+                        'status' => false,
+                        'message' => 'No es posible almacenar los datos. '.$requestMovimiento,
+                        'expected' => ''
+                    );
                 }
             } catch (PDOException $e){
                 $requestMovimiento = mensajeSQL($e);
-            }
-            if ($requestMovimiento > 0){ //done
-                if ($option == 1){
-                    $arrResponse = array(
-                        'status' => true,
-                        'message' => 'Datos guardados correctamente.',
-                        'expected' => ''
-                    );
-                }
-                else {
-                    $arrResponse = array(
-                        'status' => true,
-                        'message' => 'Datos actualizados correctamente.',
-                        'expected' => ''
-                    );
-                }
-            }
-            elseif ($requestMovimiento == 'falopa'){ //exist
                 $arrResponse = array(
                     'status' => false,
-                    'message' => '¡Atencion! La Forma de Pago ya existe.',
+                    'message' => 'Error SQL. '.$requestMovimiento,
                     'expected' => ''
                 );
             }
-            else { //error
-                $arrResponse = array(
-                    'status' => false,
-                    'message' => empty($requestMovimiento)?'No es posible almacenar los datos.':$requestMovimiento." Para el Forma de Pago: ".$strNombre,
-                    'expected' => ''
-                );
-            }
+            
         }
-        //*********************
-        
         echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();
     }
@@ -161,9 +131,6 @@ class MovimientosCaja extends Controllers{
             $requestDelete = $this->model->deleteMovimiento($id);
             if ($requestDelete == "ok"){
                 $arrResponse = array("status" => true, "message" => "Datos borrados.");
-            }
-            elseif ($requestDelete == 'exist'){
-                $arrResponse = array("status" => false, "message" => "No es posible eliminar una forma de pago en uso.");
             }
             else {
                 $arrResponse = array("status" => false, "message" => "Error al eliminar los datos.");

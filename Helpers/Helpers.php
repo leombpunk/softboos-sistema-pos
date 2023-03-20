@@ -195,7 +195,9 @@ function isSetAperturaCaja(){
     require_once("Libraries/Core/Mysql.php");
     $con = new Mysql();
     $sql = "SELECT 1 FROM `movimientos_caja` AS mc
-    WHERE mc.TIPO_ID = 3 AND DATE(mc.FECHA_ALTA) = DATE(NOW())";
+    WHERE mc.TIPO_ID = 3 
+        AND DATE(mc.FECHA_ALTA) = DATE(NOW()) 
+        AND mc.ESTADO_ID <> 3";
     $result = $con->select($sql);
     if (!empty($result)) {
         return true;
