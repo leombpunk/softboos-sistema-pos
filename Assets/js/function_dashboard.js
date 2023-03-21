@@ -5,6 +5,44 @@
 //Cantidad de productos a la venta (para tener como referencia y hacer comparaciones con el top 5 -> puede ser un top mas grande)
 //En el caso que existan varios clientes se puede hacer un top de clientes
 //total de productos vendidos hasta la fecha
+$(document).ready(function() {
+  $.ajax({
+    type: "GET",
+    url: base_url+"Dashboard/productosVentaCantidad",
+    dataType: "json",
+    success: function(response) {
+      console.log(response);
+      $("#PVCantidad").html(response.cantidad);
+    }
+  });
+  $.ajax({
+    type: "GET",
+    url: base_url+"Dashboard/productoMasVendido",
+    dataType: "json",
+    success: function(response) {
+      console.log(response);
+      $("#PVMasPedido").html(response.NOMBRE);
+    }
+  });
+  $.ajax({
+    type: "GET",
+    url: base_url+"Dashboard/ingresosDelDia",
+    dataType: "json",
+    success: function(response) {
+      console.log(response);
+      $("#PVIngresosDia").html(response.total);
+    }
+  });
+  $.ajax({
+    type: "GET",
+    url: base_url+"Dashboard/totalProductosVendidos",
+    dataType: "json",
+    success: function(response) {
+      console.log(response);
+      $("#PVTotalVenta").html(parseInt(response.total_ventas));
+    }
+  });
+})
 var data = {
     labels: ["January", "February", "March", "April", "May"],
     datasets: [

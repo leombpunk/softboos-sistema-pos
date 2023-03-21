@@ -19,28 +19,6 @@ class InformesModel extends Mysql {
 		return $request;
 	}
 	public function selectInformeDelDia(){
-		/*Informe del dia*/
-		//total de productos cantidad y monto agrupado por forma de pago
-		//esto es todo ingreso
-		// $sql1 = "SELECT dpv.MERCADERIA_ID, m.NOMBRE, dpv.UNIMEDIDA_ID, um.NOMBRE, SUM(dpv.CANTIDAD) AS cantidad, dpv.PRECIO, SUM(dpv.CANTIDAD*dpv.PRECIO) AS monto, ff.FORMAPAGO_ID, fp.FORMA_PAGO 
-		// FROM detalle_pedidos_venta AS dpv
-		// INNER JOIN facturas_venta AS fv ON fv.FACTURAVENTA_ID = dpv.FACTURAVENTA_ID
-		// INNER JOIN facturaventa_formapago AS ff ON ff.FACTURA_ID = fv.FACTURAVENTA_ID
-		// INNER JOIN forma_pago AS fp ON fp.FORMAPAGO_ID = ff.FORMAPAGO_ID
-		// INNER JOIN unidades_medida AS um ON um.UNIMEDIDA_ID = dpv.UNIMEDIDA_ID
-		// LEFT JOIN mercaderias AS m ON m.MERCADERIA_ID = dpv.MERCADERIA_ID
-		// 	AND m.PARA_VENTA = 1
-		// WHERE DATE(fv.FECHA_EMISION) = DATE(NOW()) AND fv.ESTADO_ID = 1
-		// GROUP BY dpv.MERCADERIA_ID ASC, ff.FORMAPAGO_ID ASC";
-		//UNION
-		//esto es ingresos y egresos
-		// $sql2 = "SELECT mc.ID, mc.DESCRIPCION, '', '', '', '', IF(mt.TM_TIPO = 1,mc.MONTO,CONCAT('-',mc.MONTO)) AS monto, mc.TIPO_ID, mt.DESCRIPCION 
-		// FROM movimientos_caja AS mc
-		// INNER JOIN movimiento_tipo AS mt ON mt.MOVIMIENTOTIPO_ID = mc.TIPO_ID
-		// WHERE DATE(mc.FECHA_ALTA) = DATE(NOW())
-		// 	AND mc.ESTADO_ID = 1";
-		//totales
-		//calcular los totales con php sumando la columna monto
 		$sql = "SELECT dpv.MERCADERIA_ID AS id, m.NOMBRE AS descripcion, dpv.UNIMEDIDA_ID, um.NOMBRE, SUM(dpv.CANTIDAD) AS cantidad, dpv.PRECIO, SUM(dpv.CANTIDAD*dpv.PRECIO) AS monto, ff.FORMAPAGO_ID, fp.FORMA_PAGO 
 		FROM detalle_pedidos_venta AS dpv
 		INNER JOIN facturas_venta AS fv ON fv.FACTURAVENTA_ID = dpv.FACTURAVENTA_ID
@@ -49,7 +27,7 @@ class InformesModel extends Mysql {
 		INNER JOIN unidades_medida AS um ON um.UNIMEDIDA_ID = dpv.UNIMEDIDA_ID
 		LEFT JOIN mercaderias AS m ON m.MERCADERIA_ID = dpv.MERCADERIA_ID
 			AND m.PARA_VENTA = 1
-		WHERE DATE(fv.FECHA_EMISION) = DATE(NOW()) AND fv.ESTADO_ID = 1
+		WHERE DATE(fv.FECHA_EMISION) = DATE(NOW()) AND fv.ESTADO_ID = 3
 		GROUP BY dpv.MERCADERIA_ID ASC, ff.FORMAPAGO_ID ASC
 		UNION
 		SELECT mc.ID, mc.DESCRIPCION, '', '', '', '', IF(mt.TM_TIPO = 1,mc.MONTO,CONCAT('-',mc.MONTO)) AS monto, mc.TIPO_ID, mt.DESCRIPCION 

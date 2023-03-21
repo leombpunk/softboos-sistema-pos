@@ -58,6 +58,7 @@ class Empleados extends Controllers{
         }
         // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 	public function getEmpleado(int $empleadoID){
 		$id = intval(strClear($empleadoID));

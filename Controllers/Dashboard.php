@@ -22,6 +22,37 @@ class Dashboard extends Controllers{
 		'<script src="'.media().'js/plugins/chart.umd.js" type="text/javascript"></script>');
 		$this->views->getView($this,"dashboard",$data);
 	}
-	//metodos con los queries para mostrar los datos en el dashboard
+	public function productosVentaCantidad(){
+		//cantidad de productos a la venta
+		$arrData = $this->model->selectProductosVentaCantidad();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function productoMasVendido(){
+		//el mas vendido en general
+		$arrData = $this->model->selectProductoMasPedido();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function ingresosDelDia(){
+		//total de ingresos del dia
+		$arrData = $this->model->selectIngresosDelDia();
+		$arrData['total'] = formatMoney($arrData['total']);
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function totalProductosVendidos(){
+		//total de productos vendidos
+		$arrData = $this->model->selectTotalVentas();
+		// $arrData['total_ventas'] = formatDecimal($arrData['total_ventas']);
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function grafico1(){
+		//total de ventas por producto cantidad y monto
+	}
+	public function grafico2(){
+		//total de ventas totales por horas
+	}
 }
 ?>

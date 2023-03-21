@@ -71,7 +71,7 @@ class MovimientosCaja extends Controllers{
         die();
     }
     public function setMovimiento(){
-        $descripcion = strClear($_POST['movimientoDescripcion']);
+        $descripcion =  mb_strtoupper(strClear($_POST['movimientoDescripcion']));
         $tipo = intval(strClear($_POST['movimientoTipo']));
         $monto = floatval(strClear($_POST['movimientoMonto']));   
         if (empty($descripcion) or !validar($descripcion,9,5)){

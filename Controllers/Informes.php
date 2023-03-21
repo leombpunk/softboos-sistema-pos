@@ -17,7 +17,7 @@ class Informes extends Controllers{
 		}
 	}
 	public function today(){
-		$data["page_id"] = 11;
+		$data["page_id"] = 13;
 		$data["page_tag"] = "Informes | SoftBoos";
 		$data["page_title"] = "Informes";
 		$data["page_name"] = "informes";
@@ -29,14 +29,16 @@ class Informes extends Controllers{
         //diferenciar entre total efectivo (cash) y las demas formas de pago?
         $arrTotalEfectivo = array('id'=>'','descripcion'=>'TOTAL EFECTIVO','UNIDADMEDIA_ID'=>'','NOMBRE'=>'','cantidad'=>'','PRECIO'=>'','FORMAPAGO_ID'=>'','FORMA_PAGO'=>'PESOS','monto'=>0.00);
         $arrTotalGeneral = array('id'=>'','descripcion'=>'TOTAL GENERAL','UNIDADMEDIA_ID'=>'','NOMBRE'=>'','cantidad'=>'','PRECIO'=>'','FORMAPAGO_ID'=>'','FORMA_PAGO'=>'PESOS','monto'=>0.00);
-        for ($i=0; $i < count($arrData); $i++) { 
-            if ($arrData[$i]["FORMA_PAGO"] === 'EFECTIVO'){ // activo
-                $arrTotalEfectivo[8] = floatval($arrTotalEfectivo['monto']) + floatval($arrData[$i]['monto']);
+        if (!empty($arrData)){
+            for ($i=0; $i < count($arrData); $i++) { 
+                if ($arrData[$i]["FORMA_PAGO"] === 'EFECTIVO'){ // activo
+                    $arrTotalEfectivo['monto'] = floatval($arrTotalEfectivo['monto']) + floatval($arrData[$i]['monto']);
+                }
+                $arrTotalGeneral['monto'] = floatval($arrTotalGeneral['monto']) + floatval($arrData[$i]['monto']);
             }
-            $arrTotalGeneral[8] = floatval($arrTotalGeneral['monto']) + floatval($arrData[$i]['monto']);
+            array_push($arrData, $arrTotalEfectivo);
+            array_push($arrData, $arrTotalGeneral);
         }
-        array_push($arrData, $arrTotalEfectivo);
-        array_push($arrData, $arrTotalGeneral);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
         die();
     }

@@ -12,10 +12,10 @@
       </div>
       <div class="row">
         <div class="col-md-6 col-lg-3">
-          <div class="widget-small primary coloured-icon"><i class="icon fa fa-users fa-3x"></i>
+          <div class="widget-small primary coloured-icon"><i class="icon fa fa-archive fa-3x"></i>
             <div class="info">
               <h4>En venta</h4>
-              <p><b>5</b> Productos</p>
+              <p><b id="PVCantidad">0</b> Productos</p>
             </div>
           </div>
         </div>
@@ -23,23 +23,23 @@
           <div class="widget-small info coloured-icon"><i class="icon fa fa-thumbs-o-up fa-3x"></i>
             <div class="info">
               <h4>Más pedido</h4>
-              <p>Producto 1</p>
+              <p id="PVMasPedido">Producto X</p>
             </div>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
-          <div class="widget-small warning coloured-icon"><i class="icon fa fa-files-o fa-3x"></i>
+          <div class="widget-small warning coloured-icon"><i class="icon fa fa-dollar fa-3x"></i>
             <div class="info">
               <h4>Ingresos del dia</h4>
-              <p>Pesos: <b>15.000</b>$</p>
+              <p>Pesos: <b id="PVIngresosDia">0.00</b>$</p>
             </div>
           </div>
         </div>
         <div class="col-md-6 col-lg-3">
-          <div class="widget-small danger coloured-icon"><i class="icon fa fa-star fa-3x"></i>
+          <div class="widget-small danger coloured-icon"><i class="icon fa fa-handshake-o fa-3x"></i>
             <div class="info">
-              <h4>Total de ventas</h4>
-              <p><b>1268</b> Productos</p>
+              <h4>Total ventas</h4>
+              <p><b id="PVTotalVenta">0</b> Productos</p>
             </div>
           </div>
         </div>

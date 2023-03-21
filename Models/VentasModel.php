@@ -96,9 +96,10 @@ class VentasModel extends Mysql {
 	}
 	private function insertCabecera(array $datos){
 		//insertar tambien formas de pago en la tabla facturaventa_formapago
+		$numero = $this->selectNumeroFactura();
 		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
 		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, FECHA_EMISION, DIRECCION_ENVIO, TOTAL, IVA_TOTAL)
-		VALUES(?, ".intval($this->selectNumeroFactura()).", ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
+		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
 		$request = $this->insert($sql, $datos);
 		return $request;
 	}
