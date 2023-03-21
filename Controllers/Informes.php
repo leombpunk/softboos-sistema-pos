@@ -24,27 +24,19 @@ class Informes extends Controllers{
         $data["page_filejs"] = "function_informes.js";
 		$this->views->getView($this,"informes",$data);
 	}
-    public function getMovimientos(){
-        $arrData = $this->model->selectMovimientos();
+    public function getinformeDelDia(){
+        $arrData = $this->model->selectInformeDelDia();
+        //diferenciar entre total efectivo (cash) y las demas formas de pago?
+        $arrTotalEfectivo = array('id'=>'','descripcion'=>'TOTAL EFECTIVO','UNIDADMEDIA_ID'=>'','NOMBRE'=>'','cantidad'=>'','PRECIO'=>'','FORMAPAGO_ID'=>'','FORMA_PAGO'=>'PESOS','monto'=>0.00);
+        $arrTotalGeneral = array('id'=>'','descripcion'=>'TOTAL GENERAL','UNIDADMEDIA_ID'=>'','NOMBRE'=>'','cantidad'=>'','PRECIO'=>'','FORMAPAGO_ID'=>'','FORMA_PAGO'=>'PESOS','monto'=>0.00);
         for ($i=0; $i < count($arrData); $i++) { 
-            // if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
-            //     $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
-            // }
-            // elseif ($arrData[$i]["ESTADO_ID"] == 2){ // inactivo
-            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">Inactivo</span>';
-            // }
-            // elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
-            //     $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
-            //     // agregar el cambio de funcion y boton de borrar a restablecer
-            // }
-            // else { // dato no controlado
-            //     $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
-            // }
-            $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="borrarMovimiento('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
-            </div>'; 
+            if ($arrData[$i]["FORMA_PAGO"] === 'EFECTIVO'){ // activo
+                $arrTotalEfectivo[8] = floatval($arrTotalEfectivo['monto']) + floatval($arrData[$i]['monto']);
+            }
+            $arrTotalGeneral[8] = floatval($arrTotalGeneral['monto']) + floatval($arrData[$i]['monto']);
         }
-        // dep($arrData);
+        array_push($arrData, $arrTotalEfectivo);
+        array_push($arrData, $arrTotalGeneral);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
         die();
     }

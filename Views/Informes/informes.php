@@ -18,13 +18,12 @@ getModal("modalMovimientos",$data); ?>
                         <table class="table table-hover table-striped table-sm" id="sampleTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>ID</th>
                                     <th>DESCRIPCION</th>
-                                    <th>TIPO</th>
-                                    <th>FECHA DE ALTA</th>
+                                    <th>UNIDAD MEDIDA</th>
+                                    <th>CANTIDAD</th>
+                                    <th>PRECIO</th>
                                     <th>MONTO</th>
-                                    <th>RESPONSABLE</th>
-                                    <th class="text-center">ACCIONES</th>
+                                    <th>MOVIMIENTO TIPO</th>
                                 </tr>
                             </thead>
                         </table>
