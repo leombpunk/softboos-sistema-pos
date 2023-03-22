@@ -3,7 +3,6 @@ class InformesModel extends Mysql {
 	public function __construct(){
 		parent::__construct();
 	}
-	//traer todo o solo lo del día, esa es la cuestión
 	public function selectMovimientos(){
 		$sql = "SELECT mc.ID AS id, mc.DESCRIPCION AS descripcion, mt.DESCRIPCION AS tipo, mc.FECHA_ALTA AS alta, mc.MONTO AS monto, CONCAT(e.NOMBRE,' ',e.APELLIDO) AS empleado 
 		FROM movimientos_caja AS mc

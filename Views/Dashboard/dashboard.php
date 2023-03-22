@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Cantidad de ventas por horas</h3>
+            <h3 class="tile-title">Cantidad total por producto vendidos en general</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="myChart"></canvas>
             </div>
@@ -73,7 +73,7 @@
         </div>
         <div class="col-md-6">
           <div class="tile">
-            <h3 class="tile-title">Cantidad de ventas por producto</h3>
+            <h3 class="tile-title">Monto total por producto vendidos en general</h3>
             <div class="embed-responsive embed-responsive-16by9">
               <canvas class="embed-responsive-item" id="myChart2" style="margin-left: 25%;"></canvas>
             </div>

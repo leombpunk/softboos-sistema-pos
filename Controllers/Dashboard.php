@@ -50,9 +50,15 @@ class Dashboard extends Controllers{
 	}
 	public function grafico1(){
 		//total de ventas por producto cantidad y monto
+		$arrData = $this->model->selectCantidadProductosVendidos();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 	public function grafico2(){
 		//total de ventas totales por horas
+		$arrData = $this->model->selectMontoPorProductoVenido();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 }
 ?>
