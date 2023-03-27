@@ -1,5 +1,6 @@
 <?php headerAdmin($data);
-getModal("modalCombos",$data); ?>
+getModal("modalCombos",$data);
+getModal("modalCombosAgregarInsumo",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>

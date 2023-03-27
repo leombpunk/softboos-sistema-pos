@@ -1,10 +1,6 @@
 var tabalFalopa;
 //estructura de los ingredientes
-const ingredientesList = [{
-    idInsumo: 0,
-    idUnidadMedida: 0,
-    cantidad: 0.00
-},];
+const ingredientesList = [];
 //estructura del combo
 const combo = {
     idCombo: 0,
@@ -15,6 +11,7 @@ const combo = {
     ingredientes: ingredientesList
 }
 const insumosList = [];
+var indiceInsumo = 0;
 $(document).ready(function () {
     tabalFalopa = $("#sampleTable").DataTable({
         "aProcessing": true,
@@ -56,27 +53,87 @@ $(document).ready(function () {
             combo.estado = estado;
             combo.descripcion = descripcion;
             console.log(combo);
-            $.ajax({
-                type: "POST",
-                url: base_url+"Combos/setCombo",
-                data: combo,
-                dataType: "json",
-                success: function (response) {
-                    // console.log(response);
-                    if (response.status){
-                        $("#combosModalCenter").modal("hide");
-                        $("#formCombo").trigger("reset");
-                        swal("Resultado",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){});
-                    }
-                    else {
-                        swal("Error",response.message+" "+response.expected,"error");
-                    }
-                }
+            // $.ajax({
+            //     type: "POST",
+            //     url: base_url+"Combos/setCombo",
+            //     data: combo,
+            //     dataType: "json",
+            //     success: function (response) {
+            //         // console.log(response);
+            //         if (response.status){
+            //             $("#combosModalCenter").modal("hide");
+            //             $("#formCombo").trigger("reset");
+            //             swal("Resultado",response.message,"success");
+            //             tabalFalopa.ajax.reload(function(){});
+            //         }
+            //         else {
+            //             swal("Error",response.message+" "+response.expected,"error");
+            //         }
+            //     }
+            // });
+        }
+    });
+    $("#formInsumo").submit(function(e){
+        e.preventDefault();
+        //capturar y validar!!!
+        var idInsumo = $("#insumo_id").val();
+        var nombreInsumo = $("#insumonombre").val();
+        var idUniMedida = $("#insumounidadmedida").val();
+        var unidadNombre = $("#insumounidadmedida option:selected").text();
+        var cantidad = $("#insumocantidad").val();
+        console.log(unidadNombre);
+        if (cantidad > 0 || cantidad < 0) {
+            //hacer el append
+            $("#tbodyInsumo").append("<tr id='item-"+indiceInsumo+"'></tr>");
+            //descripcion - nombre
+            $("#item-"+indiceInsumo).append("<td class='align-middle'>"+nombreInsumo+"</td>");
+            //unidad medida
+            $("#item-"+indiceInsumo).append("<td class='text-center align-middle'>"+unidadNombre+"</td>");
+            //cantidad
+            $("#item-"+indiceInsumo).append("<td class='text-center align-middle'>"+cantidad+"</td>");
+            //boton
+            $("#item-"+indiceInsumo).append("<td class='text-center'><button type='button' onclick='eliminarItem(`"+idInsumo+"`,`"+indiceInsumo+"`)' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i></button></td>");
+            ingredientesList.push({
+                idInsumo: parseInt(idInsumo),
+                nombreInsumo: nombreInsumo,
+                idUnidadMedida: parseInt(idUniMedida),
+                nombreUnidadMedida: "",
+                cantidad: cantidad
+            });
+            indiceInsumo++;
+
+            $.notify({
+                title: "Bien! ",
+                message: "El insumo se agrego a la lista",
+                icon: 'fa fa-check' 
+            },{
+                position: "absolute",
+                type: "success",
+                placement: {
+                  from: "bottom",
+                  align: "right"
+              },
+              z_index: 3000
+            });
+            $("#combosAgregarInsumoModalCenter").modal("hide");
+        }
+        else {
+            $.notify({
+                title: "Error! ",
+                message: "La cantidad esta vacia",
+                icon: 'fa fa-equis' 
+            },{
+                position: "absolute",
+                type: "danger",
+                placement: {
+                  from: "bottom",
+                  align: "right"
+              },
+              z_index: 3000
             });
         }
     });
-    //cambia el valor del input de codigo
+    //cambia el valor del input de codigo producto (idproducto)
     $("#combocodproducto").on("change", function(){
         let value = $("#combocodproducto").val();
         console.log("ola q ase!");
@@ -134,9 +191,17 @@ function openModal(){
     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
     $("#formCombo").trigger("reset");
     $("#combo_id").val("");
+    //add
+    $("#combonombre").attr("disabled",true)
+    $("#combodescripcion").attr("disabled",true)
+    $("#comboestado").attr("disabled",true)
+    $("#comboaddingrediente").attr("disabled",true)
+    $("#button-addon2").attr("disabled",true)
+    $("#btnGuardar").attr("disabled",true)
+    //end
     $("#combosModalCenter").modal("show");
 }
-function editarComboo(id){
+function editarCombo(id){
     $("#combosModalCenterTitle").html("Editar Combo");
     $(".modal-header").addClass("headerUpdate").removeClass("headerRegister"); 
     $("#btnText").html("Actualizar");
@@ -159,7 +224,7 @@ function editarComboo(id){
         }
     });
 }
-function borrarComboo(id){
+function borrarCombo(id){
     swal({
         title: "Eliminar Combo",
         text: "¿Quiere eliminar el Combo?",
@@ -187,4 +252,49 @@ function borrarComboo(id){
             });
         }
     });
+}
+
+function openModal2(){ //abre el modal de agregar insumo
+    // console.log(this);
+    //evaluar que "comboaddingrediente" tenga un valor
+    let ingredienteId = $("#comboaddingrediente").val();
+    if (ingredienteId != ""){
+        if(ingredientesList.find((item) => item.idInsumo == ingredienteId)){
+            swal("Atención!","El insumo ya fue agregado a la lista","error");
+        }
+        else {
+            //darle los datos al modal "combosAgregarInsumoModalCenter"
+            const insumo = insumosList.find((item) => item.id == ingredienteId);
+            //como unidad de medida no es un array voy a simular uno
+            const unidadMedida = [];
+            unidadMedida.push({'id':insumo.umid, 'nombre':insumo.umnom});
+            //fin simular
+            console.log(insumo);
+            $("#formInsumo").trigger("reset");
+            $("#insumo_id").val(insumo.id);
+            $("#insumonombre").val(insumo.nom);
+            unidadMedida.forEach(element => {
+                $("#insumounidadmedida").append('<option value="'+element.id+'">'+element.nombre+'</option>');
+            });
+            $("#combosAgregarInsumoModalCenter").modal("show");
+        }
+    } 
+    else {
+        swal("Atención!","No hay ningun insumo para agregar a la lista","error");
+    }
+}
+function eliminarItem(itemId, iDetalle){
+    // console.log({itemId: itemId});
+    //remover
+    $("#item-"+iDetalle).remove();
+    //remover de la constante combo
+    indice = ingredientesList.findIndex((value, index, obj) => {
+        // console.log({value: value, index: index, obj: obj});
+        if (value.productoId == itemId) return (index+1);
+        // return (value.productoId == itemId) && index;
+    });
+    // console.log({indice:indice});
+    ingredientesList.splice(indice,1); //para quitar un elemento no me sirve el iDetalle
+    // console.log(combo);
+    // console.log(indiceInsumo);
 }

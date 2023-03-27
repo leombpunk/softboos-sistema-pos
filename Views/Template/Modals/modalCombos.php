@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <input type="hidden" id="combo_id" name="combo_id" value="">
                     <div class="form-group">
-                        <label for="" class="control-label">Producto</label>
+                        <label for="combocodproducto" class="control-label">Producto</label>
                         <input type="text" class="form-control" id="combocodproducto" list="listproductos" required>
                         <datalist id="listproductos">
                             <!-- <option value="0">0 | Vacio</option>
@@ -41,12 +41,12 @@
                                 <!-- <option value="0">0 | Vacio</option> -->
                             </datalist>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" disabled>Agregar</button>
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="openModal2();" disabled>Agregar</button>
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table class="table">
-                                <thead>
+                            <table class="table table-hover table-striped table-sm" id="TablaInsumo">
+                                <thead class="thead-dark">
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Unidad Medida</th>
@@ -54,13 +54,13 @@
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
+                                <tbody id="tbodyInsumo">
+                                    <!-- <tr>
                                         <td>mamadas</td>
                                         <td>unidad</td>
                                         <th>5</th>
                                         <th><button>borrar</button></th>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
                         </div>
