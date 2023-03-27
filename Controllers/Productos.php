@@ -35,6 +35,7 @@ class Productos extends Controllers{
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
+	//para usarlo en la vista factura compra
 	public function getProductos(){
 		$arrData = $this->model->selectProductos();
 		for ($i=0; $i < count($arrData); $i++) {
@@ -96,6 +97,18 @@ class Productos extends Controllers{
             echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         }
         die();
+	}
+	//para usarlo en la vista de combos y factura compra
+	public function getSoloInsumos(){
+		$arrData = $this->model->selectSoloInsumos();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	//para usarlo e la vista de combos y factura venta
+	public function getSoloProductos(){
+		$arrData = $this->model->selectSoloProductos();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 	//----**estas funciones quizas sea mejor ponerlas en otra clase**----
 	public function getRubros(){

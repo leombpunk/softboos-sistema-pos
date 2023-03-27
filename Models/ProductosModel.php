@@ -33,6 +33,36 @@ class ProductosModel extends Mysql {
 		$request = $this->select($sql);
 		return $request;
 	}
+	public function selectSoloInsumos(){
+		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, 
+		mu.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, 
+		IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa
+		FROM mercaderias m 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
+		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
+		WHERE m.PARA_INSUMO = 1";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function selectSoloProductos(){
+		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, 
+		mu.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, 
+		IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa
+		FROM mercaderias m 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
+		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
+		WHERE m.PARA_VENTA = 1";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectRubros(){
 		$sql = "SELECT RUBRO_ID, NOMBRE FROM rubros WHERE ESTADO_ID = 1";
 		$request = $this->select_all($sql);
