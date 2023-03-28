@@ -69,75 +69,120 @@ class Combos extends Controllers{
         die();
     }
     public function setCombo(){
-        $intID = intval(strClear($_POST['formasPago_id'])); //transforma el "" (vacio) en 0 (cero)
-        $strNombre = mb_strtoupper(strClear($_POST['formasPagonombre']));
-        $intEstado = intval(strClear($_POST['formasPagoestado']));   
-        if ($intID != 0 and !validar($intID,2,1,11)){
-            $arrResponse = array(
-                'status' => false,
-                'message' => 'Datos incorrectos para el ID notifique al administrador.',
-                'expected' => 'Se espera un valor numérico mayor que 0 (cero).'
-            );
-        }
-        elseif (empty($strNombre) or !validar($strNombre,1,3,50)){
-            $arrResponse = array(
-                'status' => false,
-                'message' => 'Datos incorrectos para el Nombre de la forma de pago.',
-                'expected' => 'Se espera una cadena de texto (alfabetica) de entre 3 a 50 carateres.'
-            );
-        }
-        elseif (empty($intEstado) or !validar($intEstado,2,1,11)){
-            $arrResponse = array(
-                'status' => false,
-                'message' => 'Datos incorrectos para el estado de la forma de pago.',
-                'expected' => 'Se espera un valor numérico mayor que 0 (cero) entre 1 ó 2.'
-            );
-        }
-        else { //poner desde el try hasta antes de echo json_encode
-            try {
-                if ($intID == 0){
-                    //crear
-                    $requestCombo = $this->model->insertCombo($strNombre,$intEstado);
-                    $option = 1;
-                }
-                else {
-                    //actualizar
-                    $requestCombo = $this->model->updateCombo($intID,$strNombre,$intEstado);
-                    $option = 2;
-                }
-            } catch (PDOException $e){
-                $requestCombo = mensajeSQL($e);
+        if($_POST){
+            $id = intval(strClear($_POST['idCombo'])); //transforma el "" (vacio) en 0 (cero)
+            $idMercaderia = intval(strClear($_POST['idMercaderia']));
+            $nombre = mb_strtoupper(strClear($_POST['nombre']));
+            $descripcion = mb_strtoupper(strClear($_POST['descripcion']));
+            $estado = intval(strClear($_POST['estado']));   
+            $ingredientes = empty($_POST["ingredientes"]) ? [] : $_POST["ingredientes"];
+            if ($id != 0 and !validar($id,2,1,11)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'Datos incorrectos para el ID notifique al administrador.',
+                    'expected' => 'Se espera un valor numérico mayor que 0 (cero).'
+                );
             }
-            if ($requestCombo > 0){ //done
-                if ($option == 1){
+            elseif (empty($idMercaderia) or !validar($idMercaderia,2,1,11)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'El id de producto es incorrecto, notifique al administrador.',
+                    'expected' => 'Se espera un valor numérico mayor que 0 (cero).'
+                );
+            }
+            elseif (empty($nombre) or !validar($nombre,1,3,50)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'Datos incorrectos para el Nombre del combo.',
+                    'expected' => 'Se espera una cadena de texto (alfabetica) de entre 3 a 50 carateres.'
+                );
+            }
+            elseif (empty($estado) or !validar($estado,2,1,11)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'Datos incorrectos para el estado de la forma de pago.',
+                    'expected' => 'Se espera un valor numérico mayor que 0 (cero) entre 1 ó 2.'
+                );
+            }
+            elseif (!empty($descripcion) and !validar($descripcion,9,3,500)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'Datos incorrectos para la descripcion del combo.',
+                    'expected' => 'Se espera una cadena de texto (alfabetica) de entre 3 a 500 carateres.'
+                );
+            }
+            elseif (empty($ingredientes)){
+                $arrResponse = array(
+                    'status' => false,
+                    'message' => 'Datos incorrectos para la lista de insumos del combo.',
+                    'expected' => 'Se espera que almenos agregue un insumo.'
+                );
+            }
+            else { //poner desde el try hasta antes de echo json_encode
+                foreach ($ingredientes as $key => $value) {
+					// array_push($arrResponse, $value['productoId']);
+					if (empty($value['idInsumo']) and !validar($value['idInsumo'],2,1,11)) {
+						$arrResponse = array("status" => false, "message" => "El id del insumo no es valido. {$value}");
+						break;
+					}
+					elseif (empty($value['cantidad']) and !validar($value['cantidad'],10)) {
+						$arrResponse = array("status" => false, "message" => "La cantidad del insumo no es valido. {$value}");
+						break;
+					}
+					elseif (empty($value['idUnidadMedida']) and !validar($value['idUnidadMedida'],2,1,11)) {
+						$arrResponse = array("status" => false, "message" => "La unidad de medida del insumo no es valida. {$value}");
+						break;
+					}
+				}
+                if (!isset($arrResponse)){
+                    try {
+                        if ($id == 0){
+                            //crear
+                            $requestCombo = $this->model->insertCombo($idMercaderia,$nombre,$descripcion,$estado,$ingredientes);
+                            $option = 1;
+                        }
+                        else {
+                            //actualizar
+                            $requestCombo = $this->model->updateCombo($idMercaderia,$nombre,$descripcion,$estado,$ingredientes,$id);
+                            $option = 2;
+                        }
+                    } catch (PDOException $e){
+                        $requestCombo = mensajeSQL($e);
+                    }
+                }
+                if ($requestCombo > 0){ //done
+                    if ($option == 1){
+                        $arrResponse = array(
+                            'status' => true,
+                            'message' => 'Datos guardados correctamente.',
+                            'expected' => ''
+                        );
+                    }
+                    else {
+                        $arrResponse = array(
+                            'status' => true,
+                            'message' => 'Datos actualizados correctamente.',
+                            'expected' => ''
+                        );
+                    }
+                }
+                elseif ($requestCombo == 'falopa'){ //exist
                     $arrResponse = array(
-                        'status' => true,
-                        'message' => 'Datos guardados correctamente.',
+                        'status' => false,
+                        'message' => '¡Atencion! La Forma de Pago ya existe.',
                         'expected' => ''
                     );
                 }
-                else {
+                else { //error
                     $arrResponse = array(
-                        'status' => true,
-                        'message' => 'Datos actualizados correctamente.',
+                        'status' => false,
+                        'message' => empty($requestCombo)?'No es posible almacenar los datos.':$requestCombo." Para el Forma de Pago: ".$nombre,
                         'expected' => ''
                     );
                 }
             }
-            elseif ($requestCombo == 'falopa'){ //exist
-                $arrResponse = array(
-                    'status' => false,
-                    'message' => '¡Atencion! La Forma de Pago ya existe.',
-                    'expected' => ''
-                );
-            }
-            else { //error
-                $arrResponse = array(
-                    'status' => false,
-                    'message' => empty($requestCombo)?'No es posible almacenar los datos.':$requestCombo." Para el Forma de Pago: ".$strNombre,
-                    'expected' => ''
-                );
-            }
+        } else {
+            $arrResponse = array("status" => false, "message" => "No envió datos.");
         }
         echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();

@@ -53,24 +53,24 @@ $(document).ready(function () {
             combo.estado = estado;
             combo.descripcion = descripcion;
             console.log(combo);
-            // $.ajax({
-            //     type: "POST",
-            //     url: base_url+"Combos/setCombo",
-            //     data: combo,
-            //     dataType: "json",
-            //     success: function (response) {
-            //         // console.log(response);
-            //         if (response.status){
-            //             $("#combosModalCenter").modal("hide");
-            //             $("#formCombo").trigger("reset");
-            //             swal("Resultado",response.message,"success");
-            //             tabalFalopa.ajax.reload(function(){});
-            //         }
-            //         else {
-            //             swal("Error",response.message+" "+response.expected,"error");
-            //         }
-            //     }
-            // });
+            $.ajax({
+                type: "POST",
+                url: base_url+"Combos/setCombo",
+                data: combo,
+                dataType: "json",
+                success: function (response) {
+                    // console.log(response);
+                    if (response.status){
+                        $("#combosModalCenter").modal("hide");
+                        $("#formCombo").trigger("reset");
+                        swal("Resultado",response.message,"success");
+                        tabalFalopa.ajax.reload(function(){});
+                    }
+                    else {
+                        swal("Error",response.message+" "+response.expected,"error");
+                    }
+                }
+            });
         }
     });
     $("#formInsumo").submit(function(e){
@@ -101,7 +101,7 @@ $(document).ready(function () {
                 cantidad: cantidad
             });
             indiceInsumo++;
-
+            $("#combosAgregarInsumoModalCenter").modal("hide");
             $.notify({
                 title: "Bien! ",
                 message: "El insumo se agrego a la lista",
@@ -115,7 +115,6 @@ $(document).ready(function () {
               },
               z_index: 3000
             });
-            $("#combosAgregarInsumoModalCenter").modal("hide");
         }
         else {
             $.notify({

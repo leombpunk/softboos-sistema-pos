@@ -116,7 +116,7 @@ class Clientes extends Controllers{
 			}
 			else {
 				if ($option == 1){ // actualizar
-					$arrData = array($dni, $nombre, $apellido, $fechanac,$cuil, $telefono, $mail, $direccion, $estado,$id);
+					$arrData = array($dni, $nombre, $apellido, $fechanac, $cuil, $telefono, $mail, $direccion, $estado, $id);
 					$requestCliente = $this->model->updateCliente($arrData);
 					if ($requestCliente > 0){
 						$arrResponse = array("status" => true, "message" => "El cliente se ha actualizado satisfactoriamente.", "data" => $requestCliente);
@@ -140,8 +140,8 @@ class Clientes extends Controllers{
 	}
 	public function delCliente(){
 		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
-			$this->id = intval($_POST["id"]);
-			$arrRequest = $this->model->deleteCliente($this->id);
+			$id = intval($_POST["id"]);
+			$arrRequest = $this->model->deleteCliente($id);
 			if ($arrRequest == "ok"){
                 $arrResponse = array("status" => true, "message" => "Cliente borrado correctamente.");
             }
