@@ -46,6 +46,7 @@ class Combos extends Controllers{
                 $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
             }
             $arrData[$i]['actions'] = '<div class="text-center">
+            <button onclick="verCombo('.$arrData[$i]['RECETA_ID'].');" class="btn btn-info btn-sm" title="Ver detalle" type="button"><i class="fa fa-eye"></i></button>
             <button onclick="editarCombo('.$arrData[$i]['RECETA_ID'].');" class="btn btn-primary btn-sm" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
             <button onclick="borrarCombo('.$arrData[$i]['RECETA_ID'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
             </div>'; 
@@ -62,6 +63,34 @@ class Combos extends Controllers{
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
             else {
+                $arrResponse = array('status' => true, 'data' => $arrData);
+            }
+            echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        }
+        die();
+    }
+    public function getComboEInsumos(int $idCombo){
+        //armar los datos a devolver
+        $id = intval(strClear($idCombo));
+        $insumos = array();
+        if ($id > 0){
+            $arrData = $this->model->selectCombo($id);
+            $arrInsumos = $this->model->selectInsumosCombo($id);
+            if (empty($arrData) or empty($arrInsumos)){
+                $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
+            }
+            else {
+                //foreach
+                foreach ($arrInsumos as $key => $value) {
+                    array_push($insumos,array(
+                        'id' => $value['id'], 
+                        'nombre' => $value['nombre'],
+                        'umid' => $value['umid'],
+                        'umnombre' => $value['umnombre'],
+                        'cantidad' => $value['cantidad'],
+                    ));
+                }
+                $arrData['insumos'] = $insumos;
                 $arrResponse = array('status' => true, 'data' => $arrData);
             }
             echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
@@ -135,7 +164,7 @@ class Combos extends Controllers{
 					}
 				}
                 if (!isset($arrResponse)){
-                    try {
+                    // try {
                         if ($id == 0){
                             //crear
                             $requestCombo = $this->model->insertCombo($idMercaderia,$nombre,$descripcion,$estado,$ingredientes);
@@ -143,42 +172,43 @@ class Combos extends Controllers{
                         }
                         else {
                             //actualizar
-                            $requestCombo = $this->model->updateCombo($idMercaderia,$nombre,$descripcion,$estado,$ingredientes,$id);
+                            $requestCombo = $this->model->updateCombo($nombre,$descripcion,$estado,$ingredientes,$id);
                             $option = 2;
                         }
-                    } catch (PDOException $e){
-                        $requestCombo = mensajeSQL($e);
-                    }
-                }
-                if ($requestCombo > 0){ //done
-                    if ($option == 1){
-                        $arrResponse = array(
-                            'status' => true,
-                            'message' => 'Datos guardados correctamente.',
-                            'expected' => ''
-                        );
-                    }
-                    else {
-                        $arrResponse = array(
-                            'status' => true,
-                            'message' => 'Datos actualizados correctamente.',
-                            'expected' => ''
-                        );
-                    }
-                }
-                elseif ($requestCombo == 'falopa'){ //exist
-                    $arrResponse = array(
-                        'status' => false,
-                        'message' => '¡Atencion! La Forma de Pago ya existe.',
-                        'expected' => ''
-                    );
-                }
-                else { //error
-                    $arrResponse = array(
-                        'status' => false,
-                        'message' => empty($requestCombo)?'No es posible almacenar los datos.':$requestCombo." Para el Forma de Pago: ".$nombre,
-                        'expected' => ''
-                    );
+                        // $arrResponse = $requestCombo;
+                        if ($requestCombo == "Ok"){ //done
+                            if ($option == 1){
+                                $arrResponse = array(
+                                    'status' => true,
+                                    'message' => 'Datos guardados correctamente.',
+                                    'expected' => ''
+                                );
+                            }
+                            else {
+                                $arrResponse = array(
+                                    'status' => true,
+                                    'message' => 'Datos actualizados correctamente.',
+                                    'expected' => ''
+                                );
+                            }
+                        }
+                        elseif ($requestCombo == 'Falopa'){ //exist
+                            $arrResponse = array(
+                                'status' => false,
+                                'message' => '¡Atencion! El combo ya existe.',
+                                'expected' => ''
+                            );
+                        }
+                        else { //error
+                            $arrResponse = array(
+                                'status' => false,
+                                'message' => empty($requestCombo)?'No es posible almacenar los datos.':$requestCombo." Para el Combo: ".$nombre,
+                                'expected' => ''
+                            );
+                        }
+                    // } catch (PDOException $e){
+                    //     $arrResponse = array("status" => false, "message" => $e);
+                    // }
                 }
             }
         } else {

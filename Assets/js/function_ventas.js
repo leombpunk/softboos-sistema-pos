@@ -41,7 +41,7 @@ $(document).ready(function () {
             "url": base_url+"Assets/Spanish.json"
         },
         "ajax": {
-            "url": base_url+"Productos/getProductosFactura",
+            "url": base_url+"Productos/getProductosFacturaVenta",
             "dataSrc": ""
         },
         "columns": [
@@ -72,11 +72,13 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 if (response.status){
-                    // console.log(response);
-                    swal("Bien!",response.message,"success");
+                    console.log(response);
+                    swal("Bien!",response.message,"success").then(function(isConfirm){
+                        window.location = base_url+"ventas";
+                    });
                 }
                 else {
-                    // swal("Atención!",response.message,"error");
+                    swal("Atención!",response.message,"error");
                     console.log(response.message);
                 }
             }
@@ -85,7 +87,24 @@ $(document).ready(function () {
     // sucursalData(1);
     numeroFactura();
     cargarClientes();
+    cargaFormasPago();
 });
+function cargaFormasPago(){
+    let formaPagoSelect = document.getElementById("formaPago");
+    $.ajax({
+        type: "GET",
+        dataType: "json",
+        url: base_url+"FormasPago/getFormasPagos",
+        success: function(response){
+            response.forEach(element => {
+                formaPagoSelect.innerHTML += "<option value='"+element.FORMAPAGO_ID+"'>"+element.FORMA_PAGO +"</option>";
+            });
+        },
+        error: function(error){
+            swal("Atención!",error,"error");
+        }
+    });
+}
 function cargarClientes(){
     //vamos a probar
     let clienteDataList = document.getElementById("clientList");

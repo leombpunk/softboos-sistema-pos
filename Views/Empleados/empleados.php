@@ -14,7 +14,7 @@ getModal("modalEmpleadosVer", $data); ?>
             <li class="breadcrumb-item"><a href="<?= base_url(); ?>empleados"><?= $data['page_title']; ?></a></li>
         </ul>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
@@ -35,7 +35,7 @@ getModal("modalEmpleadosVer", $data); ?>
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row">
         <div class="col-md-12">
             <div class="tile">

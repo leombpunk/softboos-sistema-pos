@@ -58,8 +58,8 @@
                                     <!-- <tr>
                                         <td>mamadas</td>
                                         <td>unidad</td>
-                                        <th>5</th>
-                                        <th><button>borrar</button></th>
+                                        <td>5</td>
+                                        <td><button>borrar</button></td>
                                     </tr> -->
                                 </tbody>
                             </table>

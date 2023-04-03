@@ -111,7 +111,7 @@ class Ventas extends Controllers{
 			$detalle = empty($_POST["detalle"]) ? [] : $_POST["detalle"];
 	 		// primero se validan los campos obligatorios
 			if (empty($cliente) or !validar($cliente,2,1,11)){
-				$arrResponse = array("status" => false, "message" => "La razon social ingresada no es valida o esta vacía.");
+				$arrResponse = array("status" => false, "message" => "El cliente ingresado no es valido o esta vacío.");
 			}
 			elseif (empty($formaPago) and !validar($formaPago,2,1,11)) {
 				$arrResponse = array("status" => false, "message" => "La forma de pago ingresada no es valida o esta vacía.");

@@ -59,7 +59,7 @@ $(document).ready(function () {
                 data: combo,
                 dataType: "json",
                 success: function (response) {
-                    // console.log(response);
+                    console.log(response);
                     if (response.status){
                         $("#combosModalCenter").modal("hide");
                         $("#formCombo").trigger("reset");
@@ -69,6 +69,9 @@ $(document).ready(function () {
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
                     }
+                },
+                error: function(error){
+                    console.log(error);
                 }
             });
         }
@@ -190,14 +193,17 @@ function openModal(){
     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
     $("#formCombo").trigger("reset");
     $("#combo_id").val("");
-    //add
     $("#combonombre").attr("disabled",true)
     $("#combodescripcion").attr("disabled",true)
     $("#comboestado").attr("disabled",true)
     $("#comboaddingrediente").attr("disabled",true)
     $("#button-addon2").attr("disabled",true)
     $("#btnGuardar").attr("disabled",true)
-    //end
+    //vaciar tabla cuerpo
+    $("#tbodyInsumo").html("")
+    //vaciar array de ingredientes
+    ingredientesList.splice(0,ingredientesList.length)
+    
     $("#combosModalCenter").modal("show");
 }
 function editarCombo(id){
@@ -276,6 +282,7 @@ function openModal2(){ //abre el modal de agregar insumo
                 $("#insumounidadmedida").append('<option value="'+element.id+'">'+element.nombre+'</option>');
             });
             $("#combosAgregarInsumoModalCenter").modal("show");
+            // $("#insumocantidad").focus();
         }
     } 
     else {
@@ -283,17 +290,38 @@ function openModal2(){ //abre el modal de agregar insumo
     }
 }
 function eliminarItem(itemId, iDetalle){
-    // console.log({itemId: itemId});
-    //remover
     $("#item-"+iDetalle).remove();
-    //remover de la constante combo
     indice = ingredientesList.findIndex((value, index, obj) => {
-        // console.log({value: value, index: index, obj: obj});
         if (value.productoId == itemId) return (index+1);
-        // return (value.productoId == itemId) && index;
     });
-    // console.log({indice:indice});
-    ingredientesList.splice(indice,1); //para quitar un elemento no me sirve el iDetalle
-    // console.log(combo);
-    // console.log(indiceInsumo);
+    ingredientesList.splice(indice,1);
+}
+function verCombo(id){
+    // $("#combosModalVerCenter").modal("show");
+    $.ajax({
+        type: "GET",
+        url: base_url+"Combos/getComboEInsumos/"+id,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            if (response.status){
+                $("#tblIdCombo").html(response.data.RECETA_ID);
+                $("#tblNombre").html(response.data.NOMBRE);
+                $("#tblDescripcion").html(response.data.DESCRIPCION);
+                $("#tblIdMercaderia").html(response.data.MERCADERIA_ID);
+                $("#tblMercaNombre").html(response.data.mercanom);
+                $("#tblEstado").html(response.data.estado);
+                //foreach y append
+                $("#tbodyInsumoVer").html("");
+                response.data.insumos.forEach(element => {
+                    console.log(element);
+                    $("#tbodyInsumoVer").append("<tr><td>"+element.id+"</td><td>"+element.nombre+"</td><td style='text-align: center;'>"+parseFloat(element.cantidad)+"</td><td style='text-align: center;'>"+element.umnombre+"</td></tr>");
+                });
+                $("#combosModalVerCenter").modal("show");
+            }
+            else {
+                swal("Atención!",response.message,"error");
+            }
+        }
+    });
 }

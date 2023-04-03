@@ -32,9 +32,9 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="font-weight-bold align-middle">Forma de Pago</td>
                                         <td class="align-middle">
                                             <select class="form-control" name="formaPago" id="formaPago">
-                                                <option value="1" selected>Efectivo</option>
+                                                <!-- <option value="1" selected>Efectivo</option>
                                                 <option value="2">Debito</option>
-                                                <option value="3">Credito</option>
+                                                <option value="3">Credito</option> -->
                                             </select>
                                         </td>
                                     </tr>
