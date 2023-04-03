@@ -303,7 +303,7 @@ function verCombo(id){
         url: base_url+"Combos/getComboEInsumos/"+id,
         dataType: "json",
         success: function (response) {
-            console.log(response);
+            // console.log(response);
             if (response.status){
                 $("#tblIdCombo").html(response.data.RECETA_ID);
                 $("#tblNombre").html(response.data.NOMBRE);
@@ -314,7 +314,7 @@ function verCombo(id){
                 //foreach y append
                 $("#tbodyInsumoVer").html("");
                 response.data.insumos.forEach(element => {
-                    console.log(element);
+                    // console.log(element);
                     $("#tbodyInsumoVer").append("<tr><td>"+element.id+"</td><td>"+element.nombre+"</td><td style='text-align: center;'>"+parseFloat(element.cantidad)+"</td><td style='text-align: center;'>"+element.umnombre+"</td></tr>");
                 });
                 $("#combosModalVerCenter").modal("show");
