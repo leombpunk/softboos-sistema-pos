@@ -207,20 +207,53 @@ function openModal(){
     $("#combosModalCenter").modal("show");
 }
 function editarCombo(id){
+    //vaciar array de ingredientes
+    ingredientesList.splice(0,ingredientesList.length)
+    $("#combonombre").removeAttr("disabled")
+    $("#combodescripcion").removeAttr("disabled")
+    $("#comboestado").removeAttr("disabled")
+    $("#comboaddingrediente").removeAttr("disabled")
+    $("#button-addon2").removeAttr("disabled")
+    $("#btnGuardar").removeAttr("disabled")
+    
     $("#combosModalCenterTitle").html("Editar Combo");
     $(".modal-header").addClass("headerUpdate").removeClass("headerRegister"); 
     $("#btnText").html("Actualizar");
     $("#btnGuardar").addClass("btn-info").removeClass("btn-primary");
     $.ajax({
         type: "GET",
-        url: base_url+"Combos/getCombo/"+id,
+        url: base_url+"Combos/getComboEInsumos/"+id,
         dataType: "json",
         success: function (response) {
-            // console.log(response);
+            console.log(response);
             if (response.status){
-                $("#combo_id").val(response.data.FORMAPAGO_ID);
-                $("#combonombre").val(response.data.FORMA_PAGO);
+                $("#combo_id").val(response.data.RECETA_ID);
+                $("#combocodproducto").val(response.data.MERCADERIA_ID);
+                $("#combonombre").val(response.data.NOMBRE);
                 $("#comboestado").val(response.data.ESTADO_ID).trigger("change");
+                $("#combodescripcion").val(response.data.DESCRIPCION);//puede ser vacio
+                //setear el ingredientesList
+                //y armar la estructura de la tabla para poder agregar y quitar
+                response.data.insumos.forEach(element => {
+                    console.log(element);
+                    $("#tbodyInsumo").append("<tr id='item-"+indiceInsumo+"'></tr>");
+                    //descripcion - nombre
+                    $("#item-"+indiceInsumo).append("<td class='align-middle'>"+element.nombre+"</td>");
+                    //unidad medida
+                    $("#item-"+indiceInsumo).append("<td class='text-center align-middle'>"+element.umnombre+"</td>");
+                    //cantidad
+                    $("#item-"+indiceInsumo).append("<td class='text-center align-middle'>"+element.cantidad+"</td>");
+                    //boton
+                    $("#item-"+indiceInsumo).append("<td class='text-center'><button type='button' onclick='eliminarItem(`"+element.id+"`,`"+indiceInsumo+"`)' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i></button></td>");
+                    ingredientesList.push({
+                        idInsumo: parseInt(element.id),
+                        nombreInsumo: element.nombre,
+                        idUnidadMedida: parseInt(element.umid),
+                        nombreUnidadMedida: "",
+                        cantidad: element.cantidad
+                    });
+                    indiceInsumo++;
+                });
                 $("#combosModalCenter").modal("show");
             }
             else {
