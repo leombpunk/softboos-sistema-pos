@@ -193,6 +193,7 @@ function openModal(){
     $("#btnGuardar").addClass("btn-primary").removeClass("btn-info");
     $("#formCombo").trigger("reset");
     $("#combo_id").val("");
+    $("#combocodproducto").removeAttr("disabled")
     $("#combonombre").attr("disabled",true)
     $("#combodescripcion").attr("disabled",true)
     $("#comboestado").attr("disabled",true)
@@ -209,13 +210,14 @@ function openModal(){
 function editarCombo(id){
     //vaciar array de ingredientes
     ingredientesList.splice(0,ingredientesList.length)
+    $("#combocodproducto").attr("disabled",true)
     $("#combonombre").removeAttr("disabled")
     $("#combodescripcion").removeAttr("disabled")
     $("#comboestado").removeAttr("disabled")
     $("#comboaddingrediente").removeAttr("disabled")
     $("#button-addon2").removeAttr("disabled")
     $("#btnGuardar").removeAttr("disabled")
-    
+    $("#tbodyInsumo").html("")
     $("#combosModalCenterTitle").html("Editar Combo");
     $(".modal-header").addClass("headerUpdate").removeClass("headerRegister"); 
     $("#btnText").html("Actualizar");

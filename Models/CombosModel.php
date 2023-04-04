@@ -55,14 +55,21 @@ class CombosModel extends Mysql {
 		return $request;
 	}
 	public function updateCombo(string $nombre, string $descripcion, int $estado, array $ingredientes, int $id){
-		$sql = "SELECT 1 FROM recetas_elaboradas WHERE RECETA_ID = {$id}";
+		$sql = "SELECT 1 FROM recetas WHERE NOMBRE LIKE '%{$nombre}%' AND RECETA_ID <> {$id}";
 		$request = $this->select_all($sql);
 		if (empty($request)){
-			$sql = "UPDATE recetas SET FORMA_PAGO = ?, ESTADO_ID = ? WHERE FORMAPAGO_ID = {$id}";
-			$arrValues = array($nombre,$estado);
+			$sql = "UPDATE recetas SET NOMBRE = ?, DESCRIPCION = ?, ESTADO_ID = ? WHERE RECETA_ID = {$id}";
+			$arrValues = array($nombre,$descripcion,$estado);
 			try {
 				$this->mysqlStartTransaction();
 				$request = $this->update($sql,$arrValues);
+				if ($request){
+					$this->deleteInsumo($id);
+					foreach ($ingredientes as $key => $value) {
+						$datos = array($value['idInsumo'],$value['idUnidadMedida'],$value['cantidad']);
+						$request = $this->insertInsumo($id,$datos);
+					}
+				}
 				//delete e insert de nuevo
 				$this->mysqlCommit();
 				$request = "Ok";
@@ -70,7 +77,6 @@ class CombosModel extends Mysql {
 				$this->mysqlRollback();
 				$request = "Error. {$e}";
 			}
-			
 		}
 		else {
 			$request = "Falopa";
@@ -78,12 +84,11 @@ class CombosModel extends Mysql {
 		return $request;
 	}
 	public function deleteCombo(int $id){
-		$sql = "SELECT 1 FROM mercaderias AS m
-		INNER JOIN recetas AS r ON m.MERCADERIA_ID = r.MERCADERIA_ID
-		WHERE RECETA_ID = {$id} AND m.ESTADO_ID <> 3";
-		$request = $this->select_all($sql);
-		if (empty($request)){
-			// $sql = "DELETE FROM forma_pago WHERE FORMAPAGO_ID = {$id}";
+		// $sql = "SELECT 1 FROM mercaderias AS m
+		// INNER JOIN recetas AS r ON m.MERCADERIA_ID = r.MERCADERIA_ID
+		// WHERE r.RECETA_ID = {$id} AND m.ESTADO_ID <> 3";
+		// $request = $this->select_all($sql);
+		// if (empty($request)){
 			$sql = "UPDATE recetas SET ESTADO_ID = 3, FECHA_BAJA = NOW(), BAJA_EMPLEADO = {$_SESSION['userID']} WHERE RECETA_ID = {$id}";
 			$request = $this->delete($sql);
 			if($request){
@@ -92,10 +97,10 @@ class CombosModel extends Mysql {
 			else {
 				$request = "error";
 			}
-		}
-		else {
-			$request = "exist";
-		}
+		// }
+		// else {
+		// 	$request = "exist";
+		// }
 		return $request;
 	}
 	//insumo insertar normal, al actualizar borrar los insumos relacionados e insertarlos de nuevo
@@ -107,7 +112,7 @@ class CombosModel extends Mysql {
 	}
 	private function deleteInsumo(int $id){
 		//actualizar tabla a estado borrado y quien lo borro
-		$sql = "DELETE * FROM lista_insumos WHERE RECETA_ID = {$id}";
+		$sql = "DELETE FROM lista_insumos WHERE RECETA_ID = {$id}";
 		$request = $this->delete($sql);
 		return $request;
 	}
