@@ -109,7 +109,7 @@ function cargarProveedores(){
         url: base_url+"Proveedores/getProveedores",
         dataType: "json",
         success: function(response){
-            console.log(response);
+            // console.log(response);
             response.forEach(element => {
                 proveedorDataList.innerHTML += "<option value='"+element.PROVEEDOR_ID+"'>"+element.RAZONSOCIAL+" (ID: "+element.PROVEEDOR_ID+")</option>";
             });
@@ -121,6 +121,9 @@ function cargarProveedores(){
                     proveedorId.style.borderRadius = "5px"
                 }
             }
+        },
+        error: function(error){
+            swal("Atención!",error,"error");
         }
     });
 }
@@ -132,21 +135,21 @@ function cargarSucursales(){
         url: base_url+"Sucursales/getSucursales",
         dataType: "json",
         success: function(response){
-            console.log(response);
-            // response.forEach(element => {
-            //     sucursalDataList.innerHTML += "<option value='"+element.PROVEEDOR_ID+"'>"+element.RAZONSOCIAL+" (ID: "+element.PROVEEDOR_ID+")</option>";
-            // });
-
-            // for (let option of sucursalList.options) {
-            //     option.onclick = function () {
-            //         sucursalId.value = option.value
-            //         sucursalList.style.display = "none"
-            //         sucursalId.style.borderRadius = "5px"
-            //     }
-            // }
+            // console.log(response);
+            response.forEach(element => {
+                sucursalDataList.innerHTML += "<option value='"+element.SUCURSAL_ID+"'>"+element.RAZONSOCIAL+" Suc n°: "+element.CODIGO_SUCURSAL+" (ID: "+element.SUCURSAL_ID+")</option>";
+            });
+            for (let option of sucursalList.options) {
+                option.onclick = function () {
+                    sucursalId.value = option.value
+                    sucursalList.style.display = "none"
+                    sucursalId.style.borderRadius = "5px"
+                }
+            }
         },
         error: function(error){
             console.log(error);
+            swal("Atención!",error,"error");
         }
     });
 }
@@ -164,6 +167,7 @@ function agregarProducto(id){
     } 
     else {
         var inputcantidad = $("#prodcutoCant"+id).val();
+        var inputpreciocosto = $("#prodcutoCosto"+id).val();
         if (inputcantidad > 0 || inputcantidad < 0) {
             //ajax aqui
             $.ajax({
@@ -190,12 +194,12 @@ function agregarProducto(id){
                     //unidad medida
                     $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+data.data.umnom+"</td>");
                     //precio
-                    $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+data.data.preciocosto+"</td>");
+                    $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+inputpreciocosto+"</td>");
                     //total (cantidad*precio)
-                    $("#item-"+indiceDetalle).append("<td class='text-right align-middle'>"+(parseFloat(inputcantidad)*parseFloat(data.data.preciocosto)).toFixed(2)+"</td>");
+                    $("#item-"+indiceDetalle).append("<td class='text-right align-middle'>"+(parseFloat(inputcantidad)*parseFloat(inputpreciocosto)).toFixed(2)+"</td>");
                     //sumar total, subtotal e iva
-                    factura.total += parseFloat(inputcantidad)*parseFloat(data.data.preciocosto);
-                    factura.iva += (parseFloat(inputcantidad)*parseFloat(data.data.preciocosto))/parseFloat(data.data.ivaporcent);
+                    factura.total += parseFloat(inputcantidad)*parseFloat(inputpreciocosto);
+                    factura.iva += (parseFloat(inputcantidad)*parseFloat(inputpreciocosto))/parseFloat(data.data.ivaporcent);
                     factura.subtotal = factura.total - factura.iva; 
                     //asignar
                     $("#subtotal").children().eq(1).text(factura.subtotal.toFixed(2));
@@ -206,11 +210,14 @@ function agregarProducto(id){
                         productoId: parseInt(id),
                         unidadMedidaId: parseInt(data.data.umid),
                         cantidad: parseFloat(inputcantidad),
-                        precio: parseFloat(data.data.preciocosto),
-                        iva: (parseFloat(inputcantidad)*parseFloat(data.data.preciocosto))/parseFloat(data.data.ivaporcent),
-                        total: parseFloat(inputcantidad)*parseFloat(data.data.preciocosto)
+                        precio: parseFloat(inputpreciocosto),
+                        iva: (parseFloat(inputcantidad)*parseFloat(inputpreciocosto))/parseFloat(data.data.ivaporcent),
+                        total: parseFloat(inputcantidad)*parseFloat(inputpreciocosto)
                     });
                     indiceDetalle++;
+                },
+                error: function(error){
+                    swal("Atención!",error,"error");
                 }
             });
             $.notify({
@@ -325,6 +332,9 @@ function verCompra(id){
             else {
                 swal("Atención!",response.message,"error");
             }
+        },
+        error: function(error){
+            swal("Atención!",error,"error");
         }
     });
 }
@@ -351,6 +361,9 @@ function anularCompra(id){
             //         else {
             //             swal("Atencion!",response.message,"error");
             //         }
+            //     },
+            //     error: function(error){
+            //         swal("Atención!",error,"error");
             //     }
             // });
         }

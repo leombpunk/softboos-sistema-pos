@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-04-2023 a las 02:31:02
+-- Tiempo de generación: 05-04-2023 a las 20:54:44
 -- Versión del servidor: 10.4.22-MariaDB
 -- Versión de PHP: 8.1.2
 
@@ -419,7 +419,10 @@ INSERT INTO `detalle_pedidos_venta` (`DPVENTA_ID`, `FACTURAVENTA_ID`, `MERCADERI
 (157, 88, 44, 00000000038, '1.000', '0.000', '100.00'),
 (158, 89, 44, 00000000038, '3.000', '0.000', '100.00'),
 (159, 90, 45, 00000000038, '2.000', '0.000', '200.00'),
-(160, 90, 44, 00000000038, '1.000', '0.000', '100.00');
+(160, 90, 44, 00000000038, '1.000', '0.000', '100.00'),
+(161, 91, 44, 00000000038, '1.000', '0.000', '100.00'),
+(162, 91, 46, 00000000038, '1.000', '0.000', '300.00'),
+(163, 91, 45, 00000000038, '1.000', '0.000', '200.00');
 
 -- --------------------------------------------------------
 
@@ -518,7 +521,9 @@ CREATE TABLE `facturas_compra` (
   `FECHA_EMISION` date NOT NULL,
   `DIRECCION_ENVIO` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `TOTAL` decimal(8,2) NOT NULL,
-  `IVA_TOTAL` decimal(8,2) NOT NULL
+  `IVA_TOTAL` decimal(8,2) NOT NULL,
+  `BAJA_EMPLEADO` int(11) UNSIGNED DEFAULT NULL,
+  `FECHA_BAJA` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -542,19 +547,22 @@ CREATE TABLE `facturas_venta` (
   `FECHA_EMISION` datetime NOT NULL,
   `DIRECCION_ENVIO` varchar(150) COLLATE utf8_spanish_ci DEFAULT NULL,
   `TOTAL` decimal(8,2) NOT NULL,
-  `IVA_TOTAL` decimal(8,2) NOT NULL
+  `IVA_TOTAL` decimal(8,2) NOT NULL,
+  `BAJA_EMPLEADO` int(11) UNSIGNED DEFAULT NULL,
+  `FECHA_BAJA` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `facturas_venta`
 --
 
-INSERT INTO `facturas_venta` (`FACTURAVENTA_ID`, `FACTURATIPO_ID`, `FORMAPAGO_ID`, `NUMERO_FACTURA`, `SUCURSAL_ID`, `CLIENTE_ID`, `EMPLEADO_ID`, `TESTIGO_ID`, `ESTADO_ID`, `FECHA_ALTA`, `FECHA_EMISION`, `DIRECCION_ENVIO`, `TOTAL`, `IVA_TOTAL`) VALUES
-(83, 1, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15 23:34:59', 'algun lugar', '500.00', '0.00'),
-(87, 1, 1, 0000000000002, 1, 1000000056, 1, 1, 3, '2023-02-26 22:13:52', '2023-02-26 22:13:52', '', '400.00', '19.05'),
-(88, 1, 1, 0000000000004, 1, 1000000056, 1, 1, 3, '2023-03-21 19:09:19', '2023-03-21 19:09:19', '', '1100.00', '57.14'),
-(89, 1, 1, 0000000000005, 1, 1000000056, 1, 1, 3, '2023-03-21 19:10:32', '2023-03-21 19:10:32', '', '300.00', '28.57'),
-(90, 1, 1, 0000000000003, 1, 1000000056, 1, 1, 3, '2023-03-21 19:13:42', '2023-03-21 19:13:42', '', '500.00', '28.57');
+INSERT INTO `facturas_venta` (`FACTURAVENTA_ID`, `FACTURATIPO_ID`, `FORMAPAGO_ID`, `NUMERO_FACTURA`, `SUCURSAL_ID`, `CLIENTE_ID`, `EMPLEADO_ID`, `TESTIGO_ID`, `ESTADO_ID`, `FECHA_ALTA`, `FECHA_EMISION`, `DIRECCION_ENVIO`, `TOTAL`, `IVA_TOTAL`, `BAJA_EMPLEADO`, `FECHA_BAJA`) VALUES
+(83, 1, 1, 0000000000001, 1, 1000000056, 1, 1, 3, '2023-02-15 23:34:59', '2023-02-15 23:34:59', 'algun lugar', '500.00', '0.00', NULL, NULL),
+(87, 1, 1, 0000000000002, 1, 1000000056, 1, 1, 3, '2023-02-26 22:13:52', '2023-02-26 22:13:52', '', '400.00', '19.05', NULL, NULL),
+(88, 1, 1, 0000000000004, 1, 1000000056, 1, 1, 3, '2023-03-21 19:09:19', '2023-03-21 19:09:19', '', '1100.00', '57.14', NULL, NULL),
+(89, 1, 1, 0000000000005, 1, 1000000056, 1, 1, 3, '2023-03-21 19:10:32', '2023-03-21 19:10:32', '', '300.00', '28.57', NULL, NULL),
+(90, 1, 1, 0000000000003, 1, 1000000056, 1, 1, 3, '2023-03-21 19:13:42', '2023-03-21 19:13:42', '', '500.00', '28.57', NULL, NULL),
+(91, 1, 1, 0000000000006, 1, 1000000056, 1, 1, 3, '2023-04-05 11:45:54', '2023-04-05 11:45:54', '', '600.00', '47.62', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -848,7 +856,8 @@ INSERT INTO `modulos` (`MODULO_ID`, `NOMBRE`, `ESTADO_ID`) VALUES
 (11, 'Formas de Pago', 1),
 (12, 'Movimientos Caja', 1),
 (13, 'Informes', 1),
-(15, 'Combos', 1);
+(15, 'Combos', 1),
+(16, 'Sucursales', 1);
 
 --
 -- Disparadores `modulos`
@@ -911,7 +920,8 @@ INSERT INTO `movimientos_caja` (`ID`, `EMPLEADO_ID`, `DESCRIPCION`, `FECHA_ALTA`
 (4, 1, 'Pago falopa', '2023-03-20 13:12:20', '400.00', 3, 2, '2023-03-20 13:12:50', 1),
 (5, 1, 'APERTURA MAMADAS', '2023-03-21 19:00:58', '2500.00', 1, 3, NULL, NULL),
 (6, 1, 'APELTURA PE', '2023-04-03 11:59:18', '5500.00', 1, 3, NULL, NULL),
-(7, 1, 'APELTURA PE', '2023-04-04 19:16:42', '1250.00', 1, 3, NULL, NULL);
+(7, 1, 'APELTURA PE', '2023-04-04 19:16:42', '1250.00', 1, 3, NULL, NULL),
+(8, 1, 'APELTURA PE', '2023-04-05 11:45:19', '2000.00', 1, 3, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1026,7 +1036,8 @@ INSERT INTO `permisos` (`PERMISO_ID`, `CARGO_ID`, `MODULO_ID`, `LEER`, `AGREGAR`
 (97, 1, 11, 1, 1, 1, 1),
 (98, 1, 12, 1, 1, 1, 1),
 (99, 1, 13, 1, 1, 1, 1),
-(100, 1, 15, 1, 1, 1, 1);
+(100, 1, 15, 1, 1, 1, 1),
+(101, 1, 16, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -1213,15 +1224,16 @@ CREATE TABLE `sucursales` (
   `DIRECCION` varchar(100) COLLATE utf8_spanish_ci DEFAULT NULL,
   `LOGO_URL` varchar(200) COLLATE utf8_spanish_ci DEFAULT NULL,
   `FECHA_ALTA` datetime NOT NULL,
-  `FECHA_BAJA` datetime DEFAULT NULL
+  `FECHA_BAJA` datetime DEFAULT NULL,
+  `ESTADO_ID` int(11) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `sucursales`
 --
 
-INSERT INTO `sucursales` (`SUCURSAL_ID`, `RAZONSOCIAL`, `CODIGO_SUCURSAL`, `CUIT`, `MAIL`, `TELEFONO`, `WEB`, `DIRECCION`, `LOGO_URL`, `FECHA_ALTA`, `FECHA_BAJA`) VALUES
-(1, 'YOSUKO PIZZAS', '00001', '123456789012', 'yosukopizzas@yosuko.com', '543764123456', NULL, 'av siempre viva', 'images/uploads/logo-icon2.png', '2021-05-04 08:00:00', NULL);
+INSERT INTO `sucursales` (`SUCURSAL_ID`, `RAZONSOCIAL`, `CODIGO_SUCURSAL`, `CUIT`, `MAIL`, `TELEFONO`, `WEB`, `DIRECCION`, `LOGO_URL`, `FECHA_ALTA`, `FECHA_BAJA`, `ESTADO_ID`) VALUES
+(1, 'YOSUKO PIZZAS', '00001', '123456789012', 'yosukopizzas@yosuko.com', '543764123456', NULL, 'av siempre viva', 'images/uploads/logo-icon2.png', '2021-05-04 08:00:00', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -1370,7 +1382,8 @@ ALTER TABLE `facturas_compra`
   ADD KEY `IX_NUMERO_FACTURA` (`NUMERO_FACTURA`) USING BTREE,
   ADD KEY `IX_FACTURATIPO` (`FACTURATIPO_ID`) USING BTREE,
   ADD KEY `IX_ESTADO_ID` (`ESTADO_ID`) USING BTREE,
-  ADD KEY `facturas_compra_ibfk_7` (`FORMAPAGO_ID`);
+  ADD KEY `facturas_compra_ibfk_7` (`FORMAPAGO_ID`),
+  ADD KEY `facturas_compra_ibfk_8` (`BAJA_EMPLEADO`);
 
 --
 -- Indices de la tabla `facturas_venta`
@@ -1384,7 +1397,8 @@ ALTER TABLE `facturas_venta`
   ADD KEY `IX_NUMERO_FACTURA` (`NUMERO_FACTURA`) USING BTREE,
   ADD KEY `IX_CLIENTE_ID` (`CLIENTE_ID`) USING BTREE,
   ADD KEY `IX_ESTADO_ID` (`ESTADO_ID`) USING BTREE,
-  ADD KEY `IX_FORMAPAGO_ID` (`FORMAPAGO_ID`) USING BTREE;
+  ADD KEY `IX_FORMAPAGO_ID` (`FORMAPAGO_ID`) USING BTREE,
+  ADD KEY `facturas_venta_ibfk_8` (`BAJA_EMPLEADO`);
 
 --
 -- Indices de la tabla `factura_tipo`
@@ -1574,7 +1588,8 @@ ALTER TABLE `sucursales`
   ADD KEY `ix_PP_CUIT` (`CUIT`) USING BTREE,
   ADD KEY `ix_MAIL` (`MAIL`) USING BTREE,
   ADD KEY `ix_PP_RAZONSOCIAL` (`RAZONSOCIAL`) USING BTREE,
-  ADD KEY `CODIGO_SUCURSAL` (`CODIGO_SUCURSAL`);
+  ADD KEY `CODIGO_SUCURSAL` (`CODIGO_SUCURSAL`),
+  ADD KEY `sucursales_ibfk_1` (`ESTADO_ID`);
 
 --
 -- Indices de la tabla `unidades_medida`
@@ -1622,7 +1637,7 @@ ALTER TABLE `detalle_pedidos_compra`
 -- AUTO_INCREMENT de la tabla `detalle_pedidos_venta`
 --
 ALTER TABLE `detalle_pedidos_venta`
-  MODIFY `DPVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `DPVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
@@ -1652,7 +1667,7 @@ ALTER TABLE `facturas_compra`
 -- AUTO_INCREMENT de la tabla `facturas_venta`
 --
 ALTER TABLE `facturas_venta`
-  MODIFY `FACTURAVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
+  MODIFY `FACTURAVENTA_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT de la tabla `factura_tipo`
@@ -1712,13 +1727,13 @@ ALTER TABLE `mercaderias_unidadesmedida`
 -- AUTO_INCREMENT de la tabla `modulos`
 --
 ALTER TABLE `modulos`
-  MODIFY `MODULO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `MODULO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `movimientos_caja`
 --
 ALTER TABLE `movimientos_caja`
-  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_tipo`
@@ -1742,7 +1757,7 @@ ALTER TABLE `notas_creditos`
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `PERMISO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=101;
+  MODIFY `PERMISO_ID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `proveedores`
@@ -1839,7 +1854,8 @@ ALTER TABLE `facturas_compra`
   ADD CONSTRAINT `facturas_compra_ibfk_4` FOREIGN KEY (`SUCURSAL_ID`) REFERENCES `sucursales` (`SUCURSAL_ID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `facturas_compra_ibfk_5` FOREIGN KEY (`PROVEEDOR_ID`) REFERENCES `proveedores` (`PROVEEDOR_ID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `facturas_compra_ibfk_6` FOREIGN KEY (`EMPLEADO_ID`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `facturas_compra_ibfk_7` FOREIGN KEY (`FORMAPAGO_ID`) REFERENCES `forma_pago` (`FORMAPAGO_ID`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `facturas_compra_ibfk_7` FOREIGN KEY (`FORMAPAGO_ID`) REFERENCES `forma_pago` (`FORMAPAGO_ID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `facturas_compra_ibfk_8` FOREIGN KEY (`BAJA_EMPLEADO`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `facturas_venta`
@@ -1851,7 +1867,8 @@ ALTER TABLE `facturas_venta`
   ADD CONSTRAINT `facturas_venta_ibfk_4` FOREIGN KEY (`EMPLEADO_ID`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `facturas_venta_ibfk_5` FOREIGN KEY (`TESTIGO_ID`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE,
   ADD CONSTRAINT `facturas_venta_ibfk_6` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado_pedido` (`ESTADO_ID`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `facturas_venta_ibfk_7` FOREIGN KEY (`FORMAPAGO_ID`) REFERENCES `forma_pago` (`FORMAPAGO_ID`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `facturas_venta_ibfk_7` FOREIGN KEY (`FORMAPAGO_ID`) REFERENCES `forma_pago` (`FORMAPAGO_ID`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `facturas_venta_ibfk_8` FOREIGN KEY (`BAJA_EMPLEADO`) REFERENCES `empleados` (`EMPLEADO_ID`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `forma_pago`
@@ -1973,6 +1990,12 @@ ALTER TABLE `receta_elab_det_insu`
 --
 ALTER TABLE `rubros`
   ADD CONSTRAINT `rubros_ibfk_1` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado` (`ESTADO_ID`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `sucursales`
+--
+ALTER TABLE `sucursales`
+  ADD CONSTRAINT `sucursales_ibfk_1` FOREIGN KEY (`ESTADO_ID`) REFERENCES `estado` (`ESTADO_ID`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `unidades_medida`
