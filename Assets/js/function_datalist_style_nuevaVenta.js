@@ -1,6 +1,8 @@
 //cliente hace referencia al id de la etiqueta del input asociado al datalist
 //el input debe tener el atributo 'list' vacio
 //clientList hace referencia al id de la etiqueta del datalist
+/*---------------------------------*/
+/*cliente*/
 cliente.onfocus = function () {
   clientList.style.display = "block"
   cliente.style.borderRadius = "5px 5px 0 0"
@@ -40,6 +42,7 @@ cliente.onkeydown = function (e) {
     }
   }
 }
+/*---------------------------------*/
 
 function addActive(x) {
   if (!x) return false

@@ -17,9 +17,6 @@ class Compras extends Controllers{
 		}
 	}
 	public function Compras(){
-		// if (empty($_SESSION["permisosMod"]["r"])){
-		// 	header("location:".base_url()."dashboard");
-		// }
 		$data["page_id"] = 8;
 		$data["page_tag"] = "Compras | SoftBoos";
 		$data["page_title"] = "Compras";
@@ -37,7 +34,7 @@ class Compras extends Controllers{
 		$data["page_title"] = "Nueva Compra";
 		$data["page_name"] = "nueva compra";
 		$data["page_filejs"] = "function_compras.js";
-		$data["page_specialjs"] = array('<script src="'.media().'js/function_datalist_style.js" type="text/javascript"></script>');
+		$data["page_specialjs"] = array('<script src="'.media().'js/function_datalist_style_nuevaCompra.js" type="text/javascript"></script>');
 		$this->views->getView($this,"nuevaCompra",$data);
 	}
 
@@ -45,26 +42,13 @@ class Compras extends Controllers{
 		$arrData = $this->model->selectCompras();
 		$pago = "";
         for ($i=0; $i < count($arrData); $i++) {  
-			$pago = "";
-			if ($arrData[$i]["FORMAPAGO1"] == 1){ // efectivo
-				$pago .= '<span class="badge badge-success">Efectivo</span> ';
-            }
-
-			if ($arrData[$i]["FORMAPAGO2"] == 2){ // debito
-				$pago .= ' <span class="badge badge-warning">Debito</span> ';
-            }
-
-            if ($arrData[$i]["FORMAPAGO3"] == 3){ // credito
-				$pago .= ' <span class="badge badge-danger">Credito</span>';
-            }
-
+			$pago = '<span class="badge badge-success">'.$arrData[$i]['FORMA_PAGO'].'</span>';
 			$arrData[$i]["FORMAPAGO"] = $pago;
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verCompra('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver compra" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="anularCompra('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular compra" type="button"><i class="fa fa-ban"></i></button>
+            <button onclick="verCompra('.$arrData[$i]['FACTURACOMPRA_ID'].');" class="btn btn-info btn-sm" title="Ver compra" type="button"><i class="fa fa-eye"></i></button>
+            <button onclick="anularCompra('.$arrData[$i]['FACTURACOMPRA_ID'].');" class="btn btn-danger btn-sm" title="Anular compra" type="button"><i class="fa fa-ban"></i></button>
             </div>'; 
         }
-        // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
@@ -73,13 +57,12 @@ class Compras extends Controllers{
 			$facturaId = intval(strClear($compraID));
 			if ($facturaId > 0){
 				$arrDataFactura = $this->model->selectCompra($facturaId);
-				$arrDataFormaPago = $this->model->selectFormaPago($facturaId);
 				$arrDataDetalle = $this->model->selectDetalle($facturaId);
 				if (empty($arrDataFactura)){
 					$arrResponse = array("status" => false, "message" => "Lista vacia.");
 				}
 				else {
-					$arrData = array("cabecera" => $arrDataFactura, "formaPago" => $arrDataFormaPago, "detalle" => $arrDataDetalle);
+					$arrData = array("cabecera" => $arrDataFactura, "detalle" => $arrDataDetalle);
 					$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
 				}
 			}

@@ -66,7 +66,7 @@
                                     <th class="align-middle h5" colspan="7">Detalle</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center align-middle">#</th>
+                                    <th class="text-center align-middle">#Código</th>
                                     <th class="align-middle">Descripcion</th>
                                     <th class="text-center align-middle">IVA</th>
                                     <th class="text-center align-middle">Cantidad</th>

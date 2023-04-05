@@ -35,7 +35,6 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[1,"desc"]]
     });
-
     tablaFalopa2 = $("#buscadorProductoTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -59,7 +58,6 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-
     $("#formNuevaVenta").submit(function(e){
         e.preventDefault();
         // var data = $(this).serialize();
@@ -86,7 +84,6 @@ $(document).ready(function () {
             }
         });
     });
-    // sucursalData(1);
     numeroFactura();
     cargarClientes();
     cargaFormasPago();
@@ -142,11 +139,6 @@ function numeroFactura(){
             numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
         }
     });
-}
-function sucursalData(sucursalId){
-    let nombreSucursal = document.getElementById("nombreSucursal");
-    nombreSucursal.innerHTML = "Negocio de Falopa";
-    //mostrar los datos desde las variables de sesion de php
 }
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
@@ -334,8 +326,8 @@ function verVenta(id){
 }
 function anularVenta(id){
     swal({
-        title: "Eliminar Proveedor",
-        text: "¿Quiere eliminar al Proveedor?",
+        title: "Anular Venta",
+        text: "¿Quiere anular la Venta?",
         icon: "warning",
         buttons: true,
         dangerMode: true,

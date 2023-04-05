@@ -131,8 +131,8 @@ class Proveedores extends Controllers{
 	}
 	public function delProveedor(){
 		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
-			$this->id = intval($_POST["id"]);
-			$arrRequest = $this->model->deleteProveedor($this->id);
+			$id = intval($_POST["id"]);
+			$arrRequest = $this->model->deleteProveedor($id);
 			if ($arrRequest == "ok"){
                 $arrResponse = array("status" => true, "message" => "Proveedor borrado correctamente.");
             }

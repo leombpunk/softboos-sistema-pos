@@ -4,11 +4,6 @@ class VentasModel extends Mysql {
 		parent::__construct();
 	}
 	public function selectVentas(){
-		//Hacer un inner join con facturaventa_formapago y detalle_pedidos_venta.
-		//Trae resultados repetidos si existe mas de una forma de pago.
-		//Si la forma de pago se puede limitar a un numero n (ejemplo 3 y siempre 3, que no cambie)
-		//entonces le puedo agregar el sum con detalle_pedidos_venta del detalle, o agregar un campo 
-		//en facturas_venta que sea total así no lo tengo que calcular (ya que la operación es muy tediosa)
 		$sql = "SELECT fv.FACTURAVENTA_ID, fv.NUMERO_FACTURA, fv.FACTURATIPO_ID, ft.FACTURA_TIPO, fv.FECHA_EMISION, fv.TOTAL,
 		fv.FORMAPAGO_ID, fp.FORMA_PAGO, fv.ESTADO_ID, ep.DESCRIPCION, 
 		CONCAT(suc.RAZONSOCIAL,' suc.',suc.CODIGO_SUCURSAL) AS SUCURSAL
@@ -41,22 +36,13 @@ class VentasModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
-	public function insertVenta(array $datos){//falta testear este metodo
-		//deberia de separar en funciones la cabecera y el detalle
+	public function insertVenta(array $datos){
 		try {
-			$datosCabecera = array($datos[6],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
-			$datosFormaPago = $datos[1];
+			$datosCabecera = array($datos[6],$datos[1],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
 			$datosDetalles = $datos[10];
 			$this->mysqlStartTransaction();
 			$request = $this->insertCabecera($datosCabecera);
 			$facturaId = intval($request);
-			//quitar este segmento
-			if (is_int(intval($request)) and $request > 0) {
-			//	foreach ($datos[6] as $key => $value) {
-				$request = $this->insertFormaPago($facturaId, $datosFormaPago);
-			//	}
-			}
-
 			if (is_int(intval($request)) and $request > 0) {
 				foreach ($datosDetalles as $key => $value) {
 					$arrDatos = array($value['productoId'],$value['unidadMedidaId'],$value['cantidad'],$value['precio']);
@@ -93,18 +79,10 @@ class VentasModel extends Mysql {
 	private function insertCabecera(array $datos){
 		//insertar tambien formas de pago en la tabla facturaventa_formapago
 		$numero = $this->selectNumeroFactura();
-		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
+		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, FORMAPAGO_ID, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
 		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, FECHA_EMISION, DIRECCION_ENVIO, TOTAL, IVA_TOTAL)
-		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
+		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
 		$request = $this->insert($sql, $datos);
-		return $request;
-	}
-	//quitar este metodo
-	private function insertFormaPago(int $facturaId, int $formaPago){ //agregar parametro cantidad cuando lo necesite
-		$arrDatos = array($facturaId, $formaPago);//agregar la cantidad
-		$sql = "INSERT INTO facturaventa_formapago(FACTURA_ID, FORMAPAGO_ID, CANTIDAD_PAGO) 
-		VALUES(?, ?, 1)";
-		$request = $this->insert($sql, $arrDatos);
 		return $request;
 	}
 	private function insertDetalles(int $facturaId, array $datos){

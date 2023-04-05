@@ -2,7 +2,8 @@ var tablaFalopa;
 var tablaFalopa2;
 var indiceDetalle = 0;
 const factura = {
-    clienteId: 0,
+    proveedorId: 0,
+    sucursalId: 0,
     formaPagoId: 0,
     total: 0.00,
     iva: 0.00,
@@ -10,7 +11,6 @@ const factura = {
     detalle: []
 }
 $(document).ready(function () {
-    //faltan cargar los clientes, traer el siguiente numero de factura y el nombre del negocio (traerlo de la tabla sucursal 1 y fue)
     tablaFalopa = $("#comprasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -18,11 +18,12 @@ $(document).ready(function () {
             "url": base_url+"Assets/Spanish.json"
         },
         "ajax": {
-            "url": base_url+"Ventas/getVentas",
+            "url": base_url+"Compras/getCompras",
             "dataSrc": ""
         },
         "columns": [
             { "data": "NUMERO_FACTURA" },
+            { "data": "RAZONSOCIAL"},
             { "data": "FECHA_EMISION" },
             { "data": "FORMAPAGO" },
             { "data": "TOTAL" },
@@ -33,7 +34,6 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-
     tablaFalopa2 = $("#buscadorProductoTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -41,14 +41,14 @@ $(document).ready(function () {
             "url": base_url+"Assets/Spanish.json"
         },
         "ajax": {
-            "url": base_url+"Productos/getProductosFacturaVenta",
+            "url": base_url+"Productos/getProductosFacturaCompra",
             "dataSrc": ""
         },
         "columns": [
             { "data": "cod" },
             { "data": "nom" },
             { "data": "umnom" },
-            { "data": "precioventa" },
+            { "data": "preciocosto2" },
             { "data": "cant" },
             { "data": "action" }
         ],
@@ -57,17 +57,14 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-
-    $("#formNuevaVenta").submit(function(e){
+    $("#formNuevaCompra").submit(function(e){
         e.preventDefault();
-        // var data = $(this).serialize();
         factura.clienteId = cliente.value;
         factura.formaPagoId = formaPago.value;
         // console.log(factura);
-        //completar la constante factura con los datos que falten, cliente-formapago-etc
         $.ajax({
             type: "POST",
-            url: base_url+"Ventas/setVenta/",
+            url: base_url+"Compras/setCompra/",
             data: factura,
             dataType: "json",
             success: function (response) {
@@ -84,9 +81,8 @@ $(document).ready(function () {
             }
         });
     });
-    // sucursalData(1);
-    numeroFactura();
-    cargarClientes();
+    cargarSucursales();
+    cargarProveedores();
     cargaFormasPago();
 });
 function cargaFormasPago(){
@@ -105,56 +101,61 @@ function cargaFormasPago(){
         }
     });
 }
-function cargarClientes(){
-    //vamos a probar
-    let clienteDataList = document.getElementById("clientList");
-    console.log({clienteDataList});
+function cargarProveedores(){
+    let proveedorDataList = document.getElementById("proveedorList");
+    console.log({proveedorDataList});
     $.ajax({
         type: "GET",
-        url: base_url+"Clientes/getClientes",
+        url: base_url+"Proveedores/getProveedores",
         dataType: "json",
         success: function(response){
             console.log(response);
             response.forEach(element => {
-                clienteDataList.innerHTML += "<option value='"+element.CLIENTE_ID+"'>"+element.NOMBRE +" "+element.APELLIDO+" (ID: "+element.CLIENTE_ID+")</option>";
+                proveedorDataList.innerHTML += "<option value='"+element.PROVEEDOR_ID+"'>"+element.RAZONSOCIAL+" (ID: "+element.PROVEEDOR_ID+")</option>";
             });
 
-            for (let option of clientList.options) {
+            for (let option of proveedorList.options) {
                 option.onclick = function () {
-                  cliente.value = option.value
-                  clientList.style.display = "none"
-                  cliente.style.borderRadius = "5px"
+                    proveedorId.value = option.value
+                    proveedorList.style.display = "none"
+                    proveedorId.style.borderRadius = "5px"
                 }
             }
         }
     });
 }
-function numeroFactura(){
-    let numeroFactura = document.getElementById("numeroFacturaV");
+function cargarSucursales(){
+    let sucursalDataList = document.getElementById("sucursalList");
+    console.log({sucursalDataList});
     $.ajax({
         type: "GET",
-        url: base_url+"Ventas/getNumeroFactura",
+        url: base_url+"Sucursales/getSucursales",
         dataType: "json",
         success: function(response){
             console.log(response);
-            numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
+            // response.forEach(element => {
+            //     sucursalDataList.innerHTML += "<option value='"+element.PROVEEDOR_ID+"'>"+element.RAZONSOCIAL+" (ID: "+element.PROVEEDOR_ID+")</option>";
+            // });
+
+            // for (let option of sucursalList.options) {
+            //     option.onclick = function () {
+            //         sucursalId.value = option.value
+            //         sucursalList.style.display = "none"
+            //         sucursalId.style.borderRadius = "5px"
+            //     }
+            // }
+        },
+        error: function(error){
+            console.log(error);
         }
     });
-}
-function sucursalData(sucursalId){
-    let nombreSucursal = document.getElementById("nombreSucursal");
-    nombreSucursal.innerHTML = "Negocio de Falopa";
-    //mostrar los datos desde las variables de sesion de php
 }
 function openModal(){
     $("#prductosBuscarModalCenter").modal("show");
 }
 function agregarProducto(id){
-    // console.log({id:id});
     if(factura.detalle.find((item) => {
-        // console.log({item:item});
         if (item.productoId == id) {
-            // console.log({item:item});
             return true;
         }
     })){
@@ -175,7 +176,7 @@ function agregarProducto(id){
                     $("#prodcutoCant"+id).val("0.0");
                     $("#prductosBuscarModalCenter").modal("hide");
                     //hacer el append
-                    $("#detalleVentaTableBody").append("<tr id='item-"+indiceDetalle+"'></tr>");
+                    $("#detalleCompraTableBody").append("<tr id='item-"+indiceDetalle+"'></tr>");
                     //boton
                     $("#item-"+indiceDetalle).append("<td class='text-center'><button type='button' onclick='eliminarItem(`"+id+"`,`"+indiceDetalle+"`)' class='btn btn-sm btn-danger'><i class='fa fa-trash'></i></button></td>");
                     //codigo
@@ -189,12 +190,12 @@ function agregarProducto(id){
                     //unidad medida
                     $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+data.data.umnom+"</td>");
                     //precio
-                    $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+data.data.precioventa+"</td>");
+                    $("#item-"+indiceDetalle).append("<td class='text-center align-middle'>"+data.data.preciocosto+"</td>");
                     //total (cantidad*precio)
-                    $("#item-"+indiceDetalle).append("<td class='text-right align-middle'>"+(parseFloat(inputcantidad)*parseFloat(data.data.precioventa)).toFixed(2)+"</td>");
+                    $("#item-"+indiceDetalle).append("<td class='text-right align-middle'>"+(parseFloat(inputcantidad)*parseFloat(data.data.preciocosto)).toFixed(2)+"</td>");
                     //sumar total, subtotal e iva
-                    factura.total += parseFloat(inputcantidad)*parseFloat(data.data.precioventa);
-                    factura.iva += (parseFloat(inputcantidad)*parseFloat(data.data.precioventa))/parseFloat(data.data.ivaporcent);
+                    factura.total += parseFloat(inputcantidad)*parseFloat(data.data.preciocosto);
+                    factura.iva += (parseFloat(inputcantidad)*parseFloat(data.data.preciocosto))/parseFloat(data.data.ivaporcent);
                     factura.subtotal = factura.total - factura.iva; 
                     //asignar
                     $("#subtotal").children().eq(1).text(factura.subtotal.toFixed(2));
@@ -205,9 +206,9 @@ function agregarProducto(id){
                         productoId: parseInt(id),
                         unidadMedidaId: parseInt(data.data.umid),
                         cantidad: parseFloat(inputcantidad),
-                        precio: parseFloat(data.data.precioventa),
-                        iva: (parseFloat(inputcantidad)*parseFloat(data.data.precioventa))/parseFloat(data.data.ivaporcent),
-                        total: parseFloat(inputcantidad)*parseFloat(data.data.precioventa)
+                        precio: parseFloat(data.data.preciocosto),
+                        iva: (parseFloat(inputcantidad)*parseFloat(data.data.preciocosto))/parseFloat(data.data.ivaporcent),
+                        total: parseFloat(inputcantidad)*parseFloat(data.data.preciocosto)
                     });
                     indiceDetalle++;
                 }
@@ -276,14 +277,14 @@ function eliminarItem(itemId, iDetalle){
     // console.log(factura);
     // console.log(indiceDetalle);
 }
-function verVenta(id){
+function verCompra(id){
     $("#loaderDiv").show();
     $("#dataDivTables").hide();
     $("#ventasVerModalCenter").modal("show");
     //cabecera de la factura de venta
     $.ajax({
         type: "GET",
-        url: base_url+"Ventas/getVenta/"+id,
+        url: base_url+"Compras/getCompra/"+id,
         dataType: "json",
         success: function (response) {
             console.log(response);
@@ -298,10 +299,10 @@ function verVenta(id){
                 //forma pago
                 $("#formaPago").val(response.data.formaPago[0].FORMAPAGO_ID).trigger("change");
                 //detalles
-                $("#detalleVentaTableBody").html('');
+                $("#detalleCompraTableBody").html('');
                 response.data.detalle.forEach((element, index, array) => {
                     console.log(element);
-                    $("#detalleVentaTableBody").append("<tr id='item-"+index+"'></tr>");
+                    $("#detalleCompraTableBody").append("<tr id='item-"+index+"'></tr>");
                     $("#item-"+index).append("<td class='text-center align-middle'>"+element.CODIGO+"</td>");
                     $("#item-"+index).append("<td class='align-middle'>"+element.DESCRIPCION+"</td>");
                     $("#item-"+index).append("<td class='text-center align-middle'>"+element.IVA_PORCENTAJE+"</td>");
@@ -327,10 +328,10 @@ function verVenta(id){
         }
     });
 }
-function anularVenta(id){
+function anularCompra(id){
     swal({
-        title: "Eliminar Proveedor",
-        text: "¿Quiere eliminar al Proveedor?",
+        title: "Anular Compra",
+        text: "¿Quiere anular la factura de Compra?",
         icon: "warning",
         buttons: true,
         dangerMode: true,

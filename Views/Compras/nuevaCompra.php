@@ -16,31 +16,46 @@ getModal("modalProductosBuscar",$data); ?>
                 <div class="tile-body">
                     <form id="formNuevaCompra" name="formNuevaCompra">
                         <div class="table-responsive">
-                            <table class="table" id="ventasCabeceraTable">
+                            <table class="table" id="comprasCabeceraTable">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th colspan="5" class="h4"> Factura de Compra</th>
-                                        <th class="h4"><?= date('d/m/Y'); ?></th>
+                                        <th colspan="5" class="align-middle h4"> Factura de Compra</th>
+                                        <th class="h4">
+                                            <input type="datetime-local" name="fechaEmision" id="fechaEmision" class="form-control" required>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><img class="img-fluid img-thumbnail" src="<?= media();?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
-                                        <td class="font-weight-bold align-middle h5" id="nombreSucursal"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></td>
-                                        <td class="font-weight-bold align-middle">Factura N°</td>
-                                        <td class="align-middle" id="numeroFacturaV"></td>
-                                        <td class="font-weight-bold align-middle">Forma de Pago</td>
+                                        <td class="font-weight-bold align-middle h5">
+                                            <label for="proveedorId">Proveedor</label>
+                                        </td>
+                                        <td class="font-weight-bold align-middle h5">
+                                            <input type="text" name="proveedorId" id="proveedorId" list="" autocomplete="off" role="combobox" class="form-control" placeholder="Seleccione un proveedor" required>
+                                            <datalist id="proveedorList" name="proveedorList" role="listbox">
+
+                                            </datalist>
+                                        </td>
+                                        <td class="font-weight-bold align-middle">
+                                            <label for="numeroFacturaC">Factura N°</label>
+                                        </td>
                                         <td class="align-middle">
-                                            <select class="form-control" name="formaPago" id="formaPago">
+                                            <input type="number" name="numeroFacturaC" id="numeroFacturaC" class="form-control" placeholder="Numero de factura" required>
+                                        </td>
+                                        <td class="font-weight-bold align-middle">
+                                            <label for="formaPago">Forma de Pago</label>
+                                        </td>
+                                        <td class="align-middle">
+                                            <select class="form-control" name="formaPago" id="formaPago" required>
 
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="font-weight-bold text-center align-middle h5">Cliente ID:</td>
+                                        <td class="font-weight-bold text-center align-middle h5">Sucursal ID:</td>
                                         <td colspan="5">
-                                            <input class="form-control" type="text" list="" id="cliente" name="cliente" autocomplete="off" role="combobox">
-                                            <datalist id="clientList" name="clientList" role="listbox">
+                                            <input class="form-control" type="text" list="" id="sucursalId" name="sucursalId" autocomplete="off" role="combobox" placeholder="Seleccione una sucursal" required>
+                                            <datalist id="sucursalList" name="sucursalList" role="listbox">
 
                                             </datalist>
                                         </td>
@@ -56,7 +71,6 @@ getModal("modalProductosBuscar",$data); ?>
                         </div>
                         <div class="table-responsive">
                             <table class="table" id="ventasDetalleTable">
-                                <!-- <caption>Detalle</caption> -->
                                 <thead class="thead-dark">
                                     <tr>
                                         <th class="align-middle h5" colspan="7">Detalle</th>
@@ -66,7 +80,7 @@ getModal("modalProductosBuscar",$data); ?>
                                 <tbody id="detalleCompraTableBody">
                                     <tr>
                                         <th class="text-center align-middle">Acciones</th>
-                                        <th class="text-center align-middle">#</th>
+                                        <th class="text-center align-middle">#Código</th>
                                         <th class="align-middle">Descripcion</th>
                                         <th class="text-center align-middle">IVA</th>
                                         <th class="text-center align-middle">Cantidad</th>

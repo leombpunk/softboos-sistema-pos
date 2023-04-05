@@ -4,35 +4,23 @@ class ComprasModel extends Mysql {
 		parent::__construct();
 	}
 	public function selectCompras(){
-		//Hacer un inner join con facturaventa_formapago y detalle_pedidos_venta.
-		//Trae resultados repetidos si existe mas de una forma de pago.
-		//Si la forma de pago se puede limitar a un numero n (ejemplo 3 y siempre 3, que no cambie)
-		//entonces le puedo agregar el sum con detalle_pedidos_venta del detalle, o agregar un campo 
-		//en facturas_venta que sea total así no lo tengo que calcular (ya que la operación es muy tediosa)
-		$sql = "SELECT fv.FACTURAVENTA_ID, fv.NUMERO_FACTURA, fv.FACTURATIPO_ID, ft.FACTURA_TIPO, fvfp1.FORMAPAGO_ID AS FORMAPAGO1, 
-		fvfp2.FORMAPAGO_ID AS FORMAPAGO2, fvfp3.FORMAPAGO_ID AS FORMAPAGO3, fv.FECHA_EMISION, fv.TOTAL 
-		FROM facturas_venta AS fv 
-		INNER JOIN factura_tipo AS ft ON fv.FACTURATIPO_ID = ft.FACTURATIPO_ID 
-		LEFT JOIN facturaventa_formapago AS fvfp1 ON fv.FACTURAVENTA_ID = fvfp1.FACTURA_ID AND fvfp1.FORMAPAGO_ID = 1 
-		LEFT JOIN facturaventa_formapago AS fvfp2 ON fv.FACTURAVENTA_ID = fvfp2.FACTURA_ID AND fvfp2.FORMAPAGO_ID = 2 
-		LEFT JOIN facturaventa_formapago AS fvfp3 ON fv.FACTURAVENTA_ID = fvfp3.FACTURA_ID AND fvfp3.FORMAPAGO_ID = 3";
+		$sql = "SELECT fc.FACTURACOMPRA_ID, fc.NUMERO_FACTURA, fc.FACTURATIPO_ID, ft.FACTURA_TIPO, fc.FECHA_EMISION, fc.TOTAL,
+		fc.FORMAPAGO_ID, fp.FORMA_PAGO, fc.ESTADO_ID, ep.DESCRIPCION, 
+		CONCAT(suc.RAZONSOCIAL,' suc.',suc.CODIGO_SUCURSAL) AS SUCURSAL,
+		fc.PROVEEDOR_ID, pro.RAZONSOCIAL, fc.EMPLEADO_ID, CONCAT(emp.NOMBRE,' ',emp.APELLIDO) AS EMPLEADO
+		FROM facturas_compra AS fc 
+		INNER JOIN factura_tipo AS ft ON fc.FACTURATIPO_ID = ft.FACTURATIPO_ID 
+		INNER JOIN forma_pago AS fp ON fc.FORMAPAGO_ID = fp.FORMAPAGO_ID
+		INNER JOIN estado_pedido AS ep ON fc.ESTADO_ID = ep.ESTADO_ID
+		INNER JOIN sucursales AS suc ON fc.SUCURSAL_ID = suc.SUCURSAL_ID
+		INNER JOIN proveedores AS pro ON fc.PROVEEDOR_ID = pro.PROVEEDOR_ID
+		INNER JOIN empleados AS emp ON fc.EMPLEADO_ID = emp.EMPLEADO_ID";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectCompra(int $id){
-		$sql = "SELECT fv.*, c.CLIENTE_ID, c.NOMBRE, c.APELLIDO, c.DNI
-		FROM facturas_venta fv
-		INNER JOIN clientes c ON fv.CLIENTE_ID = c.CLIENTE_ID
-		WHERE fv.FACTURAVENTA_ID = {$id}";
+		$sql = "";
 		$request = $this->select($sql);
-		return $request;
-	}
-	public function selectFormaPago(int $id){
-		$sql = "SELECT fvfp.CANTIDAD_PAGO, fp.FORMA_PAGO, fp.FORMAPAGO_ID
-		FROM facturaventa_formapago fvfp
-		INNER JOIN forma_pago fp ON fp.FORMAPAGO_ID = fvfp.FORMAPAGO_ID
-		WHERE fvfp.FACTURA_ID = {$id}";
-		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectDetalle(int $id){
@@ -54,12 +42,6 @@ class ComprasModel extends Mysql {
 			$this->mysqlStartTransaction();
 			$request = $this->insertCabecera($datosCabecera);
 			$facturaId = intval($request);
-			if (is_int(intval($request)) and $request > 0) {
-			//	foreach ($datos[6] as $key => $value) {
-				$request = $this->insertFormaPago($facturaId, $datosFormaPago);
-			//	}
-			}
-
 			if (is_int(intval($request)) and $request > 0) {
 				foreach ($datosDetalles as $key => $value) {
 					$arrDatos = array($value['productoId'],$value['unidadMedidaId'],$value['cantidad'],$value['precio']);
@@ -88,25 +70,13 @@ class ComprasModel extends Mysql {
 		}
 		return $request;
 	}
-	public function selectNumeroFactura(){
-		$sql = "SELECT MAX(NUMERO_FACTURA)+1 AS numFactura FROM facturas_venta";
-		$request = $this->select($sql);
-		return $request;
-	}
 	private function insertCabecera(array $datos){
 		//insertar tambien formas de pago en la tabla facturaventa_formapago
-		$numero = $this->selectNumeroFactura();
+		$numero = 0;//cambiarlo
 		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
 		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, FECHA_EMISION, DIRECCION_ENVIO, TOTAL, IVA_TOTAL)
 		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
 		$request = $this->insert($sql, $datos);
-		return $request;
-	}
-	private function insertFormaPago(int $facturaId, int $formaPago){ //agregar parametro cantidad cuando lo necesite
-		$arrDatos = array($facturaId, $formaPago);//agregar la cantidad
-		$sql = "INSERT INTO facturaventa_formapago(FACTURA_ID, FORMAPAGO_ID, CANTIDAD_PAGO) 
-		VALUES(?, ?, 1)";
-		$request = $this->insert($sql, $arrDatos);
 		return $request;
 	}
 	private function insertDetalles(int $facturaId, array $datos){

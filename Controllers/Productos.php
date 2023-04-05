@@ -35,6 +35,16 @@ class Productos extends Controllers{
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
+	public function getProductosFacturaCompra(){
+		$arrData = $this->model->selectProductos();
+		for ($i=0; $i < count($arrData); $i++){
+			$arrData[$i]["preciocosto2"] = '<input type="number" name="prodcutoCosto'.$arrData[$i]['id'].'" id="prodcutoCosto'.$arrData[$i]['id'].'" class="form-control" value='.$arrData[$i]["preciocosto"].' />';
+			$arrData[$i]["cant"] = '<input type="number" name="prodcutoCant'.$arrData[$i]['id'].'" id="prodcutoCant'.$arrData[$i]['id'].'" class="form-control" value=0.0 />';
+			$arrData[$i]["action"] = '<div class="text-center"><button type="button" onclick="agregarProducto('.$arrData[$i]['id'].');" title="Agregar Producto" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></button></div>';
+		}
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
 	//para usarlo en la vista factura compra
 	public function getProductos(){
 		$arrData = $this->model->selectProductos();

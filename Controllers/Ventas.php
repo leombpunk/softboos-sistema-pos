@@ -34,7 +34,7 @@ class Ventas extends Controllers{
 		$data["page_title"] = "Nueva Venta";
 		$data["page_name"] = "nueva venta";
 		$data["page_filejs"] = "function_ventas.js";
-		$data["page_specialjs"] = array('<script src="'.media().'js/function_datalist_style.js" type="text/javascript"></script>');
+		$data["page_specialjs"] = array('<script src="'.media().'js/function_datalist_style_nuevaVenta.js" type="text/javascript"></script>');
 		$this->views->getView($this,"nuevaVenta",$data);
 	}
 
@@ -90,8 +90,6 @@ class Ventas extends Controllers{
 			$total = empty($_POST["total"]) ? 0.00 : floatval(strClear($_POST["total"]));
 			$subtotal = empty($_POST["subtotal"]) ? 0.00 : floatval(strClear($_POST["subtotal"]));
 			$iva = empty($_POST["iva"]) ? 0.00 : floatval(strClear($_POST["iva"]));
-			//datos que faltan agregar
-			//$_SESSION['userDATA']
 			$cantidadPagos = 1;
 			$empleadoId = intval($_SESSION['userDATA']['EMPLEADO_ID']);
 			$testigoId = intval($_SESSION['userDATA']['EMPLEADO_ID']);

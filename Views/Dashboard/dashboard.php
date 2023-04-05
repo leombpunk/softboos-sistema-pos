@@ -97,13 +97,14 @@
           </div>
         </div>
       </div> -->
-      <!-- <div class="row">
+      <div class="row">
         <div class="col-md-12">
           <div class="tile">
-            <div class="tile-body">Create a beautiful dashboard</div>
+            <div class="tile-body">Datos de sesion</div>
             <?php //dep($_SESSION['userDATA']); ?>
+            <?php dep($_SESSION['permisos']); ?>
           </div>
         </div>
-      </div> -->
+      </div>
     </main>
 <?php footerAdmin($data);?>   
