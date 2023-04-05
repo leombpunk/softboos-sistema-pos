@@ -11,38 +11,38 @@ class Compras extends Controllers{
 		else {
 			header('location: '.base_url().'login');
 		}
-		getPermisos(10);
+		getPermisos(8);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
 			header("location: ".base_url()."Dashboard");
 		}
 	}
-	public function Ventas(){
+	public function Compras(){
 		// if (empty($_SESSION["permisosMod"]["r"])){
 		// 	header("location:".base_url()."dashboard");
 		// }
-		$data["page_id"] = 10;
-		$data["page_tag"] = "Ventas | SoftBoos";
-		$data["page_title"] = "Ventas";
-		$data["page_name"] = "ventas";
-		$data["page_filejs"] = "function_ventas.js";
-		$this->views->getView($this,"ventas",$data);
+		$data["page_id"] = 8;
+		$data["page_tag"] = "Compras | SoftBoos";
+		$data["page_title"] = "Compras";
+		$data["page_name"] = "compras";
+		$data["page_filejs"] = "function_compras.js";
+		$this->views->getView($this,"compras",$data);
 	}
 
-	public function nuevaVenta(){
+	public function nuevaCompra(){
 		if (!isSetAperturaCaja()){
 			header("location:".base_url()."movimientosCaja");
 		}
-		$data["page_id"] = 100;
-		$data["page_tag"] = "Nueva Venta | SoftBoos";
-		$data["page_title"] = "Nueva Venta";
-		$data["page_name"] = "nueva venta";
-		$data["page_filejs"] = "function_ventas.js";
+		$data["page_id"] = 8;
+		$data["page_tag"] = "Nueva Compra | SoftBoos";
+		$data["page_title"] = "Nueva Compra";
+		$data["page_name"] = "nueva compra";
+		$data["page_filejs"] = "function_compras.js";
 		$data["page_specialjs"] = array('<script src="'.media().'js/function_datalist_style.js" type="text/javascript"></script>');
-		$this->views->getView($this,"nuevaVenta",$data);
+		$this->views->getView($this,"nuevaCompra",$data);
 	}
 
-	public function getVentas(){
-		$arrData = $this->model->selectVentas();
+	public function getCompras(){
+		$arrData = $this->model->selectCompras();
 		$pago = "";
         for ($i=0; $i < count($arrData); $i++) {  
 			$pago = "";
@@ -60,19 +60,19 @@ class Compras extends Controllers{
 
 			$arrData[$i]["FORMAPAGO"] = $pago;
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="anularVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular venta" type="button"><i class="fa fa-ban"></i></button>
+            <button onclick="verCompra('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver compra" type="button"><i class="fa fa-eye"></i></button>
+            <button onclick="anularCompra('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular compra" type="button"><i class="fa fa-ban"></i></button>
             </div>'; 
         }
         // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function getVenta(int $ventaID){
+	public function getCompra(int $compraID){
 		try {
-			$facturaId = intval(strClear($ventaID));
+			$facturaId = intval(strClear($compraID));
 			if ($facturaId > 0){
-				$arrDataFactura = $this->model->selectVenta($facturaId);
+				$arrDataFactura = $this->model->selectCompra($facturaId);
 				$arrDataFormaPago = $this->model->selectFormaPago($facturaId);
 				$arrDataDetalle = $this->model->selectDetalle($facturaId);
 				if (empty($arrDataFactura)){
@@ -89,7 +89,7 @@ class Compras extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function setVenta(){
+	public function setCompra(){
 		if ($_POST){
 			// $arrResponse = array("status" => true, "message" => $_POST);
 			//total subtotal e iva podria calcularlos aqui
@@ -161,17 +161,17 @@ class Compras extends Controllers{
 				}
 				if (!isset($arrResponse)){
 					//si tiene todos los campos valido paso a guardar los datos (cabecera y detalle)
-					//datos que faltan empleadoId(quien se supone hizo la venta), sucursalId, estadoId, direccionEnvio(opcional), 
+					//datos que faltan empleadoId(quien se supone hizo la compra), sucursalId, estadoId, direccionEnvio(opcional), 
 					//tipoFactura, testigoId(es el empleado logeado que carga la factura)
 					//para formaPago cantidad de pagos creo que tambien necesita
 					$arrData = array($cliente, $formaPago, $total, $iva, $empleadoId, $testigoId, $facturaTipoId, $direccionEnvio, $sucursalId, $estadoId, $detalle);
-					$requestVenta = $this->model->insertVenta($arrData);
-					if ($requestVenta > 0){
-						$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
+					$requestCompra = $this->model->insertCompra($arrData);
+					if ($requestCompra > 0){
+						$arrResponse = array("status" => true, "message" => "La factura de compra se ha dado de alta satisfactoriamente.", "data" => $requestCompra);
 					}
 					//si hay algun campo incorrecto tiro el else de algo salio mal
 					else {
-						$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $requestVenta);
+						$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de compra.", "data" => $requestCompra);
 					}
 				}
 			}
@@ -182,7 +182,7 @@ class Compras extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function delVenta(){
+	public function delCompra(){
 		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
 			$id = intval($_POST["id"]);
 			$arrRequest = $this->model->deleteProveedor($id);

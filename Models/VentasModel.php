@@ -9,31 +9,26 @@ class VentasModel extends Mysql {
 		//Si la forma de pago se puede limitar a un numero n (ejemplo 3 y siempre 3, que no cambie)
 		//entonces le puedo agregar el sum con detalle_pedidos_venta del detalle, o agregar un campo 
 		//en facturas_venta que sea total así no lo tengo que calcular (ya que la operación es muy tediosa)
-		$sql = "SELECT fv.FACTURAVENTA_ID, fv.NUMERO_FACTURA, fv.FACTURATIPO_ID, ft.FACTURA_TIPO, fvfp1.FORMAPAGO_ID AS FORMAPAGO1, 
-		fvfp2.FORMAPAGO_ID AS FORMAPAGO2, fvfp3.FORMAPAGO_ID AS FORMAPAGO3, fv.FECHA_EMISION, fv.TOTAL 
+		$sql = "SELECT fv.FACTURAVENTA_ID, fv.NUMERO_FACTURA, fv.FACTURATIPO_ID, ft.FACTURA_TIPO, fv.FECHA_EMISION, fv.TOTAL,
+		fv.FORMAPAGO_ID, fp.FORMA_PAGO, fv.ESTADO_ID, ep.DESCRIPCION, 
+		CONCAT(suc.RAZONSOCIAL,' suc.',suc.CODIGO_SUCURSAL) AS SUCURSAL
 		FROM facturas_venta AS fv 
 		INNER JOIN factura_tipo AS ft ON fv.FACTURATIPO_ID = ft.FACTURATIPO_ID 
-		LEFT JOIN facturaventa_formapago AS fvfp1 ON fv.FACTURAVENTA_ID = fvfp1.FACTURA_ID AND fvfp1.FORMAPAGO_ID = 1 
-		LEFT JOIN facturaventa_formapago AS fvfp2 ON fv.FACTURAVENTA_ID = fvfp2.FACTURA_ID AND fvfp2.FORMAPAGO_ID = 2 
-		LEFT JOIN facturaventa_formapago AS fvfp3 ON fv.FACTURAVENTA_ID = fvfp3.FACTURA_ID AND fvfp3.FORMAPAGO_ID = 3";
-		// $sql = "SELECT * FROM facturas_venta AS fv INNER JOIN facturaventa_formapago AS fvfp ON fv.FACTURAVENTA_ID = fvfp.FACTURA_ID";
+		INNER JOIN forma_pago AS fp ON fv.FORMAPAGO_ID = fp.FORMAPAGO_ID
+		INNER JOIN estado_pedido AS ep ON fv.ESTADO_ID = ep.ESTADO_ID
+		INNER JOIN sucursales AS suc ON fv.SUCURSAL_ID = suc.SUCURSAL_ID";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectVenta(int $id){
-		$sql = "SELECT fv.*, c.CLIENTE_ID, c.NOMBRE, c.APELLIDO, c.DNI
+		$sql = "SELECT fv.*, fp.FORMA_PAGO, CONCAT(suc.RAZONSOCIAL,' suc.',suc.CODIGO_SUCURSAL) AS SUCURSAL, 
+		c.CLIENTE_ID, c.NOMBRE, c.APELLIDO, c.DNI
 		FROM facturas_venta fv
 		INNER JOIN clientes c ON fv.CLIENTE_ID = c.CLIENTE_ID
+		INNER JOIN forma_pago AS fp ON fv.FORMAPAGO_ID = fp.FORMAPAGO_ID
+		INNER JOIN sucursales AS suc ON fv.SUCURSAL_ID = suc.SUCURSAL_ID
 		WHERE fv.FACTURAVENTA_ID = {$id}";
 		$request = $this->select($sql);
-		return $request;
-	}
-	public function selectFormaPago(int $id){
-		$sql = "SELECT fvfp.CANTIDAD_PAGO, fp.FORMA_PAGO, fp.FORMAPAGO_ID
-		FROM facturaventa_formapago fvfp
-		INNER JOIN forma_pago fp ON fp.FORMAPAGO_ID = fvfp.FORMAPAGO_ID
-		WHERE fvfp.FACTURA_ID = {$id}";
-		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectDetalle(int $id){
@@ -55,6 +50,7 @@ class VentasModel extends Mysql {
 			$this->mysqlStartTransaction();
 			$request = $this->insertCabecera($datosCabecera);
 			$facturaId = intval($request);
+			//quitar este segmento
 			if (is_int(intval($request)) and $request > 0) {
 			//	foreach ($datos[6] as $key => $value) {
 				$request = $this->insertFormaPago($facturaId, $datosFormaPago);
@@ -103,6 +99,7 @@ class VentasModel extends Mysql {
 		$request = $this->insert($sql, $datos);
 		return $request;
 	}
+	//quitar este metodo
 	private function insertFormaPago(int $facturaId, int $formaPago){ //agregar parametro cantidad cuando lo necesite
 		$arrDatos = array($facturaId, $formaPago);//agregar la cantidad
 		$sql = "INSERT INTO facturaventa_formapago(FACTURA_ID, FORMAPAGO_ID, CANTIDAD_PAGO) 

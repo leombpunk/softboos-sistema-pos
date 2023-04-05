@@ -11,7 +11,7 @@ const factura = {
 }
 $(document).ready(function () {
     //faltan cargar los clientes, traer el siguiente numero de factura y el nombre del negocio (traerlo de la tabla sucursal 1 y fue)
-    tablaFalopa = $("#ventasTable").DataTable({
+    tablaFalopa = $("#comprasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {

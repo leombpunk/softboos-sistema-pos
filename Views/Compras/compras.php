@@ -1,9 +1,9 @@
 <?php headerAdmin($data);
-getModal("modalVentasVer",$data); ?>
+getModal("modalComprasVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <a href="<?= base_url(); ?>ventas/nuevaCompra"><button class="btn btn-primary" type="button">
+            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <a href="<?= base_url(); ?>compras/nuevaCompra"><button class="btn btn-primary" type="button">
                 <i class="fa fa-plus" aria-hidden="true"></i> Nueva Compra
             </button></a></h1>
         </div>
@@ -21,6 +21,7 @@ getModal("modalVentasVer",$data); ?>
                             <thead class="thead-dark">
                                 <tr>
                                     <th>N° FACTURA</th>
+                                    <th>PROVEEDOR</th>
                                     <th>FECHA</th>
                                     <th>FORMA PAGO</th>
                                     <th>TOTAL</th>

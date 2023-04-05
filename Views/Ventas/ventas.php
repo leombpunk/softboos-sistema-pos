@@ -20,9 +20,11 @@ getModal("modalVentasVer",$data); ?>
                         <table class="table table-hover table-striped table-sm" id="ventasTable">
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>SUCURSAL</th>
                                     <th>N° FACTURA</th>
                                     <th>FECHA</th>
                                     <th>FORMA PAGO</th>
+                                    <th>ESTADO</th>
                                     <th>TOTAL</th>
                                     <th>ACCIONES</th>
                                 </tr>

@@ -7,19 +7,19 @@ getModal("modalProductosBuscar",$data); ?>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
-            <li class="breadcrumb-item"><a href="<?= base_url(); ?>nuevaVenta"><?= $data['page_title']; ?></a></li>
+            <li class="breadcrumb-item"><a href="<?= base_url(); ?>compras/nuevaCompra"><?= $data['page_title']; ?></a></li>
         </ul>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
-                    <form id="formNuevaVenta" name="formNuevaVenta">
+                    <form id="formNuevaCompra" name="formNuevaCompra">
                         <div class="table-responsive">
                             <table class="table" id="ventasCabeceraTable">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th colspan="5" class="h4"> Factura de Venta</th>
+                                        <th colspan="5" class="h4"> Factura de Compra</th>
                                         <th class="h4"><?= date('d/m/Y'); ?></th>
                                     </tr>
                                 </thead>
@@ -32,9 +32,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td class="font-weight-bold align-middle">Forma de Pago</td>
                                         <td class="align-middle">
                                             <select class="form-control" name="formaPago" id="formaPago">
-                                                <!-- <option value="1" selected>Efectivo</option>
-                                                <option value="2">Debito</option>
-                                                <option value="3">Credito</option> -->
+
                                             </select>
                                         </td>
                                     </tr>
@@ -43,9 +41,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <td colspan="5">
                                             <input class="form-control" type="text" list="" id="cliente" name="cliente" autocomplete="off" role="combobox">
                                             <datalist id="clientList" name="clientList" role="listbox">
-                                                <!-- <option value="99">Varios</option>
-                                                <option value="1">Cliente 1</option>
-                                                <option value="2">Cliente 2</option> -->
+
                                             </datalist>
                                         </td>
                                     </tr>
@@ -67,7 +63,7 @@ getModal("modalProductosBuscar",$data); ?>
                                         <th class="text-right align-middle h5"><button onclick="openModal();" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> Añadir</button></th>
                                     </tr>
                                 </thead>
-                                <tbody id="detalleVentaTableBody">
+                                <tbody id="detalleCompraTableBody">
                                     <tr>
                                         <th class="text-center align-middle">Acciones</th>
                                         <th class="text-center align-middle">#</th>

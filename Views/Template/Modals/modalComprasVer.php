@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ventasVerModalCenterTitle"><i class="fa fa-file-text-o" aria-hidden="true"></i> Datos de la Factura de Venta</h5>
+                <h5 class="modal-title" id="ventasVerModalCenterTitle"><i class="fa fa-file-text-o" aria-hidden="true"></i> Datos de la Factura de Compra</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -16,7 +16,7 @@
                         <table class="table" id="ventasCabeceraTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th colspan="5" class="h4"> Factura de Venta</th>
+                                    <th colspan="5" class="h4"> Factura de Compra</th>
                                     <th class="h4">Emitida: <span id="fechaEmision">[No date]</span></th>
                                 </tr>
                             </thead>

@@ -23,7 +23,10 @@
                             <tbody>
                                 <tr>
                                     <td><img class="img-fluid img-thumbnail" src="<?= media(); ?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
-                                    <td class="font-weight-bold align-middle h5" id="nombreSucursal"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></td>
+                                    <td class="font-weight-bold align-middle" id="nombreSucursal">
+                                       <p class="h5"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></p> 
+                                       <p><em>Sucursal n° <?= $_SESSION['userDATA']['CODIGO_SUCURSAL']; ?></em></p>
+                                    </td>
                                     <td class="font-weight-bold align-middle">Factura N°</td>
                                     <td class="align-middle" id="numeroFacturaV">[No number]</td>
                                     <td class="font-weight-bold align-middle">Forma de Pago</td>

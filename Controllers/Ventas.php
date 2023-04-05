@@ -17,9 +17,6 @@ class Ventas extends Controllers{
 		}
 	}
 	public function Ventas(){
-		// if (empty($_SESSION["permisosMod"]["r"])){
-		// 	header("location:".base_url()."dashboard");
-		// }
 		$data["page_id"] = 10;
 		$data["page_tag"] = "Ventas | SoftBoos";
 		$data["page_title"] = "Ventas";
@@ -32,7 +29,7 @@ class Ventas extends Controllers{
 		if (!isSetAperturaCaja()){
 			header("location:".base_url()."movimientosCaja");
 		}
-		$data["page_id"] = 100;
+		$data["page_id"] = 10;
 		$data["page_tag"] = "Nueva Venta | SoftBoos";
 		$data["page_title"] = "Nueva Venta";
 		$data["page_name"] = "nueva venta";
@@ -45,26 +42,22 @@ class Ventas extends Controllers{
 		$arrData = $this->model->selectVentas();
 		$pago = "";
         for ($i=0; $i < count($arrData); $i++) {  
-			$pago = "";
-			if ($arrData[$i]["FORMAPAGO1"] == 1){ // efectivo
-				$pago .= '<span class="badge badge-success">Efectivo</span> ';
-            }
-
-			if ($arrData[$i]["FORMAPAGO2"] == 2){ // debito
-				$pago .= ' <span class="badge badge-warning">Debito</span> ';
-            }
-
-            if ($arrData[$i]["FORMAPAGO3"] == 3){ // credito
-				$pago .= ' <span class="badge badge-danger">Credito</span>';
-            }
-
+			$estado = "";
+			if ($arrData[$i]['ESTADO_ID'] == 1) {//pendiente
+				$estado = '<span class="badge badge-warning">'.$arrData[$i]['DESCRIPCION'].'</span>';
+			} elseif ($arrData[$i]['ESTADO_ID'] == 2) {//cancelado
+				$estado = '<span class="badge badge-danger">'.$arrData[$i]['DESCRIPCION'].'</span>';
+			} elseif ($arrData[$i]['ESTADO_ID'] == 3) {//pagado
+				$estado = '<span class="badge badge-success">'.$arrData[$i]['DESCRIPCION'].'</span>';
+			}
+			$arrData[$i]["ESTADO"] = $estado;
+			$pago = '<span class="badge badge-success">'.$arrData[$i]['FORMA_PAGO'].'</span>';
 			$arrData[$i]["FORMAPAGO"] = $pago;
             $arrData[$i]['actions'] = '<div class="text-center">
             <button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
             <button onclick="anularVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular venta" type="button"><i class="fa fa-ban"></i></button>
             </div>'; 
         }
-        // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
@@ -73,13 +66,12 @@ class Ventas extends Controllers{
 			$facturaId = intval(strClear($ventaID));
 			if ($facturaId > 0){
 				$arrDataFactura = $this->model->selectVenta($facturaId);
-				$arrDataFormaPago = $this->model->selectFormaPago($facturaId);
 				$arrDataDetalle = $this->model->selectDetalle($facturaId);
 				if (empty($arrDataFactura)){
 					$arrResponse = array("status" => false, "message" => "Lista vacia.");
 				}
 				else {
-					$arrData = array("cabecera" => $arrDataFactura, "formaPago" => $arrDataFormaPago, "detalle" => $arrDataDetalle);
+					$arrData = array("cabecera" => $arrDataFactura, "detalle" => $arrDataDetalle);
 					$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
 				}
 			}

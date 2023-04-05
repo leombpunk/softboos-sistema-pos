@@ -3,7 +3,7 @@ class ComprasModel extends Mysql {
 	public function __construct(){
 		parent::__construct();
 	}
-	public function selectVentas(){
+	public function selectCompras(){
 		//Hacer un inner join con facturaventa_formapago y detalle_pedidos_venta.
 		//Trae resultados repetidos si existe mas de una forma de pago.
 		//Si la forma de pago se puede limitar a un numero n (ejemplo 3 y siempre 3, que no cambie)
@@ -16,11 +16,10 @@ class ComprasModel extends Mysql {
 		LEFT JOIN facturaventa_formapago AS fvfp1 ON fv.FACTURAVENTA_ID = fvfp1.FACTURA_ID AND fvfp1.FORMAPAGO_ID = 1 
 		LEFT JOIN facturaventa_formapago AS fvfp2 ON fv.FACTURAVENTA_ID = fvfp2.FACTURA_ID AND fvfp2.FORMAPAGO_ID = 2 
 		LEFT JOIN facturaventa_formapago AS fvfp3 ON fv.FACTURAVENTA_ID = fvfp3.FACTURA_ID AND fvfp3.FORMAPAGO_ID = 3";
-		// $sql = "SELECT * FROM facturas_venta AS fv INNER JOIN facturaventa_formapago AS fvfp ON fv.FACTURAVENTA_ID = fvfp.FACTURA_ID";
 		$request = $this->select_all($sql);
 		return $request;
 	}
-	public function selectVenta(int $id){
+	public function selectCompra(int $id){
 		$sql = "SELECT fv.*, c.CLIENTE_ID, c.NOMBRE, c.APELLIDO, c.DNI
 		FROM facturas_venta fv
 		INNER JOIN clientes c ON fv.CLIENTE_ID = c.CLIENTE_ID
@@ -46,7 +45,7 @@ class ComprasModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
-	public function insertVenta(array $datos){//falta testear este metodo
+	public function insertCompra(array $datos){//falta testear este metodo
 		//deberia de separar en funciones la cabecera y el detalle
 		try {
 			$datosCabecera = array($datos[6],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
@@ -78,7 +77,7 @@ class ComprasModel extends Mysql {
 		}
 		return $request;
 	}
-	public function deleteVenta(int $id){
+	public function deleteCompra(int $id){
 		$sql = "UPDATE facturas_venta SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE PROVEEDOR_ID = {$id}";
 		$request = $this->delete($sql);
 		if($request){

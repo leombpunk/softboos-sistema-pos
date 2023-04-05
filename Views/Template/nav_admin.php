@@ -47,5 +47,5 @@
             </ul>
         </li> -->
         <li><a class="app-menu__item" href="<?= base_url(); ?>opciones"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Opciones</span></a></li>
-        <li><a class="app-menu__item" href="<?= base_url();?>logout"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label"> Salir</span></a></li>
+        <li><a class="app-menu__item" href="<?= base_url(); ?>logout"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label"> Salir</span></a></li>
 </aside>

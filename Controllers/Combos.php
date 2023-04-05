@@ -16,13 +16,13 @@ class Combos extends Controllers{
         else {
             header('location: '.base_url().'login');
         }
-        getPermisos(11);
+        getPermisos(15);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
 			header("location: ".base_url()."Dashboard");
 		}
 	}
 	public function combos(){
-		$data["page_id"] = 11;
+		$data["page_id"] = 15;
 		$data["page_tag"] = "Combos | SoftBoos";
 		$data["page_title"] = "Combos";
 		$data["page_name"] = "combos";

@@ -22,16 +22,18 @@ $(document).ready(function () {
             "dataSrc": ""
         },
         "columns": [
+            { "data": "SUCURSAL" },
             { "data": "NUMERO_FACTURA" },
             { "data": "FECHA_EMISION" },
             { "data": "FORMAPAGO" },
+            { "data": "ESTADO" },
             { "data": "TOTAL" },
             { "data": "actions" }
         ],
         "responsive": true,
         "bDestroy": true,
         "iDisplayLength": 10,
-        "order": [[0,"asc"]]
+        "order": [[1,"desc"]]
     });
 
     tablaFalopa2 = $("#buscadorProductoTable").DataTable({
@@ -296,7 +298,7 @@ function verVenta(id){
                 $("#dniCliente").val(response.data.cabecera.DNI);
                 $("#nombreCliente").val(response.data.cabecera.NOMBRE+" "+response.data.cabecera.APELLIDO);
                 //forma pago
-                $("#formaPago").val(response.data.formaPago[0].FORMAPAGO_ID).trigger("change");
+                $("#formaPago").val(response.data.cabecera.FORMAPAGO_ID).trigger("change");
                 //detalles
                 $("#detalleVentaTableBody").html('');
                 response.data.detalle.forEach((element, index, array) => {
@@ -324,6 +326,9 @@ function verVenta(id){
             else {
                 swal("Atención!",response.message,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
         }
     });
 }
