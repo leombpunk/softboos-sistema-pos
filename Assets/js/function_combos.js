@@ -1,4 +1,4 @@
-var tabalFalopa;
+var sampleTable;
 //estructura de los ingredientes
 const ingredientesList = [];
 //estructura del combo
@@ -13,7 +13,7 @@ const combo = {
 const insumosList = [];
 var indiceInsumo = 0;
 $(document).ready(function () {
-    tabalFalopa = $("#sampleTable").DataTable({
+    sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -64,7 +64,7 @@ $(document).ready(function () {
                         $("#combosModalCenter").modal("hide");
                         $("#formCombo").trigger("reset");
                         swal("Resultado",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){});
+                        sampleTable.ajax.reload(function(){});
                     }
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
@@ -281,7 +281,7 @@ function borrarCombo(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                         
                         });
                     }

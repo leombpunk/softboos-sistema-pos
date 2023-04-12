@@ -79,7 +79,7 @@ class CombosModel extends Mysql {
 			}
 		}
 		else {
-			$request = "Falopa";
+			$request = "exist";
 		}
 		return $request;
 	}

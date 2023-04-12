@@ -17,7 +17,6 @@ class Home extends Controllers{
 		$data["page_tag"] = "Home";
 		$data["page_title"] = "Weas";
 		$data["page_name"] = "home";
-		$data["page_content"] = "la re concha de la lora";
 		$this->views->getView($this,"home",$data);
 	}
 }

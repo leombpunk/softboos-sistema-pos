@@ -1,1 +1,1 @@
-# sistema-pos-php-mysql-valiadmin
+# softboos-sistema-pos

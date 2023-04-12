@@ -27,7 +27,6 @@ class Cargos extends Controllers{
 		$data["page_tag"] = "Cargos | SoftBoos";
 		$data["page_title"] = "Cargos de Empleados";
 		$data["page_name"] = "cargos";
-		$data["page_content"] = "la re concha de la lora";
         $data["page_filejs"] = "function_cargos.js";
 		$this->views->getView($this,"cargos",$data);
 	}
@@ -124,7 +123,7 @@ class Cargos extends Controllers{
                     );
                 }
             }
-            elseif ($requestCargo == 'falopa'){ //exist
+            elseif ($requestCargo == 'exist'){ //exist
                 $arrResponse = array(
                     'status' => false,
                     'message' => '¡Atencion! El Cargo ya existe.',

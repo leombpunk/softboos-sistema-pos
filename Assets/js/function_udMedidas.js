@@ -1,6 +1,6 @@
-var tablaFalopa;
+var sampleTable;
 $(document).ready(function(){
-    tablaFalopa = $("#udMedidasTable").DataTable({
+    sampleTable = $("#udMedidasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -67,7 +67,7 @@ $("#formUdMedidas").submit(function(e){
         success: function(response){
             // console.log(response);
             if (response.status){
-                tablaFalopa.ajax.reload(function(){
+                sampleTable.ajax.reload(function(){
                     getUdMedidaBase();
                 });
                 $("#udMedidasModalCenter").modal("hide");
@@ -152,7 +152,7 @@ function borrarUdMedida(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tablaFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                             getUdMedidaBase();
                         });
                     }

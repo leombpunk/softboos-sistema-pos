@@ -63,24 +63,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tbodyInsumoVer">
-                                <!-- <tr>
-                                    <td>1</td>
-                                    <td>mamadas</td>
-                                    <td style="text-align: center;">5</td>
-                                    <td style="text-align: center;">unidad</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>mamadas2</td>
-                                    <td style="text-align: center;">10</td>
-                                    <td style="text-align: center;">unidad</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>mamadas3</td>
-                                    <td style="text-align: center;">15</td>
-                                    <td style="text-align: center;">unidad</td>
-                                </tr> -->
+                                
                             </tbody>
                         </table>
                     </div>

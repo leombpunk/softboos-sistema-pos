@@ -127,7 +127,7 @@ class FormasPago extends Controllers{
                     );
                 }
             }
-            elseif ($requestFormasPago == 'falopa'){ //exist
+            elseif ($requestFormasPago == 'exist'){ //exist
                 $arrResponse = array(
                     'status' => false,
                     'message' => '¡Atencion! La Forma de Pago ya existe.',

@@ -1,6 +1,6 @@
-var tabalFalopa;
+var sampleTable;
 $(document).ready(function () {
-    tabalFalopa = $("#sampleTable").DataTable({
+    sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -22,7 +22,7 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-    // console.log(tabalFalopa);
+    // console.log(sampleTable);
     //ajax carga de elementos al select
     $.ajax({
         url: base_url+'Cargos/getNivelesAcceso',
@@ -70,7 +70,7 @@ $(document).ready(function () {
                         $("#cargosModalCenter").modal("hide");
                         $("#formCargos").trigger("reset");
                         swal("Resultado",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                             // editarCargo();
                             // borrarCargo();
                         });
@@ -97,7 +97,7 @@ function openModal(){
 //     borrarCargo();
 // },false);
 function editarCargo(id){
-    // console.log("hijo de puta");
+    // console.log("hola mundo!");
     // var btnEditar = document.querySelectorAll(".btnEditarCargo");
     // console.log(btnEditar);
     // btnEditar.forEach(function(btnEditar){
@@ -150,7 +150,7 @@ function borrarCargo(id){
                         success: function (response) {
                             if(response.status){
                                 swal("Eliminar!",response.message,"success");
-                                tabalFalopa.ajax.reload(function(){
+                                sampleTable.ajax.reload(function(){
                                
                                 });
                             }

@@ -1,8 +1,0 @@
-mysql user:
-	pepito
-password:
-	r4GVSwSYqD5xt5K8
-permisos:
-	execute
-servidor:
-	localhost

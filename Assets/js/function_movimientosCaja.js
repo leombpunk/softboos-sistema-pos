@@ -1,11 +1,11 @@
-var tabalFalopa;
+var sampleTable;
 const today = () => {
     var date = new Date();
     return date.getFullYear() + "-" +((date.getMonth()+1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth()+1)) + "-" + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
 }
 $(document).ready(function () {
 
-    tabalFalopa = $("#sampleTable").DataTable({
+    sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -56,7 +56,7 @@ $(document).ready(function () {
                         $("#movimientosModalCenter").modal("hide");
                         $("#formMovimientos").trigger("reset");
                         swal("Resultado",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){});
+                        sampleTable.ajax.reload(function(){});
                         cargarTipoMovimiento();
                     }
                     else {
@@ -120,7 +120,7 @@ function borrarMovimiento(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                         
                         });
                     }

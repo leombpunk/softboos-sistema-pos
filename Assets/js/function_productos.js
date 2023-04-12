@@ -1,8 +1,8 @@
-var tablaFalopa;
+var sampleTable;
 //cargar las opciones del dropzone antes que el documento este listo,
 //de lo contrario las opciones son ignoradas.
 // Dropzone.options.myDropzonePe = {
-//     autoProccessQueue: false, //.processFile(file) need to be called by me putos
+//     autoProccessQueue: false, //.processFile(file) need to be called by me
 //     autoQueue: false,
 //     addRemoveLinks: true,
 //     paramName: "imgFile",
@@ -12,7 +12,7 @@ var tablaFalopa;
 //     uploadMultiple: true,
 // }
 $(document).ready(function(){
-    tablaFalopa = $("#productosTable").DataTable({
+    sampleTable = $("#productosTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -62,7 +62,7 @@ $("#formProductos").submit(function(e){
         success: function(data){
 			// console.log(data);
 			if (data.status){
-				tablaFalopa.ajax.reload(function(){});
+				sampleTable.ajax.reload(function(){});
 				$.notify({
 		      		title: "Bien! ",
 		      		message: data.message,
@@ -155,7 +155,7 @@ function borrarProducto(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tablaFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                        
                         });
                     }

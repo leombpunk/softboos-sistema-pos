@@ -1,6 +1,6 @@
-var tabalFalopa;
+var sampleTable;
 $(document).ready(function () {
-    tabalFalopa = $("#sampleTable").DataTable({
+    sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -45,7 +45,7 @@ $(document).ready(function () {
                         $("#formasPagosModalCenter").modal("hide");
                         $("#formFormasPago").trigger("reset");
                         swal("Resultado",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){});
+                        sampleTable.ajax.reload(function(){});
                     }
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
@@ -104,7 +104,7 @@ function borrarFormasPago(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                         
                         });
                     }

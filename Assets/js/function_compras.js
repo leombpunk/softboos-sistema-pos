@@ -1,5 +1,5 @@
-var tablaFalopa;
-var tablaFalopa2;
+var sampleTable;
+var sampleTable2;
 var indiceDetalle = 0;
 const factura = {
     proveedorId: 0,
@@ -11,7 +11,7 @@ const factura = {
     detalle: []
 }
 $(document).ready(function () {
-    tablaFalopa = $("#comprasTable").DataTable({
+    sampleTable = $("#comprasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -34,7 +34,7 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[0,"asc"]]
     });
-    tablaFalopa2 = $("#buscadorProductoTable").DataTable({
+    sampleTable2 = $("#buscadorProductoTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -356,7 +356,7 @@ function anularCompra(id){
             //     success: function (response) {
             //         if(response.status){
             //             swal("Eliminar!",response.message,"success");
-            //             tabalFalopa.ajax.reload(function(){});
+            //             sampleTable.ajax.reload(function(){});
             //         }
             //         else {
             //             swal("Atencion!",response.message,"error");

@@ -192,7 +192,7 @@ class Combos extends Controllers{
                                 );
                             }
                         }
-                        elseif ($requestCombo == 'Falopa'){ //exist
+                        elseif ($requestCombo == 'exist'){ //exist
                             $arrResponse = array(
                                 'status' => false,
                                 'message' => '¡Atencion! El combo ya existe.',

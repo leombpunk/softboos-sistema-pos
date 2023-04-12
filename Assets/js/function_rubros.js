@@ -1,6 +1,6 @@
-var tablaFalopa;
+var sampleTable;
 $(document).ready(function(){
-    tablaFalopa = $("#rubrosTable").DataTable({
+    sampleTable = $("#rubrosTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -44,7 +44,7 @@ $("#formRubros").submit(function(e){
         success: function(response){
             // console.log(response);
             if (response.status){
-                tablaFalopa.ajax.reload();
+                sampleTable.ajax.reload();
                 $("#rubrosModalCenter").modal("hide");
                 swal("Bien hecho!",response.message,"success");
             }
@@ -156,7 +156,7 @@ function borrarRubro(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tablaFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                        
                         });
                     }

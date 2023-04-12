@@ -55,12 +55,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyInsumo">
-                                    <!-- <tr>
-                                        <td>mamadas</td>
-                                        <td>unidad</td>
-                                        <td>5</td>
-                                        <td><button>borrar</button></td>
-                                    </tr> -->
+
                                 </tbody>
                             </table>
                         </div>

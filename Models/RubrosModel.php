@@ -27,7 +27,7 @@ class RubrosModel extends Mysql {
 			$request = $this->update($sql,$datos);
 		}
 		else {
-			$request = "falopa";
+			$request = "exist";
 		}
 		return $request;
 	}

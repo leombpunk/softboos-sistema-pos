@@ -37,7 +37,7 @@ class Login extends Controllers{
 					$arrData = $this->model->sessionLogin($_SESSION['userID']);
 					$_SESSION['userDATA'] = $arrData;
 					//-----------------------------------------
-					$arrResponse = array("status" => true, "message" => "Te logeaste bien puto.");
+					$arrResponse = array("status" => true, "message" => "Inicio de sesion correcto.");
 				}
 			}
 			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);

@@ -1,6 +1,6 @@
-var tablaFalopa;
+var sampleTable;
 $(document).ready(function () {
-    tablaFalopa = $("#empleadosTable").DataTable({
+    sampleTable = $("#empleadosTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -62,7 +62,7 @@ $("#formEmpleados").submit(function(e){
 		success: function(data){
 			// console.log(data);
 			if (data.status){
-				tablaFalopa.ajax.reload(function(){});
+				sampleTable.ajax.reload(function(){});
 				$.notify({
 		      		title: "Bien! ",
 		      		message: data.message,
@@ -180,7 +180,7 @@ function borrarEmpleado(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tablaFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                        
                         });
                     }

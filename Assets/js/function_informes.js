@@ -1,6 +1,6 @@
-var tabalFalopa;
+var sampleTable;
 $(document).ready(function () {
-    tabalFalopa = $("#sampleTable").DataTable({
+    sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {

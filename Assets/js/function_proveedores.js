@@ -1,6 +1,6 @@
-var tabalFalopa;
+var sampleTable;
 $(document).ready(function () {
-    tabalFalopa = $("#proveedoresTable").DataTable({
+    sampleTable = $("#proveedoresTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -34,7 +34,7 @@ $(document).ready(function () {
             dataType: "json",
             success: function (response) {
                 if (response.status){
-                    tabalFalopa.ajax.reload();
+                    sampleTable.ajax.reload();
                     $("#proveedoresModalCenter").modal("hide");
                     swal("Bien!",response.message,"success");
                 }
@@ -123,7 +123,7 @@ function borrarProveedor(id){
                 success: function (response) {
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        tabalFalopa.ajax.reload(function(){
+                        sampleTable.ajax.reload(function(){
                        
                         });
                     }

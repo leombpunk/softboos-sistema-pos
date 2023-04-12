@@ -1,5 +1,5 @@
-var tablaFalopa;
-var tablaFalopa2;
+var sampleTable;
+var sampleTable2;
 var indiceDetalle = 0;
 const factura = {
     clienteId: 0,
@@ -11,7 +11,7 @@ const factura = {
 }
 $(document).ready(function () {
     //faltan cargar los clientes, traer el siguiente numero de factura y el nombre del negocio (traerlo de la tabla sucursal 1 y fue)
-    tablaFalopa = $("#ventasTable").DataTable({
+    sampleTable = $("#ventasTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -35,7 +35,7 @@ $(document).ready(function () {
         "iDisplayLength": 10,
         "order": [[1,"desc"]]
     });
-    tablaFalopa2 = $("#buscadorProductoTable").DataTable({
+    sampleTable2 = $("#buscadorProductoTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
         "language": {
@@ -342,7 +342,7 @@ function anularVenta(id){
             //     success: function (response) {
             //         if(response.status){
             //             swal("Eliminar!",response.message,"success");
-            //             tabalFalopa.ajax.reload(function(){});
+            //             sampleTable.ajax.reload(function(){});
             //         }
             //         else {
             //             swal("Atencion!",response.message,"error");
