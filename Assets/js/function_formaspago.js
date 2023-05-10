@@ -50,6 +50,9 @@ $(document).ready(function () {
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }
@@ -84,6 +87,9 @@ function editarFormasPago(id){
             else {
                 swal("Error",response.message+" "+response.expected,"error");
             }
+        },
+        error: function (error){
+            console.log(error)
         }
     });
 }
@@ -111,6 +117,41 @@ function borrarFormasPago(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
+        }
+    });
+}
+
+function restaurarFormasPago(id){
+    swal({
+        title: "Restaurar Forma de Pago",
+        text: "¿Quiere restaurar la forma de pago?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"FormasPago/setRestaurar",
+                dataType: "json",
+                data: "idFormasPago="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

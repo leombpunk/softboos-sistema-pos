@@ -36,11 +36,11 @@ $(document).ready(function () {
 			if (data.status){
 				data.data.forEach(function(element, index) {
 					// console.log("elemento: "+element+" indice:"+index);
-					$("#empleadocargo").append("<option value='"+element.CARGO_ID+"''>"+element.CARGO_DESCRIPCION+"</option>");
+					$("#empleadocargo").append("<option value='"+element.CARGO_ID+"'>"+element.CARGO_DESCRIPCION+"</option>");
 				});
 			}
 			else {
-				swal("Error",data.message,"error");
+				swal("Error",data.message,"warning");
 			}
 			// $("#empleadocargo").addClass("selectpicker");
     	},
@@ -48,19 +48,40 @@ $(document).ready(function () {
     		swal("Error","Algo malio sal!","error");
     	}
     });	
+	$.ajax({
+		url: base_url+'Empleados/getSucursales',
+    	type: 'POST',
+    	dataType: 'json',
+    	success: function(data){
+			// console.log(data);
+    		$("#empleadosucursal").append("<option value=''></option>");
+			if (data.status){
+				data.data.forEach(function(element, index) {
+					$("#empleadosucursal").append("<option value='"+element.SUCURSAL_ID+"'>"+element.RAZONSOCIAL+" (Cod.: "+element.CODIGO_SUCURSAL+")"+"</option>");
+				});
+			}
+			else {
+				swal("Error",data.message,"warning");
+			}
+    	},
+    	error: function(error){
+			console.log(error);
+    		swal("Error","Algo malio sal!","error");
+    	}
+	});
 });
 
 $("#formEmpleados").submit(function(e){
 	e.preventDefault();
 	var datos = $("#formEmpleados").serialize();
-	// console.log(datos);
+	console.log(datos);
 	$.ajax({
 		url: base_url+'Empleados/setEmpleado',
 		type: 'POST',
 		dataType: 'json',
 		data: datos,
 		success: function(data){
-			// console.log(data);
+			console.log(data);
 			if (data.status){
 				sampleTable.ajax.reload(function(){});
 				$.notify({
@@ -77,6 +98,7 @@ $("#formEmpleados").submit(function(e){
 					z_index: 3000
 		      	});
 		      	swal("Bien!",data.message,"success");
+				$("#empleadosModalCenter").modal("hide");
 			}
 			else {
 				$.notify({
@@ -93,7 +115,11 @@ $("#formEmpleados").submit(function(e){
 					z_index: 3000
 		      	});
 			}
-		}
+		},
+    	error: function(error){
+			console.log(error);
+    		swal("Error","Algo malio sal!","error");
+    	}
 	});
 });
 function editarEmpleado(id){
@@ -101,6 +127,7 @@ function editarEmpleado(id){
     $(".modal-header").addClass("headerUpdate").removeClass("headerRegister"); 
     $("#btnText").html("Actualizar");
     $("#btnGuardar").addClass("btn-info").removeClass("btn-primary");
+	$("#formEmpleados").trigger("reset");
     $.ajax({
     	url: base_url+'Empleados/getEmpleado/'+id,
     	type: 'GET',
@@ -124,16 +151,20 @@ function editarEmpleado(id){
     				disabled: true,
     				readonly: true
     			});
-    			// $("#empleadopassword").val(data.data.CONTRASENA);
     			$("#empleadomail").val(data.data.MAIL);
     			$("#empleadotelefono").val(data.data.TELEFONO);
     			$("#empleadocargo").val(data.data.CARGO_ID).trigger("change");
     			$("#empleadodireccion").val(data.data.DIRECCION);
+				$("#empleadosucursal").val(data.data.SUCURSAL_ID).trigger("change");
     			$("#empleadosModalCenter").modal("show");
     		}
     		else {
     			swal("Atención!",data.message,"error");
     		}
+    	},
+    	error: function(error){
+			console.log(error);
+    		swal("Error","Algo malio sal!","error");
     	}
     });
 }
@@ -160,7 +191,11 @@ function verEmpleado(id){
 			else {
 				swal("Atención!",data.message,"error");
 			}
-		}
+		},
+    	error: function(error){
+			console.log(error);
+    		swal("Error","Algo malio sal!","error");
+    	}
 	});
 }
 function borrarEmpleado(id){
@@ -187,7 +222,11 @@ function borrarEmpleado(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
-                }
+                },
+				error: function(error){
+					console.log(error);
+					swal("Error","Algo malio sal!","error");
+				}
             });
         }
     });
@@ -234,3 +273,35 @@ $("#empleadocuil").keyup(function(event) {
 		this.value = this.value.replace(/[^0-9]/, '');
 	}
 });
+
+function restaurarEmpleado(id){
+    swal({
+        title: "Restaurar Empleado",
+        text: "¿Quiere restaurar el empleado?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Empleados/setRestaurar",
+                dataType: "json",
+                data: "idEmpleado="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
+        }
+    });
+}

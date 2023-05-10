@@ -1,4 +1,5 @@
 <?php 
+ini_set("session.cookie_lifetime",0);
 require_once("Config/Config.php");
 require_once("Helpers/Helpers.php");
 $url = !empty($_GET['url'])?$_GET['url']:'home/home';

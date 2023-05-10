@@ -3,7 +3,12 @@ class Sucursales extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -12,9 +17,8 @@ class Sucursales extends Controllers{
 			header('location: '.base_url().'login');
 		}
 		getPermisos(16);
-		// dep($_SESSION);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Sucursales");
 		}
 	}
 	public function Sucursales(){
@@ -26,134 +30,172 @@ class Sucursales extends Controllers{
 		$this->views->getView($this,"sucursales",$data);
 	}
 	public function getSucursales(){
-		$arrData = $this->model->selectSucursales();
+		if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+            $arrData = $this->model->selectSucursalesMaster();
+        }
+        else {
+            $$arrData = $this->model->selectSucursales();
+		}
 		for ($i=0; $i < count($arrData); $i++) {
             if ($arrData[$i]["ESTADO_ID"] == 1){
-                $arrData[$i]["est"] = '<span class="badge badge-success">'.$arrData[$i]["DESCRIPCION"].'</span>';
+                $arrData[$i]["estado"] = '<span class="badge badge-success">'.$arrData[$i]["DESCRIPCION"].'</span>';
             }
             elseif ($arrData[$i]["ESTADO_ID"] == 2){
-                $arrData[$i]["est"] = '<span class="badge badge-danger">'.$arrData[$i]["DESCRIPCION"].'</span>';
+                $arrData[$i]["estado"] = '<span class="badge badge-danger">'.$arrData[$i]["DESCRIPCION"].'</span>';
             }
             elseif ($arrData[$i]["ESTADO_ID"] == 3){
-                $arrData[$i]["est"] = '<span class="badge badge-warning">'.$arrData[$i]["DESCRIPCION"].'</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
+                $arrData[$i]["estado"] = '<span class="badge badge-warning">'.$arrData[$i]["DESCRIPCION"].'</span>';
             }
             else { 
-                $arrData[$i]["est"] = '<span class="badge badge-danger">'.$arrData[$i]["DESCRIPCION"].'</span>';
+                $arrData[$i]["estado"] = '<span class="badge badge-danger">'.$arrData[$i]["DESCRIPCION"].'</span>';
             }
             // BOTONES DE ACCION
-            if ($_SESSION["permisos"][0]["MODIFICAR"] == 1){
-                $btnEditar = '<button onclick="editarSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-primary btn-sm" title="Editar" type="button"><i class="fa fa-pencil"></i></button>';
-            }
-            else {
-                $btnEditar = '';
-            }
-            if ($_SESSION["permisos"][0]["BORRAR"] == 1){
-                $btnBorrar = '<button onclick="borrarSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-danger btn-sm" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>';
-            }
-            else {
-                $btnBorrar = '';
-            }
+            $btnEditar = '<button onclick="editarSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-primary btn-sm" type="button" '.($_SESSION["permisos"][0]["MODIFICAR"] == 1?'title="Editar"':'disabled title="No tienes permiso para editar"').'><i class="fa fa-pencil"></i></button>';
+			if($arrData[$i]["ESTADO_ID"] == 3 and $_SESSION["userDATA"]["CARGO_ID"] == 1){//está borrado
+				$btnBorrar = '<button onclick="restaurarSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-success btn-sm" title="Restaurar" type="button"><i class="fa fa-arrow-up"></i></button>';
+			} else {
+				$btnBorrar = '<button onclick="borrarSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-danger btn-sm" type="button" '.($_SESSION["permisos"][0]["BORRAR"] == 1?'title="Eliminar"':'disabled title="No tienes permiso para eliminar"').'><i class="fa fa-trash"></i></button>';
+			}
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
+            <button onclick="verSucursal('.$arrData[$i]['SUCURSAL_ID'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button>
+			<button onclick="verSucursalEmpleados('.$arrData[$i]['SUCURSAL_ID'].',\''.$arrData[$i]['nombre'].'\');" class="btn btn-outline-secondary btn-sm" title="Ver Empelados" type="button"><i class="fa fa-list"></i></button> '.
             $btnEditar.' '.$btnBorrar.'</div>';
         }
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
-	public function getSucursal(int $productoID){
-		$id = intval(strClear($productoID));
+	public function getSucursal(int $sucursalID){
+		$id = intval(strClear($sucursalID));
         if ($id > 0){
-            $arrData = $this->model->selectSucursal($id);
+			if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$arrData = $this->model->selectSucursalMaster($id);
+			}
+			else {
+				$arrData = $this->model->selectSucursal($id);
+			}
             if (empty($arrData)){
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
             else {
-				$arrData["preciocosto"] = formatMoney($arrData["preciocosto"]);
-				$arrData["precioventa"] = formatMoney($arrData["precioventa"]);
-				$arrData["cmin"] = formatDecimal($arrData["cmin"]);
-				$arrData["cmax"] = formatDecimal($arrData["cmax"]);
-				$arrData["cant"] = formatDecimal($arrData["cant"]);
                 $arrResponse = array('status' => true, 'data' => $arrData);
             }
-            echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         }
+		else {
+			$arrResponse = array('status' => false, 'message' => 'ID no valido.');
+		}
+		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();
 	}
-	//para usarlo en la vista de combos y factura compra
-	public function getSucursalesEmpleados(){
-		$arrData = $this->model->selectSoloInsumos();
-		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
-		die();
+	public function getSucursalesEmpleados(int $sucursalID){
+		$id = intval(strClear($sucursalID));
+        if ($id > 0){
+            $arrData = $this->model->selectSucursalEmpleados($sucursalID);
+            if (empty($arrData)){
+                $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.', 'data' => []);
+            }
+            else {
+                $arrResponse = array('status' => true, 'data' => $arrData);
+            }
+        }
+		else {
+			$arrResponse = array('status' => false, 'message' => 'ID no valido.', 'data' => []);
+		}
+		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
 	}
 	public function setSucursal(){
 		if ($_POST){ // valido post
-            if (!empty($_POST["producto_id"]) and is_numeric($_POST["producto_id"]) and intval($_POST["producto_id"]) > 0){ 
-				$id = intval($_POST["producto_id"]);
-				$option = 1;
+			// echo json_encode($_POST,JSON_UNESCAPED_UNICODE);
+        	// die();
+            if (!empty($_POST["sucursal_id"]) and is_numeric($_POST["sucursal_id"]) and intval($_POST["sucursal_id"]) > 0){ 
+				$id = intval($_POST["sucursal_id"]);
+				if ($_SESSION["permisos"][0]["MODIFICAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para editar registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			else {
-				$option = 2;
+				$id = 0;
+				if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
-            $producto = empty($_POST["productonombre"]) ? "" : mb_strtoupper(strClear($_POST["productonombre"]));
-			$codigo = empty($_POST["productocodigo"]) ? "" : strClear($_POST["productocodigo"]);
-			$rubro = empty($_POST["productorubro"]) ? "" : strClear($_POST["productorubro"]);
-			$udmedida = empty($_POST["productoudmedida"]) ? "" : strClear($_POST["productoudmedida"]);
-			$cantmin = empty($_POST["productocantmin"]) ? "" : strClear($_POST["productocantmin"]);
-			$cantmax = empty($_POST["productocantmax"]) ? "" : strClear($_POST["productocantmax"]);
-			$iva = empty($_POST["productoiva"]) ? "" : strClear($_POST["productoiva"]);
-			$precioventa = empty($_POST["productopventa"]) ? 0.00 : floatval(strClear($_POST["productopventa"]));
-			$preciocosto = empty($_POST["productopcosto"]) ? 0.00 : floatval(strClear($_POST["productopcosto"]));
-			$insumo = empty($_POST["productoinsumo"]) ? 0 : intval($_POST["productoinsumo"]);
-			$vendible = empty($_POST["productoventa"]) ? 0 : intval($_POST["productoventa"]);
-            $estado = empty($_POST["productoestado"]) ? 0 : intval(strClear($_POST["productoestado"]));
+            $sucursal = empty($_POST["sucursalnombre"]) ? "" : mb_strtoupper(strClear($_POST["sucursalnombre"]));
+			$codigo = empty($_POST["sucursalcodigo"]) ? "" : strClear($_POST["sucursalcodigo"]);
+			$cuit = empty($_POST["sucursalcuit"]) ? 0 : intval(strClear($_POST["sucursalcuit"]));
+			$direccion = empty($_POST["sucursaldireccion"]) ? "" : strClear($_POST["sucursaldireccion"]);
+			$telefono = empty($_POST["sucursaltelefono"]) ? "" : strClear($_POST["sucursaltelefono"]);
+			$mail = empty($_POST["sucursalmail"]) ? "" : strClear($_POST["sucursalmail"]);
+			$web = empty($_POST["sucursalweb"]) ? "" : strClear($_POST["sucursalweb"]);
+            $estado = empty($_POST["sucursalestado"]) ? 0 : intval(strClear($_POST["sucursalestado"]));
             $imagen = "";
+			if (isset($_FILES["sucursalimg"])){ //valido la imagen
+                $target_dir = "./Assets/images/uploads/";
+				$image_name = time()."-".basename($_FILES["sucursalimg"]["name"]);
+				$target_file = $target_dir.$image_name;
+				$imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+				$imageFileZise = $_FILES["sucursalimg"]["size"];
+				// Allow certain file formats
+				if(($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ) and $imageFileZise > 0){
+					$arrResponse = array("status" => false,"message" => "Sólo se permiten archivos con extension JPG , JPEG, PNG y GIF");
+                    echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				} 
+                elseif ($imageFileZise > 1048576){ // 1048576 byte=1MB
+					$arrResponse = array("status" => false, "message" => "El archivo es demasiado grande. Debe ser menor de 1MB");
+                    echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
+                else {                  
+                    if ($imageFileZise > 0){
+                        move_uploaded_file($_FILES["sucursalimg"]["tmp_name"], $target_file);
+                        $imagen = "images/uploads/$image_name";
+                    }
+                    else {
+                        $imagen = "images/uploads/logo-icon3.png";
+                    }
+                }
+            }
             // Validaciones
-            if (empty($producto) or !validar($producto,9,2,50)){
-                $arrResponse = array("status" => false, "message" => "El nombre del producto esta vacio o es invalido.");
+            if (empty($sucursal) or !validar($sucursal,9,2,50)){
+                $arrResponse = array("status" => false, "message" => "El nombre de la sucursal esta vacio o es invalido.");
             }
 			elseif (empty($codigo) or !validar($codigo,15,4,10)){
 				$arrResponse = array("status" => false, "message" => "El codigo ingresado es invalido o esta vacio.");
 			}
-			elseif (empty($rubro) or !validar($rubro,2,1,11)){
-				$arrResponse = array("status" => false, "message" => "El rubro seleccionado es incorrecto o esta vacio.");
+			elseif (!empty($cuit) and !validar($cuit,2,10,11)){
+				$arrResponse = array("status" => false, "message" => "El cuit ingresado es incorrecto o esta vacio.");
 			}
-			elseif (empty($udmedida) or !validar($udmedida,2,1,11)){
-				$arrResponse = array("status" => false, "message" => "La unidad de medida seleccionado es incorrecto o esta vacio.");
+			elseif (!empty($direccion) and !validar($direccion,9,5,100)){
+				$arrResponse = array("status" => false, "message" => "La direccion es incorrecta o esta vacia.");
 			}
-			elseif (empty($cantmin) or !validar($cantmin,10)){
-				$arrResponse = array("status" => false, "message" => "La cantidad minima ingresada es incorrecta o esta vacia.");
+			elseif (!empty($telefono) and !validar($telefono,3,6,20)){
+				$arrResponse = array("status" => false, "message" => "El telefono ingresado es incorrecto o esta vacio.");
 			}
-			elseif (empty($cantmax) or !validar($cantmax,10)){
-				$arrResponse = array("status" => false, "message" => "La cantidad maxima ingresada es incorrecta o esta vacia.");
+			elseif (!empty($mail) and !validar($mail,7,5,50)){
+				$arrResponse = array("status" => false, "message" => "El email ingresado es incorrecto o esta vacio.");
 			}
-			elseif (empty($iva) or !validar($iva,2,1,11)){
-				$arrResponse = array("status" => false, "message" => "El IVA seleccionado es incorrecto o esta vacio.");
-			}
-			elseif (empty($preciocosto) or !validar($preciocosto,10)){
-				$arrResponse = array("status" => false, "message" => "El precio de costo es incorrecto o esta vacio.");
-			}
-			elseif (empty($precioventa) or !validar($precioventa,10)){
-				$arrResponse = array("status" => false, "message" => "El precio de venta es incorrecto o esta vacio.");
-			}
-			elseif (!validar($insumo,16)){
-				$arrResponse = array("status" => false, "message" => "El valor de Insumo es incorrecto.");
-			}
-			elseif (!validar($vendible,16)){
-				$arrResponse = array("status" => false, "message" => "El valor de Venta es incorrecto.");
+			elseif (!empty($web) and !validar($web,13,5,100)){
+				$arrResponse = array("status" => false, "message" => "La web es incorrecta o esta vacia.");
 			}
             elseif (empty($estado) or (intval($estado)>2 or intval($estado)<1)){
 				$arrResponse = array("status" => false, "message" => "El estado seleccionado no es valido.");
             }
             else {
-                if ($option == 1){ // actualizar
+                if ($id > 0){ // actualizar
 					try {
-						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado, $id);
+						$arrData = array($sucursal, $codigo, $cuit, $direccion, $telefono, $mail, $web, $estado, $imagen, $id);
 						// $arrResponse = array("status" => false, "message" => $arrData);
 						$requestSucursal = $this->model->updateSucursal($arrData);
 						// $arrResponse = array("status" => false, "message" => json_encode($requestSucursal,JSON_UNESCAPED_UNICODE));
-						if ($requestSucursal){
-							$arrResponse = array("status" => true, "message" => "El producto se ha actualizado satisfactoriamente. {$requestSucursal}");
+						if ($requestSucursal == -1){
+							$arrResponse = array("status" => false, "message" => "El codigo ingresado esta duplicado. Code: {$requestSucursal}");
+						}
+						elseif ($requestSucursal){
+							$arrResponse = array("status" => true, "message" => "La sucursal se ha actualizado satisfactoriamente. {$requestSucursal}");
 						}
 						else {
 							$arrResponse = array("status" => false, "message" => "requestUpdate: {$requestSucursal}");
@@ -164,14 +206,14 @@ class Sucursales extends Controllers{
 				}
 				else { // insertar
 					try {
-						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado);
+						$arrData = array($sucursal, $codigo, $cuit, $direccion, $telefono, $mail, $web, $estado, $imagen);
 						// $arrResponse = array("status" => false, "message" => $arrData);
 						$requestSucursal = $this->model->insertSucursal($arrData);
 						if ($requestSucursal > 0){
-							$arrResponse = array("status" => true, "message" => "El producto se ha dado de alta satisfactoriamente.");
+							$arrResponse = array("status" => true, "message" => "La sucursal se ha dado de alta satisfactoriamente.");
 						}
 						else {
-							$arrResponse = array("status" => false, "message" => "requestInsert: {$requestSucursal}");
+							$arrResponse = array("status" => false, "message" => "No se ha podido registrar la sucursal. Code: {$requestSucursal}");
 						}
 					} catch (Exception $e) {
 						$arrResponse = array("status" => false, "message" => "{$e}");
@@ -186,14 +228,17 @@ class Sucursales extends Controllers{
         die();
 	}
 	public function delSucursal(){
-		if (isset($_POST['id'])){
+		if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST['id'])){
             $id = intval(strClear($_POST['id']));
             $requestDelete = $this->model->deleteSucursal($id);
             if ($requestDelete == "ok"){
                 $arrResponse = array("status" => true, "message" => "Datos borrados.");
             }
             elseif ($requestDelete == 'exist'){
-                $arrResponse = array("status" => false, "message" => "No es posible eliminar un producto asignado a sucursales del sistema.");
+                $arrResponse = array("status" => false, "message" => "No es posible eliminar una sucursal asignada a empleados.");
             }
             else {
                 $arrResponse = array("status" => false, "message" => "Error al eliminar los datos.");
@@ -205,5 +250,35 @@ class Sucursales extends Controllers{
         echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();
 	}
+	public function setRestaurar(){
+        if($_SESSION["userDATA"]["CARGO_ID"] != 1){
+            $arrResponse = array("status" => false, "message" => "Usted no tiene permisos para realizar esta acción.");
+        }
+        elseif ($_POST){
+            $id = empty($_POST['idSucursal']) ? 0 : intval(strClear($_POST['idSucursal']));
+            if ($id > 0){
+                try {
+                    $requestRestaurar = $this->model->restaurarSucursal($id);
+                    if ($requestRestaurar > 0){
+                        $arrResponse = array("status" => true, "message" => "La sucursal ha sido restaurada");
+                    }
+                    else {
+                        $arrResponse = array("status" => false, "message" => "La sucursal NO ha sido restaurada");
+                    }
+                }
+                catch (Exception $e){
+                    $arrResponse = array("status" => false, "message" => "Se ha producido un error", "details" => array($e->getMessage()));
+                }
+            }
+            else {
+                $arrResponse = array("status" => false, "message" => "El 'id' de la sucursal no es valido");
+            }
+        }
+        else {
+            $arrResponse = array("status" => false, "message" => "Datos no validos");
+        }
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }
 ?>

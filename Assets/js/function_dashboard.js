@@ -1,6 +1,7 @@
 //charts v4
 const ctx = document.getElementById("myChart")
 const ctx2 = document.getElementById("myChart2")
+const ctx3 = document.getElementById("myChart3")
 
 const labels1 = []
 const data1 = []
@@ -27,26 +28,35 @@ const colores = [
   "rgb(153, 102, 255)"
 ]
 const labels2 = []
+const labels3 = []
 const data2 = []
+const data3 = []
 
 $(document).ready(function () {
+  ///////////////////////////////
+  const queryString = window.location.search;
+  const params = new URLSearchParams(queryString);
+  if (params.has('m')){
+    swal("Atención!","Usted no tiene acceso al modulo: "+params.get('m'),"warning");
+  }
+  ///////////////////////////////
   $.ajax({
     type: "GET",
-    url: base_url + "Dashboard/productosVentaCantidad",
+    url: base_url + "Dashboard/totalVentaEfectivo",
     dataType: "json",
     success: function (response) {
       // console.log(response)
-      $("#PVCantidad").html(response.cantidad)
+      $("#PVCantidad").html(response.total)
     },
   })
 
   $.ajax({
     type: "GET",
-    url: base_url + "Dashboard/productoMasVendido",
+    url: base_url + "Dashboard/totalVentaMercadoPago",
     dataType: "json",
     success: function (response) {
       // console.log(response)
-      $("#PVMasPedido").html(response.NOMBRE)
+      $("#PVMasPedido").html(response.total)
     },
   })
 
@@ -108,7 +118,7 @@ $(document).ready(function () {
 
   $.ajax({
     type: "GET",
-    url: base_url + "Dashboard/grafico2",
+    url: base_url + "Dashboard/graficoTotalEfectivo",
     dataType: "json",
     success: function (response) {
       // console.log(response)
@@ -119,7 +129,7 @@ $(document).ready(function () {
       })
       console.log(labels2)
       console.log(data2)
-      new Chart(ctx2, {
+      new Chart(ctx3, {
         type: "pie",
         data: {
           labels: labels2,
@@ -127,6 +137,47 @@ $(document).ready(function () {
             {
               label: "Dataset 1",
               data: data2,
+              backgroundColor: colores,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "right",
+            },
+            title: {
+              display: true,
+              text: "Monto en $ (pesos)",
+            },
+          },
+        },
+      })
+    },
+  })
+
+  $.ajax({
+    type: "GET",
+    url: base_url + "Dashboard/graficoTotalMercadoPago",
+    dataType: "json",
+    success: function (response) {
+      // console.log(response)
+      response.forEach((element) => {
+        // console.log(element)
+        labels3.push(element.NOMBRE)
+        data3.push(element.totales)
+      })
+      console.log(labels3)
+      console.log(data3)
+      new Chart(ctx2, {
+        type: "pie",
+        data: {
+          labels: labels3,
+          datasets: [
+            {
+              label: "Dataset 3",
+              data: data3,
               backgroundColor: colores,
             },
           ],

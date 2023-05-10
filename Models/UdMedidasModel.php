@@ -15,7 +15,26 @@ class UdMedidasModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectUdMedidasMaster(){
+		$sql = "SELECT um.UNIMEDIDA_ID AS id, '1' AS cantidad1, um.NOMBRE AS de, 'es igual a' AS equal, 
+		um.VALOR AS val, um2.NOMBRE AS de2, um.UNIDADMINIMA_ID AS unid, 
+		IF(um.UNIMEDIDA_ID = um.UNIDADMINIMA_ID,'BASE','REFENCIADA') AS tipo, um.ESTADO_ID AS estado 
+		FROM unidades_medida um 
+		INNER JOIN (
+			SELECT UNIMEDIDA_ID, NOMBRE, ABREVIATURA FROM unidades_medida 
+		) AS um2 ON um2.UNIMEDIDA_ID = um.UNIDADMINIMA_ID";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectUdMedida(int $udMedidaID){
+		$sql = "SELECT um.UNIMEDIDA_ID AS id, um.NOMBRE AS de, um.VALOR AS val, um.UNIDADMINIMA_ID AS unid, 
+		um.ESTADO_ID AS estado, um.ABREVIATURA AS abr 
+		FROM unidades_medida um 
+		WHERE um.UNIMEDIDA_ID = {$udMedidaID} AND um.ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectUdMedidaMaster(int $udMedidaID){
 		$sql = "SELECT um.UNIMEDIDA_ID AS id, um.NOMBRE AS de, um.VALOR AS val, um.UNIDADMINIMA_ID AS unid, 
 		um.ESTADO_ID AS estado, um.ABREVIATURA AS abr 
 		FROM unidades_medida um 
@@ -71,6 +90,11 @@ class UdMedidasModel extends Mysql {
 		else {
 			$request = "exist";
 		}
+		return $request;
+	}
+	public function restaurarUdMedida(int $id){
+		$sql = "UPDATE unidades_medida SET ESTADO_ID = ? WHERE UNIMEDIDA_ID = ?";
+		$request = $this->update($sql, array(1,$id));
 		return $request;
 	}
 }

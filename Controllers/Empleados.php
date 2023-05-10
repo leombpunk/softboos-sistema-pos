@@ -4,7 +4,12 @@ class Empleados extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -13,9 +18,8 @@ class Empleados extends Controllers{
 			header('location: '.base_url().'login');
 		}
 		getPermisos(4);
-		// dep($_SESSION);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Empleados");
 		}
 	}
 	public function Empleados(){
@@ -34,8 +38,13 @@ class Empleados extends Controllers{
 		$data["page_filejs"] = "function_empleados.js";
 		$this->views->getView($this,"perfil",$data);
 	}
-	public function getEmpleados(){ // trae todos los empleados
-		$arrData = $this->model->selectEmpleados();
+	public function getEmpleados(){
+		if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+            $arrData = $this->model->selectEmpleadosMaster();
+        }
+        else {
+            $arrData = $this->model->selectEmpleados();
+        }
         for ($i=0; $i < count($arrData); $i++) { 
 			if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
                 $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
@@ -45,31 +54,51 @@ class Empleados extends Controllers{
             }
             elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
                 $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
             }
             else { // dato no controlado
                 $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
             }
+			$btnEditar = '<button onclick="editarEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-primary btn-sm" type="button"><i class="fa fa-pencil" '.($_SESSION["permisos"][0]["MODIFICAR"] == 1?'title="Editar"':'disabled title="No tienes permiso para editar"').'></i></button>';
+			if($arrData[$i]["ESTADO_ID"] == 3 and $_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$btnBorrar = '<button onclick="restaurarEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-success btn-sm" title="Restaurar" type="button"><i class="fa fa-arrow-up"></i></button>';
+			}
+			else {
+				$btnBorrar = '<button onclick="borrarEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-danger btn-sm" type="button"><i class="fa fa-trash" '.($_SESSION["permisos"][0]["BORRAR"] == 1?'title="Eliminar"':'disabled title="No tienes permiso para eliminar"').'></i></button>';
+			}
+
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-info btn-sm btnVerEmpleado" rl="'.$arrData[$i]['EMPLEADO_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="editarEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['EMPLEADO_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['EMPLEADO_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
-            </div>'; 
+            <button onclick="verEmpleado('.$arrData[$i]['EMPLEADO_ID'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
+            $btnEditar.' '.$btnBorrar.' </div>'; 
         }
-        // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
 	public function getEmpleado(int $empleadoID){
 		$id = intval(strClear($empleadoID));
 		if ($id > 0){
-			$arrData = $this->model->selectEmpleado($id);
+			if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$arrData = $this->model->selectEmpleadoMaster($id);
+			}
+			else {
+				$arrData = $this->model->selectEmpleado($id);
+			}
 			if (empty($arrData)){
 				$arrResponse = array("status" => false, "message" => "Lista vacia.");
 			}
 			else {
 				$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
 			}
+		}
+		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function getSucursales(){
+		$arrData = $this->model->selectSucursales();
+		if (empty($arrData)) {
+			$arrResponse = array("status" => false, "message" => "No se encontraron sucursales", "data" => []);
+		} 
+		else {
+			$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
 		}
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
@@ -83,16 +112,27 @@ class Empleados extends Controllers{
 			$arrResponse = array("status" => true, "message" => "ok", "data" => $arrData);
 		}
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		die();
 	}
 	public function setEmpleado(){ // recibe datos por POST
-		// $arrResponse = array("status" => false, "message" => "Algo malio sal!");
+		// $arrResponse = array("status" => false, "message" => "Algo malio sal!", "data" => $_POST);
+		// echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+		// die();
 		if ($_POST){
 			if (!empty($_POST["empleado_id"]) and is_numeric($_POST["empleado_id"]) and intval($_POST["empleado_id"]) > 0){ 
 				$id = intval($_POST["empleado_id"]);
-				$option = 1;
+				if ($_SESSION["permisos"][0]["MODIFICAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para editar registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			else {
-				$option = 2;
+				if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			// podria asignar variables antes de validarlas
 			$dni = empty($_POST["empleadodni"]) ? "" : strClear($_POST["empleadodni"]);
@@ -106,6 +146,7 @@ class Empleados extends Controllers{
 			$telefono = empty($_POST["empleadotelefono"]) ? "" : strClear($_POST["empleadotelefono"]);
 			$estado = empty($_POST["empleadoestado"]) ? "" : strClear($_POST["empleadoestado"]);
 			$direccion = empty($_POST["empleadodireccion"]) ? "" : strClear($_POST["empleadodireccion"]);
+			$sucursal = empty($_POST["empleadosucursal"]) ? "" : strClear($_POST["empleadoestado"]);
 			// primero se validan los campos obligatorios
 			if (empty($dni) or !validar($dni,2,7,8)){
 				$arrResponse = array("status" => false, "message" => "El numero de DNI ingresado no es valido o esta vacío.");
@@ -119,10 +160,10 @@ class Empleados extends Controllers{
 			elseif (empty($fechanac) or !validar($fechanac,11)) {
 				$arrResponse = array("status" => false, "message" => "La fecha de nacimiento ingresada no es valida o esta vacía.");
 			}
-			elseif ($option == 2 and (empty($cuil) or !validar($cuil,2,10,11))) {
+			elseif ($id > 0 and (empty($cuil) or !validar($cuil,2,10,11))) {
 				$arrResponse = array("status" => false, "message" => "El CUIL ingresado no es valido o esta vacío.");
 			}
-			elseif ($option == 2 and (empty($pass) or !validar($pass,6,8,16))) {
+			elseif ($id > 0 and (empty($pass) or !validar($pass,6,8,16))) {
 				$arrResponse = array("status" => false, "message" => "La contraseña ingresada no es valida o esta vacía.");
 			}
 			elseif (empty($cargo) or !validar($cargo,2,1,11)) {
@@ -133,7 +174,7 @@ class Empleados extends Controllers{
 			}
 			// aca comienza la validacion de los campos que no son obligatorios
 			elseif (!empty($mail) and (!validar($mail,7) or (strlen($mail) < 10 or strlen($mail) > 30))) {
-				$arrResponse = array("status" => false, "message" => "El cargo seleccionado no es valido o no selecciono ninguno.");
+				$arrResponse = array("status" => false, "message" => "El correo electronico no es valido o esta vacio.");
 			}
 			elseif (!empty($telefono) and !validar($telefono,3,6,20)) {
 				$arrResponse = array("status" => false, "message" => "El nuemro de telefono ingresado no es valido o está vacío.");
@@ -141,16 +182,19 @@ class Empleados extends Controllers{
 			elseif (!empty($direccion) and !validar($direccion,9,10,100)) {
 				$arrResponse = array("status" => false, "message" => "La direccion ingresada no es valida o está vacía.");
 			}
+			elseif (empty($sucursal) or !validar($sucursal,2,1,11)) {
+				$arrResponse = array("status" => false, "message" => "La sucursal seleccionada no es valida o no selecciono ninguna.");
+			}
 			else {
-				if ($option == 1){ // actualizar
-					$arrData = array($_SESSION["userDATA"]["SUCURSAL_ID"], $cargo, $estado, $dni, $nombre, $apellido, $fechanac, $mail, $telefono, $direccion, $id);
+				if ($id > 0){ // actualizar
+					$arrData = array($sucursal, $cargo, $estado, $dni, $nombre, $apellido, $fechanac, $mail, $telefono, $direccion, $id);
 					$requestEmpleado = $this->model->updateEmpleado($arrData);
 					if ($requestEmpleado > 0){
 						$arrResponse = array("status" => true, "message" => "El empleado se ha actualizado satisfactoriamente.");
 					}
 				}
 				else { // insertar
-					$arrData = array($_SESSION["userDATA"]["SUCURSAL_ID"], $cargo, $estado, $dni, $nombre, $apellido, $fechanac, $cuil, $pass, $mail, $telefono, $direccion);
+					$arrData = array($sucursal, $cargo, $estado, $dni, $nombre, $apellido, $fechanac, $cuil, $pass, $mail, $telefono, $direccion);
 					$requestEmpleado = $this->model->insertEmpleado($arrData);
 					if ($requestEmpleado > 0){
 						$arrResponse = array("status" => true, "message" => "El empleado se ha dado de alta satisfactoriamente.");
@@ -165,7 +209,10 @@ class Empleados extends Controllers{
 		die();
 	}
 	public function delEmpleado(){
-		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
+		if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST["id"]) and is_numeric($_POST["id"])){
 			$this->id = intval($_POST["id"]);
 			$arrRequest = $this->model->deleteEmpleado($this->id);
 			if ($arrRequest == "ok"){
@@ -184,5 +231,35 @@ class Empleados extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
+	public function setRestaurar(){
+        if($_SESSION["userDATA"]["CARGO_ID"] != 1){
+            $arrResponse = array("status" => false, "message" => "Usted no tiene permisos para realizar esta acción.");
+        }
+        elseif ($_POST){
+            $id = empty($_POST['idEmpleado']) ? 0 : intval(strClear($_POST['idEmpleado']));
+            if ($id > 0){
+                try {
+                    $requestRestaurar = $this->model->restaurarEmpleado($id);
+                    if ($requestRestaurar > 0){
+                        $arrResponse = array("status" => true, "message" => "El empleado ha sido restaurado");
+                    }
+                    else {
+                        $arrResponse = array("status" => false, "message" => "El empleado NO ha sido restaurado");
+                    }
+                }
+                catch (Exception $e){
+                    $arrResponse = array("status" => false, "message" => "Se ha producido un error", "details" => array($e->getMessage()));
+                }
+            }
+            else {
+                $arrResponse = array("status" => false, "message" => "El 'id' del empleado no es valido");
+            }
+        }
+        else {
+            $arrResponse = array("status" => false, "message" => "Datos no validos");
+        }
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }
 ?>

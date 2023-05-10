@@ -52,6 +52,10 @@ function getUdMedidaBase(){
             else {
                 $("#udMedidaequal").append("<option value=''>No hay unidades de medida</option>");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -77,6 +81,10 @@ $("#formUdMedidas").submit(function(e){
             else {
                 swal("Atencion!",response.message,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 });
@@ -105,7 +113,11 @@ function verUdMedida(id){
 			else {
 				swal("Atención!",data.message,"error");
 			}
-		}
+		},
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
+        }
 	});
 }
 function editarUdMedida(id){
@@ -123,7 +135,6 @@ function editarUdMedida(id){
                 $("#udMedida_id").val(response.data.id);
                 $("#udMedidanombre").val(response.data.de);
                 $("#udMedidaabr").val(response.data.abr);
-                // $("#udMedidaequal").html("");
                 $("#udMedidaequal").val(response.data.unid).trigger("change");
                 $("#udMedidaval").val(response.data.val);
                 $("#udMedidaestado").val(response.data.estado).trigger("change");
@@ -132,6 +143,10 @@ function editarUdMedida(id){
             else {
                 swal("Atencion!",response.message,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -159,6 +174,41 @@ function borrarUdMedida(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function(error){
+                    console.log(error);
+                    swal("Error!",error,"error");
+                }
+            });
+        }
+    });
+}
+function restaurarUdMedida(id){
+    swal({
+        title: "Restaurar Unidad de Medida",
+        text: "¿Quiere restaurar la unidad de medida?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"UdMedidas/setRestaurar",
+                dataType: "json",
+                data: "idUdMedida="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

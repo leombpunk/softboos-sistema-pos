@@ -7,7 +7,7 @@ getModal("modalRubrosVer",$data); ?>
             <h1>
                 <i class="fa fa-pie-chart" aria-hidden="true"></i> <?= $data['page_title']; ?> 
             <?php if ($_SESSION["permisos"][0]["AGREGAR"] == 1){ ?>
-                <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#rubrosModalCenter">
+                <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#rubrosModalCenter" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar"':'disabled title="No tienes permiso"' ?>>
                     <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Rubro
                 </button>
             <?php } ?>
@@ -28,7 +28,7 @@ getModal("modalRubrosVer",$data); ?>
                                 <tr>
                                     <th>CODIGO</th>
                                     <th>DESCRIPCION</th>
-                                    <th>FEHCA DE ALTA</th>
+                                    <th>FECHA DE ALTA</th>
                                     <th>ESTADO</th>
                                     <th>ACCIONES</th>
                                 </tr>

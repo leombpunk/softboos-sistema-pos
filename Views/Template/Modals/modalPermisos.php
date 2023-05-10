@@ -25,18 +25,6 @@
                             
                         </tbody>
                     </table>
-                    <!-- <div class="form-group">
-                        <label class="control-label" for="cargonombre">Cargo</label>
-                        <input id="cargonombre" name="cargonombre" class="form-control" type="text" placeholder="Nombre del Cargo" required>
-                        <div class="invalid-feedback">Complete este campo!</div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label" for="">Nivel de Acceso</label>
-                        <select class="form-control" name="cargonacceso" id="cargonacceso" required>
-                        </select>
-                        <p class="form-text text-muted"><i class="fa fa-info"></i> El campo "Nivel de Acceso" hace referencia a la gerarquia de la empresa con respecto a los permisos de sus empleados. Donde el numero mas alto es el de mayor rango y el numero mas pequeño de menor rango gerarquico.</p>
-                        <div class="invalid-feedback">Complete este campo!</div>
-                    </div> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

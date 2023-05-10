@@ -3,7 +3,12 @@ class Rubros extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -13,7 +18,7 @@ class Rubros extends Controllers{
 		}
         getPermisos(6);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Rubros");
 		}
 	}
 	public function Rubros(){
@@ -21,11 +26,15 @@ class Rubros extends Controllers{
 		$data["page_title"] = "Rubros";
 		$data["page_name"] = "rubros";
 		$data["page_filejs"] = "function_rubros.js";
-        // $data["page_specialjs"] = array("<script src='".media()."js/bootstrap-filestyle.js' type='text/javascript' ></script>");
 		$this->views->getView($this,"rubros",$data);
 	}
     public function getRubros(){
-        $arrData = $this->model->selectRubros();
+        if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+            $arrData = $this->model->selectRubrosMaster();
+        }
+        else {
+            $arrData = $this->model->selectRubros();
+		}
         for ($i=0; $i < count($arrData); $i++) { 
             if ($arrData[$i]["estado"] == 1){ // activo
                 $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
@@ -40,36 +49,30 @@ class Rubros extends Controllers{
             else { // dato no controlado
                 $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
             }
-            // BOTONES DE ACCION
-            if ($_SESSION["permisos"][0]["MODIFICAR"] == 1){
-                $btnEditar = '<button onclick="editarRubro('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm btnEditarRubro" rl="'.$arrData[$i]['id'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>';
+
+            $btnEditar = '<button onclick="editarRubro('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm" type="button"><i class="fa fa-pencil" '.($_SESSION["permisos"][0]["MODIFICAR"] == 1?'title="Editar"':'disabled title="No tienes permiso para editar"').'></i></button>';
+            if ($arrData[$i]["estado"] == 3 and $_SESSION["userDATA"]["CARGO_ID"] == 1){
+                $btnBorrar = '<button onclick="restaurarRubro('.$arrData[$i]['id'].');" class="btn btn-success btn-sm" title="Restaurar" type="button"><i class="fa fa-arrow-up"></i></button>';
             }
             else {
-                $btnEditar = '';
+                $btnBorrar = '<button onclick="borrarRubro('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm" type="button" '.($_SESSION["permisos"][0]["BORRAR"] == 1?'title="Eliminar"':'disabled title="No tienes permiso para eliminar"').'><i class="fa fa-trash"></i></button>';
             }
-            if ($_SESSION["permisos"][0]["BORRAR"] == 1){
-                $btnBorrar = '<button onclick="borrarRubro('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm btnBorrarRubro" rl="'.$arrData[$i]['id'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>';
-            }
-            else {
-                $btnBorrar = '';
-            }
-            // $arrData[$i]['actions'] = '<div class="text-center">
-            // <button onclick="verRubro('.$arrData[$i]['id'].');" class="btn btn-info btn-sm btnPermisosRubro" rl="'.$arrData[$i]['id'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            // <button onclick="editarRubro('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm btnEditarRubro" rl="'.$arrData[$i]['id'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            // <button onclick="borrarRubro('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm btnBorrarRubro" rl="'.$arrData[$i]['id'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
-            // </div>'; 
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verRubro('.$arrData[$i]['id'].');" class="btn btn-info btn-sm btnPermisosRubro" rl="'.$arrData[$i]['id'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
+            <button onclick="verRubro('.$arrData[$i]['id'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
             $btnEditar.' '.$btnBorrar.'</div>';
         }
-        // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
         die();
     }
     public function getRubro(int $rubroID){
         $id = intval(strClear($rubroID));
         if ($id > 0){
-            $arrData = $this->model->selectRubro($id);
+            if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+                $arrData = $this->model->selectRubroMaster($id);
+            }
+            else {
+                $arrData = $this->model->selectRubro($id);
+            }
             if (empty($arrData)){
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
@@ -82,20 +85,27 @@ class Rubros extends Controllers{
     }
     public function setRubro(){
         if ($_POST){ // valido post
-            // var_dump($_POST);
             if (!empty($_POST["rubro_id"]) and is_numeric($_POST["rubro_id"]) and intval($_POST["rubro_id"]) > 0){ 
 				$id = intval($_POST["rubro_id"]);
-				$option = 1;
+				if ($_SESSION["permisos"][0]["MODIFICAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para editar registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			else {
-				$option = 2;
+				$id = 0;
+				if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
             $rubro = empty($_POST["rubronombre"]) ? "" : mb_strtoupper(strClear($_POST["rubronombre"]));
             $estado = empty($_POST["rubroestado"]) ? "" : intval(strClear($_POST["rubroestado"]));
             $imagen = "";
             if (isset($_FILES["rubroimg"])){ //valido la imagen
                 // var_dump($_FILES["rubroimg"]);
-                // $imagen = $_FILES["rubroimg"];
                 $target_dir = "./Assets/images/uploads/";
 				$image_name = time()."-".basename($_FILES["rubroimg"]["name"]);
 				$target_file = $target_dir.$image_name;
@@ -130,7 +140,7 @@ class Rubros extends Controllers{
 				$arrResponse = array("status" => false, "message" => "El estado seleccionado no es valido o no selecciono ninguno.");
             }
             else {
-                if ($option == 1){ // actualizar
+                if ($id > 0){ // actualizar
                     if (strpos($imagen,"/album-icon") === true){
                         $imagen = "";
                     }
@@ -156,7 +166,10 @@ class Rubros extends Controllers{
         die();
     }
     public function delRubro(){
-        if (isset($_POST['id'])){
+        if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST['id'])){
             $id = intval(strClear($_POST['id']));
             $requestDelete = $this->model->deleteRubro($id);
             if ($requestDelete == "ok"){
@@ -171,6 +184,36 @@ class Rubros extends Controllers{
         }
         else {
             $arrResponse = array("status" => false, "message" => "Error al recibir datos.");
+        }
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
+    public function setRestaurar(){
+        if($_SESSION["userDATA"]["CARGO_ID"] != 1){
+            $arrResponse = array("status" => false, "message" => "Usted no tiene permisos para realizar esta acción.");
+        }
+        elseif ($_POST){
+            $id = empty($_POST['idRubro']) ? 0 : intval(strClear($_POST['idRubro']));
+            if ($id > 0){
+                try {
+                    $requestRestaurar = $this->model->restaurarRubro($id);
+                    if ($requestRestaurar > 0){
+                        $arrResponse = array("status" => true, "message" => "El rubro ha sido restaurado");
+                    }
+                    else {
+                        $arrResponse = array("status" => false, "message" => "El rubro NO ha sido restaurado");
+                    }
+                }
+                catch (Exception $e){
+                    $arrResponse = array("status" => false, "message" => "Se ha producido un error", "details" => array($e->getMessage()));
+                }
+            }
+            else {
+                $arrResponse = array("status" => false, "message" => "El 'id' del rubro no es valido");
+            }
+        }
+        else {
+            $arrResponse = array("status" => false, "message" => "Datos no validos");
         }
         echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
         die();

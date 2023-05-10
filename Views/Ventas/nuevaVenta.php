@@ -20,12 +20,14 @@ getModal("modalProductosBuscar",$data); ?>
                                 <thead class="thead-dark">
                                     <tr>
                                         <th colspan="5" class="h4"> Factura de Venta</th>
-                                        <th class="h4"><?= date('d/m/Y'); ?></th>
+                                        <th class="h4">
+                                            <input value="<?= date('Y-m-d')."T".date('H:i'); ?>" type="datetime-local" name="fechaEmision" id="fechaEmision" class="form-control" required>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><img class="img-fluid img-thumbnail" src="<?= media();?>/images/uploads/logo-icon2.png" alt="logo" style="width: 120px; heigth: 120px;"></td>
+                                        <td><img class="img-fluid img-thumbnail" src="<?= media();?><?= $_SESSION["userDATA"]["LOGO_URL"]; ?>" alt="logo" style="width: 120px; heigth: 120px;"></td>
                                         <td class="font-weight-bold align-middle" id="nombreSucursal">
                                             <p class="h5"><?= $_SESSION['userDATA']['RAZONSOCIAL']; ?></p> 
                                             <p><em>Sucursal n° <?= $_SESSION['userDATA']['CODIGO_SUCURSAL']; ?></em></p>
@@ -59,7 +61,6 @@ getModal("modalProductosBuscar",$data); ?>
                         </div>
                         <div class="table-responsive">
                             <table class="table" id="ventasDetalleTable">
-                                <!-- <caption>Detalle</caption> -->
                                 <thead class="thead-dark">
                                     <tr>
                                         <th class="align-middle h5" colspan="7">Detalle</th>

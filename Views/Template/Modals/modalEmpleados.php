@@ -97,8 +97,17 @@
                     <div class="form-row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="control-label" for="">Direccion</label>
-                                <textarea id="empleadodireccion" name="empleadodireccion" class="form-control" maxlength="100" placeholder="Escriba el domicilio aquí por favor..."></textarea>
+                                <label class="control-label" for="empleadodireccion">Direccion</label>
+                                <input  type="text" id="empleadodireccion" name="empleadodireccion" class="form-control" maxlength="100" placeholder="Escriba el domicilio aquí por favor..." />
+                                <div class="invalid-feedback">Complete este campo!</div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="control-label" for="empleadosucursal">Sucursal</label>
+                                <select name="empleadosucursal" id="empleadosucursal" class="form-control" required>
+
+                                </select>
                                 <div class="invalid-feedback">Complete este campo!</div>
                             </div>
                         </div>

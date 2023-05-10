@@ -3,7 +3,12 @@ class Proveedores extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -13,13 +18,10 @@ class Proveedores extends Controllers{
 		}
 		getPermisos(9);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Proveedores");
 		}
 	}
 	public function Proveedores(){
-		// if (empty($_SESSION["permisosMod"]["r"])){
-		// 	header("location:".base_url()."dashboard");
-		// }
 		$data["page_id"] = 9;
 		$data["page_tag"] = "Proveedores | SoftBoos";
 		$data["page_title"] = "Proveedores";
@@ -28,7 +30,12 @@ class Proveedores extends Controllers{
 		$this->views->getView($this,"proveedores",$data);
 	}
 	public function getProveedores(){
-		$arrData = $this->model->selectProveedores();
+		if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+            $arrData = $this->model->selectProveedoresMaster();
+        }
+        else {
+            $arrData = $this->model->selectProveedores();
+		}
         for ($i=0; $i < count($arrData); $i++) { 
 			if ($arrData[$i]["ESTADO_ID"] == 1){ // activo
                 $arrData[$i]["estado"] = '<span class="badge badge-success">Activo</span>';
@@ -38,24 +45,32 @@ class Proveedores extends Controllers{
             }
             elseif ($arrData[$i]["ESTADO_ID"] == 3){ // borrado
                 $arrData[$i]["estado"] = '<span class="badge badge-warning">Borrado</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
             }
             else { // dato no controlado
                 $arrData[$i]["estado"] = '<span class="badge badge-danger">WTF</span>';
             }
+			$btnEditar = '<button onclick="editarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-primary btn-sm" type="button" '.($_SESSION["permisos"][0]["MODIFICAR"] == 1?'title="Editar"':'disabled title="No tienes permiso para editar"').'><i class="fa fa-pencil"></i></button>';
+			if($arrData[$i]["ESTADO_ID"] == 3 and $_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$btnBorrar = '<button onclick="restaurarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-success btn-sm" title="Restaurar" type="button"><i class="fa fa-arrow-up"></i></button>';
+			}
+			else {
+				$btnBorrar = '<button onclick="borrarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-danger btn-sm" type="button" '.($_SESSION["permisos"][0]["BORRAR"] == 1?'title="Eliminar"':'disabled title="No tienes permiso para eliminar"').'><i class="fa fa-trash"></i></button>';
+			}
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-info btn-sm btnVerproveedor" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="editarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-primary btn-sm btnEditarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            <button onclick="borrarProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-danger btn-sm btnBorrarCargo" rl="'.$arrData[$i]['PROVEEDOR_ID'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
-            </div>'; 
+            <button onclick="verProveedor('.$arrData[$i]['PROVEEDOR_ID'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button>'.
+            $btnEditar.' '.$btnBorrar.'</div>'; 
         }
-        // dep($arrData);
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 	}
-	public function getProveedor(int $proveedorID){ // pasa el id del proveedor por GET
+	public function getProveedor(int $proveedorID){ 
 		$id = intval(strClear($proveedorID));
 		if ($id > 0){
-			$arrData = $this->model->selectProveedor($id);
+			if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$arrData = $this->model->selectProveedorMaster($id);
+			}
+			else {
+				$arrData = $this->model->selectProveedor($id);
+			}
 			if (empty($arrData)){
 				$arrResponse = array("status" => false, "message" => "Lista vacia.");
 			}
@@ -70,12 +85,20 @@ class Proveedores extends Controllers{
 		if ($_POST){
 			if (!empty($_POST["proveedor_id"]) and is_numeric($_POST["proveedor_id"]) and intval($_POST["proveedor_id"]) > 0){ 
 				$id = intval($_POST["proveedor_id"]);
-				$option = 1;
+				if ($_SESSION["permisos"][0]["MODIFICAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para editar registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			else {
-				$option = 2;
+				$id = 0;
+				if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
-			// podria asignar variables antes de validarlas
 			$razonsocial = empty($_POST["proveedorrazonSocial"]) ? "" : mb_strtoupper(strClear($_POST["proveedorrazonSocial"]));
 			$cuit = empty($_POST["proveedorcuit"]) ? "" : str_ireplace("-","",strClear($_POST["proveedorcuit"]));
 			$mail = empty($_POST["proveedormail"]) ? "" : strClear($_POST["proveedormail"]);
@@ -107,7 +130,7 @@ class Proveedores extends Controllers{
 				$arrResponse = array("status" => false, "message" => "El estado ingresado no es valida o está vacía.");
 			}
 			else {
-				if ($option == 1){ // actualizar
+				if ($id > 0){ // actualizar
 					$arrData = array($razonsocial, $cuit, $mail, $telefono, $web, $direccion, $estado, $id);
 					$requestProveedor = $this->model->updateProveedor($arrData);
 					if ($requestProveedor > 0){
@@ -130,7 +153,10 @@ class Proveedores extends Controllers{
 		die();
 	}
 	public function delProveedor(){
-		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
+		if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST["id"]) and is_numeric($_POST["id"])){
 			$id = intval($_POST["id"]);
 			$arrRequest = $this->model->deleteProveedor($id);
 			if ($arrRequest == "ok"){
@@ -146,5 +172,35 @@ class Proveedores extends Controllers{
 		echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
 		die();
 	}
+	public function setRestaurar(){
+        if($_SESSION["userDATA"]["CARGO_ID"] != 1){
+            $arrResponse = array("status" => false, "message" => "Usted no tiene permisos para realizar esta acción.");
+        }
+        elseif ($_POST){
+            $id = empty($_POST['idProveedor']) ? 0 : intval(strClear($_POST['idProveedor']));
+            if ($id > 0){
+                try {
+                    $requestRestaurar = $this->model->restaurarProveedor($id);
+                    if ($requestRestaurar > 0){
+                        $arrResponse = array("status" => true, "message" => "El proveedor ha sido restaurado");
+                    }
+                    else {
+                        $arrResponse = array("status" => false, "message" => "El proveedor NO ha sido restaurado");
+                    }
+                }
+                catch (Exception $e){
+                    $arrResponse = array("status" => false, "message" => "Se ha producido un error", "details" => array($e->getMessage()));
+                }
+            }
+            else {
+                $arrResponse = array("status" => false, "message" => "El 'id' del proveedor no es valido");
+            }
+        }
+        else {
+            $arrResponse = array("status" => false, "message" => "Datos no validos");
+        }
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }
 ?>

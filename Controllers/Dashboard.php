@@ -3,7 +3,12 @@ class Dashboard extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -41,6 +46,18 @@ class Dashboard extends Controllers{
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}
+	public function totalVentaEfectivo(){
+		$arrData = $this->model->selectTotalVentaEfectivo();
+		$arrData['total'] = formatMoney($arrData['total']);
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function totalVentaMercadoPago(){
+		$arrData = $this->model->selectTotalVentaMercadopago();
+		$arrData['total'] = formatMoney($arrData['total']);
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
 	public function totalProductosVendidos(){
 		//total de productos vendidos
 		$arrData = $this->model->selectTotalVentas();
@@ -57,6 +74,16 @@ class Dashboard extends Controllers{
 	public function grafico2(){
 		//total de ventas totales por horas
 		$arrData = $this->model->selectMontoPorProductoVenido();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function graficoTotalEfectivo(){
+		$arrData = $this->model->selectTotalVentasEfectivo();
+		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
+		die();
+	}
+	public function graficoTotalMercadoPago(){
+		$arrData = $this->model->selectTotalVentasMercadopago();
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
 	}

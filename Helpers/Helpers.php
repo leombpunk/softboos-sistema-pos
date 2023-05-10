@@ -96,7 +96,7 @@ function validar($value, int $option, int $minlength=1, int $maxlength=100){
                 return preg_match_all($regExp,$value);
             }
             return false;
-        case 2: // valida nuemro enteros positivos mayores que cero
+        case 2: // valida numeros enteros positivos mayores que cero
             $regExp = '/^(?!0)[0-9]{'.$minlength.','.$maxlength.'}+$/';
             if (is_numeric($value) or is_string($value)){ 
                 return preg_match_all($regExp,$value);
@@ -127,7 +127,7 @@ function validar($value, int $option, int $minlength=1, int $maxlength=100){
             }
             return false;
         case 7: // valida que la cadena sea un correo electronico valido
-            $regExp = '/^\w+([-._]\w+)*@\w+([-._]\w+)*\.\w+$/';
+            $regExp = '/(^\w+([-._]\w+)*@\w+([-._]\w+)*\.\w+){'.$minlength.','.$maxlength.'}$/';
             if (is_string($value)){
                 return preg_match_all($regExp,$value);
             }
@@ -157,7 +157,7 @@ function validar($value, int $option, int $minlength=1, int $maxlength=100){
             $regExp = '/^([0-2][0-9]|3[0-1])(\/|-)(0[1-9]|1[0-2])\2(\d{4})(\s)([0-1][0-9]|2[0-3])(:)([0-5][0-9])(:)([0-5][0-9])$/';
             return preg_match_all($regExp,$value);
         case 13: // valida una url o direccion de una pagina web
-            $regExp = '/^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z-])*(:(0-9)*)*(\/?)( [a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$/';
+            $regExp = '/^((ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z-])*(:(0-9)*)*(\/?)( [a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?){'.$minlength.','.$maxlength.'}$/';
             return preg_match_all($regExp,$value);
         case 14: // valida una cadena de caracteres tipo oracion, letras y carateres con acento y algunos caracteres especiales
             $regExp = '/^([a-zA-Z\/\sÑñÁáÉéÍíÓóÚú-]){'.$minlength.','.$maxlength.'}+$/';
@@ -203,5 +203,8 @@ function isSetAperturaCaja(){
         return true;
     }
     return false;
+}
+function isSessionExpired(){
+    return isset($_SESSION['start']) and (time() - $_SESSION['start'] > SESSION_EXPIRE);
 }
 ?>

@@ -1,3 +1,11 @@
+$(document).ready(function(){
+	const queryString = window.location.search;
+	const params = new URLSearchParams(queryString);
+	if (params.has('m')){
+	  swal("Atención!","Su sesión ha expirado!\nPor favor vuelva a iniciar sesión","warning");
+	}
+});
+
 $('.login-content [data-toggle="flip"]').click(function() {
 	$('.login-box').toggleClass('flipped');
 	return false;
@@ -26,7 +34,7 @@ $("#formLogin").submit(function(e){
 		  			});
 		  		}
 		  		else {
-		  			swal("Mal ahí pe!",response.message,"error");
+		  			swal("Atención!",response.message,"error");
 		  			pass.val("");
 		  		}
 		  	},

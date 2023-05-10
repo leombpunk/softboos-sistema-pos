@@ -7,7 +7,7 @@ getModal("modalUdMedidasVer",$data); ?>
             <h1>
                 <i class="fa fa-balance-scale" aria-hidden="true"></i> <?= $data['page_title']; ?> 
             <?php if ($_SESSION["permisos"][0]["AGREGAR"] == 1){ ?>
-                <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#udMedidasModalCenter">
+                <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#udMedidasModalCenter" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar"':'disabled title="No tienes permiso"' ?>>
                     <i class="fa fa-plus" aria-hidden="true"></i> Nueva Unidad de Medida
                 </button>
             <?php } ?>

@@ -41,6 +41,9 @@ $(document).ready(function () {
                 else {
                     swal("Atención!",response.message,"error");
                 }
+            },
+            error: function (error) {
+                console.log(error);
             }
         });
     });
@@ -77,6 +80,9 @@ function verCliente(id){
             else {
                 swal("Atención!",response.message,"error");
             }
+        },
+        error: function (error) {
+            console.log(error);
         }
     });
 }
@@ -104,9 +110,12 @@ function editarCliente(id){
     			$("#clientesModalCenter").modal("show");
     		}
     		else {
-    			swal("Atención!",data.message,"error");
+    			swal("Atención!",data.message,"warning");
     		}
-    	}
+    	},
+        error: function (error) {
+            console.log(error);
+        }
     });
 }
 function borrarCliente(id){
@@ -124,15 +133,49 @@ function borrarCliente(id){
                 data: "id="+id,
                 dataType: "json",
                 success: function (response) {
+                    console.log(response);
                     if(response.status){
                         swal("Eliminar!",response.message,"success");
-                        sampleTable.ajax.reload(function(){
-                       
-                        });
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"warning");
+                    }
+                },
+                error: function (error){
+                    console.log(error);
+                    swal("Atencion!",error,"error");
+                }
+            });
+        }
+    });
+}
+function restaurarCliente(id){
+    swal({
+        title: "Restaurar Cliente",
+        text: "¿Quiere restaurar el cliente?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Clientes/setRestaurar",
+                dataType: "json",
+                data: "idCliente="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
                     }
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

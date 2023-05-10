@@ -1,11 +1,13 @@
 <?php headerAdmin($data);
 getModal("modalCombos",$data);
 getModal("modalCombosVer",$data);
-getModal("modalCombosAgregarInsumo",$data); ?>
+getModal("modalCombosAgregarInsumo",$data);
+getModal("modalCombosAgregar",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-cubes" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#combosModalCenter">
+            <h1><i class="fa fa-cubes" aria-hidden="true"></i> <?= $data['page_title']; ?> 
+            <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#combosModalCenter" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar"':'disabled title="No tienes permiso"' ?>>
                 <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Combo
             </button></h1>
         </div>

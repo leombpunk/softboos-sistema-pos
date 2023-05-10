@@ -3,9 +3,10 @@ getModal("modalComprasVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> <a href="<?= base_url(); ?>compras/nuevaCompra"><button class="btn btn-primary" type="button">
+            <h1><i class="fa fa-shopping-cart" aria-hidden="true"></i> <?= $data['page_title']; ?> 
+            <a class="btn btn-primary" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar Compra" href="'.base_url().'compras/nuevaCompra"':'disabled title="No tienes permiso" href="#"' ?>>
                 <i class="fa fa-plus" aria-hidden="true"></i> Nueva Compra
-            </button></a></h1>
+            </a></h1>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
@@ -24,6 +25,7 @@ getModal("modalComprasVer",$data); ?>
                                     <th>PROVEEDOR</th>
                                     <th>FECHA</th>
                                     <th>FORMA PAGO</th>
+                                    <th>ESTADO</th>
                                     <th>TOTAL</th>
                                     <th>ACCIONES</th>
                                 </tr>

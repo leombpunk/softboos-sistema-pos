@@ -77,6 +77,7 @@ $("#formProductos").submit(function(e){
 					z_index: 3000
 		      	});
 		      	swal("Bien!",data.message,"success");
+                $("#productosModalCenter").modal("hide");
 			}
 			else {
 				$.notify({
@@ -92,8 +93,13 @@ $("#formProductos").submit(function(e){
 					},
 					z_index: 3000
 		      	});
+                swal("Atención!",data.message,"error");
 			}
-		}
+		},
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
+        }
     });
 });
 function openModal(){
@@ -135,6 +141,10 @@ function editarProducto(id){
             else {
                 swal("Atención!",data.message,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -162,6 +172,10 @@ function borrarProducto(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function(error){
+                    console.log(error);
+                    swal("Error!",error,"error");
                 }
             });
         }
@@ -193,7 +207,11 @@ function verProducto(id){
 			else {
 				swal("Atención!",data.message,"error");
 			}
-		}
+		},
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
+        }
 	});
 }
 function loadRubros(){
@@ -210,6 +228,10 @@ function loadRubros(){
             else {
                 $("#productorubro").append("<option value=''>Aun no hay Rubros!!!</option>");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -227,6 +249,10 @@ function loadUnMedidas(){
             else {
                 $("#productoudmedida").append("<option value=''>Aun no hay Unidades de Medida!!!</option>");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -244,6 +270,42 @@ function loadIVA(){
             else {
                 $("#productoiva").append("<option value=''>Aun no hay IVA cargado!!!</option>");
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
+        }
+    });
+}
+
+function restaurarMovimiento(id){
+    swal({
+        title: "Restaurar Movimiento",
+        text: "¿Quiere restaurar el movimiento?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Movimiento/setRestaurar",
+                dataType: "json",
+                data: "idMovimiento="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
         }
     });
 }

@@ -13,11 +13,42 @@ class ProductosModel extends Mysql {
 		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
 		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
 		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
+		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
+		WHERE m.ESTADO_ID < 3";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function selectProductosMaster(){
+		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, 
+		mu.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, 
+		IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa
+		FROM mercaderias m 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
 		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectProducto(int $productoID){
+		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT cmin, m.ALERTA_MAXCANT cmax, 
+		um.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.RUBRO_ID rid, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, m.IVA_ID iva, i.IVA_NOMBRE ivanom, 
+		i.IVA_PORCENTAJE ivaporcent, IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa, m.PARA_VENTA esvendible, m.PARA_INSUMO esinsumo
+		FROM mercaderias m 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
+		INNER JOIN iva i ON m.IVA_ID = i.IVA_ID
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
+		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
+		WHERE m.MERCADERIA_ID = {$productoID} AND m.ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectProductoMaster(int $productoID){
 		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT cmin, m.ALERTA_MAXCANT cmax, 
 		um.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.RUBRO_ID rid, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, m.IVA_ID iva, i.IVA_NOMBRE ivanom, 
 		i.IVA_PORCENTAJE ivaporcent, IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa, m.PARA_VENTA esvendible, m.PARA_INSUMO esinsumo
@@ -44,7 +75,23 @@ class ProductosModel extends Mysql {
 		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
 		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
 		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
-		WHERE m.PARA_INSUMO = 1";
+		WHERE m.PARA_INSUMO = 1 AND m.ESTADO_ID <> 3";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function selectProductosCompra(){
+		$sql = "SELECT m.MERCADERIA_ID id, m.CODIGO cod, m.NOMBRE nom, m.ALERTA_MINCANT, m.ALERTA_MAXCANT, 
+		mu.UNIMEDIDA_ID umid, um.NOMBRE umnom, r.NOMBRE rnom, IFNULL(mca.CANTIDAD_ACTUAL,0) cant, m.ESTADO_ID est, 
+		IFNULL(mp.PRECIO_COSTO,0) preciocosto, IFNULL(mp.PRECIO_VENTA,0) precioventa
+		FROM mercaderias m 
+		INNER JOIN mercaderias_unidadesmedida mu ON m.MERCADERIA_ID = mu.MERCADERIA_ID AND mu.PRIORIDAD = 1 
+		INNER JOIN unidades_medida um ON mu.UNIMEDIDA_ID = um.UNIMEDIDA_ID 
+		INNER JOIN mercaderias_rubros mr ON m.MERCADERIA_ID = mr.MERCADERIA_ID AND mr.ENTRADA = 1 
+		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
+		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
+		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
+		WHERE m.MERCADERIA_ID NOT IN(SELECT re.MERCADERIA_ID FROM recetas AS re WHERE re.ESTADO_ID <> 3)
+			AND m.ESTADO_ID <> 3";
 		$request = $this->select_all($sql);
 		return $request;
 	}
@@ -59,7 +106,7 @@ class ProductosModel extends Mysql {
 		INNER JOIN rubros r ON mr.RUBRO_ID = r.RUBRO_ID AND m.FECHA_BAJA IS NULL 
 		LEFT JOIN mercaderias_cantidad_actual mca ON m.MERCADERIA_ID = mca.MERCADERIA_ID
 		LEFT JOIN mercaderias_precios mp ON m.MERCADERIA_ID = mp.MERCADERIA_ID
-		WHERE m.PARA_VENTA = 1";
+		WHERE m.PARA_VENTA = 1 AND m.ESTADO_ID <> 3";
 		$request = $this->select_all($sql);
 		return $request;
 	}
@@ -138,7 +185,7 @@ class ProductosModel extends Mysql {
 			}
 		}
 		else {
-			$request = 0;
+			$request = -1;
 		}
 		return $request;
 	}
@@ -158,6 +205,11 @@ class ProductosModel extends Mysql {
 		else {
 			$request = "exist";
 		}
+		return $request;
+	}
+	public function restaurarProducto(int $id){
+		$sql = "UPDATE mercaderias SET ESTADO_ID = ? WHERE MERCADERIA_ID = ?";
+		$request = $this->update($sql,array(1,$id));
 		return $request;
 	}
 	public function selectProductoFull(int $productoID){

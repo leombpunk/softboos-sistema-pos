@@ -11,7 +11,23 @@ class ClientesModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectClientesMaster(){
+		$sql = "SELECT c.CLIENTE_ID, c.DNI, c.NOMBRE, c.APELLIDO, c.TELEFONO, c.MAIL, c.FECHA_ALTA, c.CUIL, 
+		c.ESTADO_ID
+		FROM clientes c";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectCliente(int $id){
+		$sql = "SELECT c.CLIENTE_ID, c.DNI, c.NOMBRE, c.APELLIDO, c.FECHA_NACIMIENTO, c.CUIL, c.TELEFONO,
+			c.MAIL, c.DIRECCION, c.FECHA_ALTA, e.DESCRIPCION AS ESTADO 
+			FROM clientes c 
+			INNER JOIN estado e on c.ESTADO_ID = e.ESTADO_ID 
+			WHERE c.CLIENTE_ID = {$id} AND c.ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectClienteMaster(int $id){
 		$sql = "SELECT c.CLIENTE_ID, c.DNI, c.NOMBRE, c.APELLIDO, c.FECHA_NACIMIENTO, c.CUIL, c.TELEFONO,
 			c.MAIL, c.DIRECCION, c.FECHA_ALTA, e.DESCRIPCION AS ESTADO 
 			FROM clientes c 
@@ -36,14 +52,26 @@ class ClientesModel extends Mysql {
 		return $request;
 	}
 	public function deleteCliente(int $id){
-		$sql = "UPDATE clientes SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE CLIENTE_ID = {$id}";
-		$request = $this->delete($sql);
-		if($request){
-			$request = "ok";
+		$sql = "SELECT 1 FROM facturas_venta AS fv WHERE fv.CLIENTE_ID = {$id}";
+		$request = $this->select_all($sql);
+		if (empty($request)){
+			$sql = "UPDATE clientes SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE CLIENTE_ID = {$id}";
+			$request = $this->delete($sql);
+			if($request){
+				$request = "ok";
+			}
+			else {
+				$request = "error";
+			}
+		} else {
+			$request = "exist";
 		}
-		else {
-			$request = "error";
-		}
+		
+		return $request;
+	}
+	public function restaurarCliente(int $id){
+		$sql = "UPDATE clientes SET FECHA_BAJA = NULL, ESTADO_ID = ? WHERE CLIENTE_ID = ?";
+		$request = $this->update($sql,array(1,$id));
 		return $request;
 	}
 } 

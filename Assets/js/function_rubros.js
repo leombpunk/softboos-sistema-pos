@@ -51,6 +51,9 @@ $("#formRubros").submit(function(e){
             else {
                 swal("Atencion!",response.message,"error");
             }
+        },
+        error: function (error){
+            console.log(error)
         }
     });
 });
@@ -106,7 +109,10 @@ function verRubro(id){
 			else {
 				swal("Atención!",data.message,"error");
 			}
-		}
+		},
+        error: function (error){
+            console.log(error)
+        }
 	});
 }
 function editarRubro(id){
@@ -136,6 +142,9 @@ function editarRubro(id){
             else {
                 swal("Atencion!",response.message,"error");
             }
+        },
+        error: function (error){
+            console.log(error)
         }
     });
 }
@@ -163,6 +172,40 @@ function borrarRubro(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
+        }
+    });
+}
+function restaurarRubro(id){
+    swal({
+        title: "Restaurar Rubro",
+        text: "¿Quiere restaurar el rubro?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Rubro/setRestaurar",
+                dataType: "json",
+                data: "idRubro="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

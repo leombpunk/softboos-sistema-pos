@@ -6,11 +6,26 @@ class ProveedoresModel extends Mysql {
 	public function selectProveedores(){
 		$sql = "SELECT p.PROVEEDOR_ID, p.RAZONSOCIAL, p.CUIT, p.MAIL, p.TELEFONO, p.WEB, p.DIRECCION, p.ESTADO_ID, p.FECHA_ALTA
 		FROM proveedores p
-		WHERE p.FECHA_BAJA IS NULL";
+		WHERE p.ESTADO_ID < 3";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function selectProveedoresMaster(){
+		$sql = "SELECT p.PROVEEDOR_ID, p.RAZONSOCIAL, p.CUIT, p.MAIL, p.TELEFONO, p.WEB, p.DIRECCION, p.ESTADO_ID, p.FECHA_ALTA
+		FROM proveedores p";
 		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectProveedor(int $id){
+		$sql = "SELECT p.PROVEEDOR_ID, p.RAZONSOCIAL, p.CUIT, p.MAIL, p.TELEFONO, p.WEB, p.DIRECCION, p.FECHA_ALTA,
+		e.DESCRIPCION AS ESTADO
+		FROM proveedores p 
+		INNER JOIN estado e on p.ESTADO_ID = e.ESTADO_ID 
+		WHERE p.PROVEEDOR_ID = {$id} AND p.ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectProveedorMaster(int $id){
 		$sql = "SELECT p.PROVEEDOR_ID, p.RAZONSOCIAL, p.CUIT, p.MAIL, p.TELEFONO, p.WEB, p.DIRECCION, p.FECHA_ALTA,
 		e.DESCRIPCION AS ESTADO
 		FROM proveedores p 
@@ -42,6 +57,11 @@ class ProveedoresModel extends Mysql {
 		else {
 			$request = "error";
 		}
+		return $request;
+	}
+	public function restaurarProveedor(int $id){
+		$sql = "UPDATE proveedores SET FECHA_BAJA = NULL, ESTADO_ID = ? WHERE PROVEEDOR_ID = ?";
+		$request = $this->update($sql,array(1,$id));
 		return $request;
 	}
 } 

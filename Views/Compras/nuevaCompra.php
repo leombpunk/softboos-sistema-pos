@@ -70,7 +70,7 @@ getModal("modalProductosBuscar",$data); ?>
                             </table>
                         </div>
                         <div class="table-responsive">
-                            <table class="table" id="ventasDetalleTable">
+                            <table class="table" id="comprasDetalleTable">
                                 <thead class="thead-dark">
                                     <tr>
                                         <th class="align-middle h5" colspan="7">Detalle</th>

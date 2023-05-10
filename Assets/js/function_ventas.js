@@ -7,6 +7,7 @@ const factura = {
     total: 0.00,
     iva: 0.00,
     subtotal: 0.00,
+    fecha: '',
     detalle: []
 }
 $(document).ready(function () {
@@ -60,11 +61,10 @@ $(document).ready(function () {
     });
     $("#formNuevaVenta").submit(function(e){
         e.preventDefault();
-        // var data = $(this).serialize();
         factura.clienteId = cliente.value;
         factura.formaPagoId = formaPago.value;
+        factura.fecha = fechaEmision.value;
         // console.log(factura);
-        //completar la constante factura con los datos que falten, cliente-formapago-etc
         $.ajax({
             type: "POST",
             url: base_url+"Ventas/setVenta/",
@@ -81,6 +81,10 @@ $(document).ready(function () {
                     swal("Atención!",response.message,"error");
                     console.log(response.message);
                 }
+            },
+            error: function(error){
+                console.log(error);
+                swal("Error!",error,"error");
             }
         });
     });
@@ -125,6 +129,10 @@ function cargarClientes(){
                   cliente.style.borderRadius = "5px"
                 }
             }
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -137,6 +145,10 @@ function numeroFactura(){
         success: function(response){
             console.log(response);
             numeroFactura.innerHTML = response.numFactura.toString().padStart(11-parseInt(response.numFactura),'0');
+        },
+        error: function(error){
+            console.log(error);
+            swal("Error!",error,"error");
         }
     });
 }
@@ -204,6 +216,10 @@ function agregarProducto(id){
                         total: parseFloat(inputcantidad)*parseFloat(data.data.precioventa)
                     });
                     indiceDetalle++;
+                },
+                error: function(error){
+                    console.log(error);
+                    swal("Error!",error,"error");
                 }
             });
             $.notify({
@@ -333,22 +349,26 @@ function anularVenta(id){
         dangerMode: true,
     }).then(function(isConfirm){
         if(isConfirm){
-            alert("equisde, coming son");
-            // $.ajax({
-            //     type: "POST",
-            //     url: base_url+"Proveedores/delProveedor/",
-            //     data: "id="+id,
-            //     dataType: "json",
-            //     success: function (response) {
-            //         if(response.status){
-            //             swal("Eliminar!",response.message,"success");
-            //             sampleTable.ajax.reload(function(){});
-            //         }
-            //         else {
-            //             swal("Atencion!",response.message,"error");
-            //         }
-            //     }
-            // });
+            // alert("equisde, coming son");
+            $.ajax({
+                type: "POST",
+                url: base_url+"Ventas/delVenta/",
+                data: "id="+id,
+                dataType: "json",
+                success: function (response) {
+                    if(response.status){
+                        swal("Eliminar!",response.message,"success");
+                        sampleTable.ajax.reload(function(){});
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function(error){
+                    console.log(error);
+                    swal("Error!",error,"error");
+                }
+            });
         }
     });
 }

@@ -4,7 +4,6 @@ const today = () => {
     return date.getFullYear() + "-" +((date.getMonth()+1) < 10 ? "0" + (date.getMonth() + 1) : (date.getMonth()+1)) + "-" + (date.getDate() < 10 ? "0" + date.getDate() : date.getDate())
 }
 $(document).ready(function () {
-
     sampleTable = $("#sampleTable").DataTable({
         "aProcessing": true,
         "aServerSide": true,
@@ -31,10 +30,8 @@ $(document).ready(function () {
             "search" : today()
         }
     });
-
     $("#formMovimientos").submit(function (e) { 
-        e.preventDefault();
-        // var id = $("#cargo_id").val();
+        e.preventDefault();;
         var descripcion = $("#movimientoDescripcion").val();
         var tipo = $("#movimientoTipo").val();
         var monto = $("#movimientoMonto").val();
@@ -62,12 +59,14 @@ $(document).ready(function () {
                     else {
                         swal("Error",response.message+" "+response.expected,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error);
                 }
             });
         }
     });
     cargarTipoMovimiento();
-    
 });
 function cargarTipoMovimiento() {
     $("#movimientoTipo").html('');
@@ -84,8 +83,9 @@ function cargarTipoMovimiento() {
             } else {
                 swal("Error","Surgió un error al cargar el tipo de movimiento!","error");
             }
-            
-            
+        },
+        error: function (error){
+            console.log(error);
         }
     });
 }
@@ -127,6 +127,40 @@ function borrarMovimiento(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error);
+                }
+            });
+        }
+    });
+}
+function restaurarMovimiento(id){
+    swal({
+        title: "Restaurar Movimiento",
+        text: "¿Quiere restaurar el movimiento?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Movimiento/setRestaurar",
+                dataType: "json",
+                data: "idMovimiento="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

@@ -1,6 +1,5 @@
 <?php 
 class CargosModel extends Mysql {
-	private $arrDatos;
 	public function __construct(){
 		parent::__construct();
 	}
@@ -9,24 +8,34 @@ class CargosModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectCargosMaster(){
+		$sql = "SELECT * FROM cargos";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectCargo(int $cargoID){
+		$sql = "SELECT * FROM cargos WHERE CARGO_ID = {$cargoID} AND ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectCargoMaster(int $cargoID){
 		$sql = "SELECT * FROM cargos WHERE CARGO_ID = {$cargoID}";
 		$request = $this->select($sql);
 		return $request;
 	}
-	public function insertCargo(string $nombre,int $nivelcargo, int $estado){
-		$sql = "INSERT INTO cargos(CARGO_DESCRIPCION, FECHA_ALTA, NIVELACCESO_ID, ESTADO_ID) 
-		VALUES(?,NOW(),?,?)";
-		$arrValues = array($nombre,$nivelcargo,$estado);
+	public function insertCargo(string $nombre, int $estado){
+		$sql = "INSERT INTO cargos(CARGO_DESCRIPCION, FECHA_ALTA, ESTADO_ID) 
+		VALUES(?,NOW(),?)";
+		$arrValues = array($nombre,$estado);
 		$request = $this->insert($sql,$arrValues);
 		return $request;
 	}
-	public function updateCargo(int $id, string $nombre, int $nivelcargo, int $estado){
+	public function updateCargo(int $id, string $nombre, int $estado){
 		$sql = "SELECT 1 FROM cargos WHERE CARGO_DESCRIPCION = '{$nombre}' AND CARGO_ID != {$id}";
 		$request = $this->select_all($sql);
 		if (empty($request)){
-			$sql = "UPDATE cargos SET CARGO_DESCRIPCION = ?, NIVELACCESO_ID = ?, ESTADO_ID = ? WHERE CARGO_ID = {$id}";
-			$arrValues = array($nombre,$nivelcargo,$estado);
+			$sql = "UPDATE cargos SET CARGO_DESCRIPCION = ?, ESTADO_ID = ? WHERE CARGO_ID = {$id}";
+			$arrValues = array($nombre,$estado);
 			$request = $this->update($sql,$arrValues);
 		}
 		else {
@@ -51,11 +60,6 @@ class CargosModel extends Mysql {
 		else {
 			$request = "exist";
 		}
-		return $request;
-	}
-	public function selectNivelesAcceso(){
-		$sql = "SELECT * FROM niveles_acceso";
-		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectPermisos(int $id){
@@ -89,6 +93,20 @@ class CargosModel extends Mysql {
 	}
 	public function getModulos(){
 		$sql = "SELECT * FROM modulos";
+		$request = $this->select_all($sql);
+		return $request;
+	}
+	public function restaurarCargo(int $id){
+		$sql = "UPDATE cargos SET ESTADO_ID = ? WHERE CARGO_ID = ?";
+		$datos = array(1,$id);
+		$request = $this->update($sql,$datos);
+		return $request;
+	}
+	public function selectEmpleados(int $id){
+		$sql = "SELECT e.DNI, e.NOMBRE, e.APELLIDO, e.MAIL, e.TELEFONO, s.CODIGO_SUCURSAL, s.RAZONSOCIAL
+		FROM empleados AS e
+		INNER JOIN sucursales AS s ON s.SUCURSAL_ID = e.SUCURSAL_ID
+		WHERE e.CARGO_ID = {$id}";
 		$request = $this->select_all($sql);
 		return $request;
 	}

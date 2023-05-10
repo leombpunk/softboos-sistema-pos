@@ -9,7 +9,17 @@ class FormasPagoModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectFormasPagosMaster(){
+		$sql = "SELECT * FROM forma_pago";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectFormasPago(int $cargoID){
+		$sql = "SELECT * FROM forma_pago WHERE FORMAPAGO_ID = {$cargoID} AND ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectFormasPagoMaster(int $cargoID){
 		$sql = "SELECT * FROM forma_pago WHERE FORMAPAGO_ID = {$cargoID}";
 		$request = $this->select($sql);
 		return $request;
@@ -35,9 +45,11 @@ class FormasPagoModel extends Mysql {
 		return $request;
 	}
 	public function deleteFormasPago(int $id){
-		$sql = "SELECT 1 FROM facturaventa_formapago WHERE FORMAPAGO_ID = {$id}";
+		$sql = "SELECT 1 FROM facturas_venta WHERE FORMAPAGO_ID = {$id}";
 		$request = $this->select_all($sql);
-		if (empty($request)){
+		$sql2 = "SELECT 1 FROM facturas_compra WHERE FORMAPAGO_ID = {$id}";
+		$request2 = $this->select_all($sql2);
+		if (empty($request) and empty($request2)){
 			// $sql = "DELETE FROM forma_pago WHERE FORMAPAGO_ID = {$id}";
 			$sql = "UPDATE forma_pago SET ESTADO_ID = 3 WHERE FORMAPAGO_ID = {$id}";
 			$request = $this->delete($sql);
@@ -51,6 +63,11 @@ class FormasPagoModel extends Mysql {
 		else {
 			$request = "exist";
 		}
+		return $request;
+	}
+	public function restaurarFormasPago(int $id){
+		$sql = "UPDATE forma_pago SET ESTADO_ID = ? WHERE FORMAPAGO_ID = ?";
+		$request = $this->update($sql, array(1,$id));
 		return $request;
 	}
 }

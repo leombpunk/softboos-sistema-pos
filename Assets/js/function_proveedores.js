@@ -41,6 +41,9 @@ $(document).ready(function () {
                 else {
                     swal("Atención!",response.message,"error");
                 }
+            },
+            error: function (error){
+                console.log(error);
             }
         });
     });
@@ -76,6 +79,9 @@ function verProveedor(id){
             else {
                 swal("Atención!",response.message,"error");
             }
+        },
+        error: function (error){
+            console.log(error);
         }
     });
 }
@@ -103,7 +109,10 @@ function editarProveedor(id){
     		else {
     			swal("Atención!",data.message,"error");
     		}
-    	}
+    	},
+        error: function (error){
+            console.log(error);
+        }
     });
 }
 function borrarProveedor(id){
@@ -130,6 +139,40 @@ function borrarProveedor(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function (error){
+                    console.log(error);
+                }
+            });
+        }
+    });
+}
+function restaurarProveedor(id){
+    swal({
+        title: "Restaurar Proveedor",
+        text: "¿Quiere restaurar el proveedor?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Proveedor/setRestaurar",
+                dataType: "json",
+                data: "idProveedor="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
                 }
             });
         }

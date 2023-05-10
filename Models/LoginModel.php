@@ -20,13 +20,13 @@ class LoginModel extends Mysql {
 		/*--------------------------*/
 		$this->strUser = $user;
 		$this->strPass = $pass;
-		$sql = "SELECT * FROM empleados e WHERE CUIL = '".$this->strUser."' AND CONTRASENA = '".$this->strPass."' AND FECHA_BAJA IS NULL";
+		$sql = "SELECT * FROM empleados e WHERE CUIL = '{$this->strUser}' AND CONTRASENA = '{$this->strPass}' AND FECHA_BAJA IS NULL";
 		$request = $this->select($sql);
 		return $request;
 	}
 	public function sessionLogin(int $userid){
 		$this->intUserId = $userid;
-		$sql = "CALL SpEmpleadosDatosSelect(".$this->intUserId.")";
+		$sql = "CALL SpEmpleadosDatosSelect({$this->intUserId})";
 		$request = $this->select($sql);
 		return $request;
 	}

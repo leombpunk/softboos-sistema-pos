@@ -6,7 +6,7 @@ class EmpleadosModel extends Mysql{
 		parent::__construct();
 	}
 	public function selectEmpleados(){
-		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.NIVELACCESO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
+		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
 			FROM empleados e 
 			INNER JOIN cargos c ON e.CARGO_ID = c.CARGO_ID 
 			INNER JOIN sucursales s ON e.SUCURSAL_ID = s.SUCURSAL_ID 
@@ -14,13 +14,37 @@ class EmpleadosModel extends Mysql{
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectEmpleadosMaster(){
+		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
+			FROM empleados e 
+			INNER JOIN cargos c ON e.CARGO_ID = c.CARGO_ID 
+			INNER JOIN sucursales s ON e.SUCURSAL_ID = s.SUCURSAL_ID";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectEmpleado(int $id){
-		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.NIVELACCESO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
+		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
+			FROM empleados e 
+			INNER JOIN cargos c ON c.CARGO_ID = e.CARGO_ID 
+			INNER JOIN sucursales s ON s.SUCURSAL_ID = e.SUCURSAL_ID 
+			WHERE e.EMPLEADO_ID = {$id} AND e.ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectEmpleadoMaster(int $id){
+		$sql = "SELECT e.EMPLEADO_ID, e.DNI, e.NOMBRE, e.APELLIDO, e.FECHA_NACIMIENTO, e.CUIL, e.MAIL, e.TELEFONO, e.DIRECCION, e.SUCURSAL_ID, s.CODIGO_SUCURSAL, s.RAZONSOCIAL, s.DIRECCION AS SUC_DIRECCION, e.CARGO_ID, c.CARGO_DESCRIPCION, e.ESTADO_ID 
 			FROM empleados e 
 			INNER JOIN cargos c ON c.CARGO_ID = e.CARGO_ID 
 			INNER JOIN sucursales s ON s.SUCURSAL_ID = e.SUCURSAL_ID 
 			WHERE e.EMPLEADO_ID = {$id}";
 		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectSucursales(){
+		$sql = "SELECT SUCURSAL_ID, CODIGO_SUCURSAL, RAZONSOCIAL
+		FROM sucursales
+		WHERE ESTADO_ID = 1";
+		$request = $this->select_all($sql);
 		return $request;
 	}
 	public function selectCargosDiff(){
@@ -59,6 +83,11 @@ class EmpleadosModel extends Mysql{
 		else {
 			$request = "exist";
 		}
+		return $request;
+	}
+	public function restaurarEmpleado(int $id){
+		$sql = "UPDATE empleados SET ESTADO_ID = ? WHERE EMPLEADO_ID = ?";
+		$request = $this->update($sql,array(1,$id));
 		return $request;
 	}
 }

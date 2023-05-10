@@ -6,7 +6,6 @@ class Mysql extends Conexion {
     public function __construct(){
         $this->conexion = new Conexion();
         $this->conexion = $this->conexion->conect();
-        //$this->setConexion();
     }
     // public function getConexion(){
     //     return $this->conexion;
@@ -56,7 +55,6 @@ class Mysql extends Conexion {
         $delete = $result->execute();
         return $delete;
     }
-    // agregado por mi (necesita ser testeado)
     public function SpCALL(string $query){
         $this->strquery = $query;
         $call = $this->conexion->prepare($this->strquery);
@@ -72,6 +70,5 @@ class Mysql extends Conexion {
     public function mysqlRollback(){
         $this->conexion->rollBack();
     }
-    // hasta aca
 }
 ?>

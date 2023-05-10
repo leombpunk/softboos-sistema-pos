@@ -3,7 +3,12 @@ class Productos extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -12,9 +17,8 @@ class Productos extends Controllers{
 			header('location: '.base_url().'login');
 		}
 		getPermisos(5);
-		// dep($_SESSION);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Productos");
 		}
 	}
 	public function Productos(){
@@ -36,7 +40,7 @@ class Productos extends Controllers{
 		die();
 	}
 	public function getProductosFacturaCompra(){
-		$arrData = $this->model->selectProductos();
+		$arrData = $this->model->selectProductosCompra();
 		for ($i=0; $i < count($arrData); $i++){
 			$arrData[$i]["preciocosto2"] = '<input type="number" name="prodcutoCosto'.$arrData[$i]['id'].'" id="prodcutoCosto'.$arrData[$i]['id'].'" class="form-control" value='.$arrData[$i]["preciocosto"].' />';
 			$arrData[$i]["cant"] = '<input type="number" name="prodcutoCant'.$arrData[$i]['id'].'" id="prodcutoCant'.$arrData[$i]['id'].'" class="form-control" value=0.0 />';
@@ -47,10 +51,15 @@ class Productos extends Controllers{
 	}
 	//para usarlo en la vista factura compra
 	public function getProductos(){
-		$arrData = $this->model->selectProductos();
+		if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+            $arrData = $this->model->selectProductosMaster();
+        }
+        else {
+            $arrData = $this->model->selectProductos();
+        }
 		for ($i=0; $i < count($arrData); $i++) {
-			$arrData[$i]["cant"] = formatDecimal($arrData[$i]["cant"]);
-			$arrData[$i]["precioventa"] = formatMoney($arrData[$i]["precioventa"]); 
+			$arrData[$i]["cant"] = floatval(formatDecimal($arrData[$i]["cant"]));
+			$arrData[$i]["precioventa"] = formatMoney(floatval($arrData[$i]["precioventa"])); 
             if ($arrData[$i]["est"] == 1){ // activo
                 $arrData[$i]["est"] = '<span class="badge badge-success">Activo</span>';
             }
@@ -59,31 +68,20 @@ class Productos extends Controllers{
             }
             elseif ($arrData[$i]["est"] == 3){ // borrado
                 $arrData[$i]["est"] = '<span class="badge badge-warning">Borrado</span>';
-                // agregar el cambio de funcion y boton de borrar a restablecer
             }
             else { // dato no controlado
                 $arrData[$i]["est"] = '<span class="badge badge-danger">WTF</span>';
             }
-            // BOTONES DE ACCION
-            if ($_SESSION["permisos"][0]["MODIFICAR"] == 1){
-                $btnEditar = '<button onclick="editarProducto('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm btnEditarProducto" rl="'.$arrData[$i]['id'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>';
+
+            $btnEditar = '<button onclick="editarProducto('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm" type="button" '.($_SESSION["permisos"][0]["MODIFICAR"] == 1?'title="Editar"':'disabled title="No tienes permiso para editar"').'><i class="fa fa-pencil"></i></button>';
+            if ($arrData[$i]["est"] == 3 and $_SESSION["userDATA"]["CARGO_ID"] == 1){
+                $btnBorrar = '<button onclick="restaurarProducto('.$arrData[$i]['id'].');" class="btn btn-success btn-sm" type="button"><i class="fa fa-arrow-up"></i></button>';
             }
             else {
-                $btnEditar = '';
+                $btnBorrar = '<button onclick="borrarProducto('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm" type="button" '.($_SESSION["permisos"][0]["BORRAR"] == 1?'title="Eliminar"':'disabled title="No tienes permiso para eliminar"').'><i class="fa fa-trash"></i></button>';
             }
-            if ($_SESSION["permisos"][0]["BORRAR"] == 1){
-                $btnBorrar = '<button onclick="borrarProducto('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm btnBorrarProducto" rl="'.$arrData[$i]['id'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>';
-            }
-            else {
-                $btnBorrar = '';
-            }
-            // $arrData[$i]['actions'] = '<div class="text-center">
-            // <button onclick="verProducto('.$arrData[$i]['id'].');" class="btn btn-info btn-sm btnPermisosProducto" rl="'.$arrData[$i]['id'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button>
-            // <button onclick="editarProducto('.$arrData[$i]['id'].');" class="btn btn-primary btn-sm btnEditarProducto" rl="'.$arrData[$i]['id'].'" title="Editar" type="button"><i class="fa fa-pencil"></i></button>
-            // <button onclick="borrarProducto('.$arrData[$i]['id'].');" class="btn btn-danger btn-sm btnBorrarProducto" rl="'.$arrData[$i]['id'].'" title="Eliminar" type="button"><i class="fa fa-trash"></i></button>
-            // </div>'; 
             $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verProducto('.$arrData[$i]['id'].');" class="btn btn-info btn-sm btnPermisosProducto" rl="'.$arrData[$i]['id'].'" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
+            <button onclick="verProducto('.$arrData[$i]['id'].');" class="btn btn-info btn-sm" title="Ver" type="button"><i class="fa fa-eye"></i></button> '.
             $btnEditar.' '.$btnBorrar.'</div>';
         }
 		echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
@@ -92,7 +90,12 @@ class Productos extends Controllers{
 	public function getProducto(int $productoID){
 		$id = intval(strClear($productoID));
         if ($id > 0){
-            $arrData = $this->model->selectProducto($id);
+			if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
+				$arrData = $this->model->selectProductoMaster($id);
+			}
+			else {
+				$arrData = $this->model->selectProducto($id);
+			}
             if (empty($arrData)){
                 $arrResponse = array('status' => false, 'message' => 'Datos no encontrados.');
             }
@@ -168,10 +171,19 @@ class Productos extends Controllers{
 		if ($_POST){ // valido post
             if (!empty($_POST["producto_id"]) and is_numeric($_POST["producto_id"]) and intval($_POST["producto_id"]) > 0){ 
 				$id = intval($_POST["producto_id"]);
-				$option = 1;
+				if ($_SESSION["permisos"][0]["MODIFICAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para editar registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
 			else {
-				$option = 2;
+				$id = 0;
+				if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+					$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+					echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+                    die();
+				}
 			}
             $producto = empty($_POST["productonombre"]) ? "" : mb_strtoupper(strClear($_POST["productonombre"]));
 			$codigo = empty($_POST["productocodigo"]) ? "" : strClear($_POST["productocodigo"]);
@@ -185,7 +197,7 @@ class Productos extends Controllers{
 			$insumo = empty($_POST["productoinsumo"]) ? 0 : intval($_POST["productoinsumo"]);
 			$vendible = empty($_POST["productoventa"]) ? 0 : intval($_POST["productoventa"]);
             $estado = empty($_POST["productoestado"]) ? 0 : intval(strClear($_POST["productoestado"]));
-            $imagen = "";
+            $imagenes = "";
             // Validaciones
             if (empty($producto) or !validar($producto,9,2,50)){
                 $arrResponse = array("status" => false, "message" => "El nombre del producto esta vacio o es invalido.");
@@ -224,26 +236,22 @@ class Productos extends Controllers{
 				$arrResponse = array("status" => false, "message" => "El estado seleccionado no es valido.");
             }
             else {
-                if ($option == 1){ // actualizar
-					try {
+				try {
+					if ($id > 0){ // actualizar
 						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado, $id);
-						// $arrResponse = array("status" => false, "message" => $arrData);
 						$requestProducto = $this->model->updateProducto($arrData);
-						// $arrResponse = array("status" => false, "message" => json_encode($requestProducto,JSON_UNESCAPED_UNICODE));
-						if ($requestProducto){
+						if ($requestProducto == -1){
+							$arrResponse = array("status" => false, "message" => "El codigo ingresado esta duplicado. Code: {$requestProducto}");
+						}
+						elseif ($requestProducto){
 							$arrResponse = array("status" => true, "message" => "El producto se ha actualizado satisfactoriamente. {$requestProducto}");
 						}
 						else {
 							$arrResponse = array("status" => false, "message" => "requestUpdate: {$requestProducto}");
 						}
-					} catch (Exception $e) {
-						$arrResponse = array("status" => false, "message" => "{$e}");
 					}
-				}
-				else { // insertar
-					try {
+					else { // insertar
 						$arrData = array($producto, $codigo, $rubro, $udmedida, $cantmin, $cantmax, $iva, $preciocosto, $precioventa, $insumo, $vendible, $estado);
-						// $arrResponse = array("status" => false, "message" => $arrData);
 						$requestProducto = $this->model->insertProducto($arrData);
 						if ($requestProducto > 0){
 							$arrResponse = array("status" => true, "message" => "El producto se ha dado de alta satisfactoriamente.");
@@ -251,9 +259,10 @@ class Productos extends Controllers{
 						else {
 							$arrResponse = array("status" => false, "message" => "requestInsert: {$requestProducto}");
 						}
-					} catch (Exception $e) {
-						$arrResponse = array("status" => false, "message" => "{$e}");
 					}
+				}
+				catch (Exception $e){
+					$arrResponse = array("status" => false, "message" => "{$e->getMessage()}");
 				}
             }
         }
@@ -264,7 +273,10 @@ class Productos extends Controllers{
         die();
 	}
 	public function delProducto(){
-		if (isset($_POST['id'])){
+		if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST['id'])){
             $id = intval(strClear($_POST['id']));
             $requestDelete = $this->model->deleteProducto($id);
             if ($requestDelete == "ok"){
@@ -310,5 +322,35 @@ class Productos extends Controllers{
         }
         die();
 	}
+	public function setRestaurar(){
+        if($_SESSION["userDATA"]["CARGO_ID"] != 1){
+            $arrResponse = array("status" => false, "message" => "Usted no tiene permisos para realizar esta acción.");
+        }
+        elseif ($_POST){
+            $id = empty($_POST['idProducto']) ? 0 : intval(strClear($_POST['idProducto']));
+            if ($id > 0){
+                try {
+                    $requestRestaurar = $this->model->restaurarProducto($id);
+                    if ($requestRestaurar > 0){
+                        $arrResponse = array("status" => true, "message" => "El producto ha sido restaurado");
+                    }
+                    else {
+                        $arrResponse = array("status" => false, "message" => "El producto NO ha sido restaurado");
+                    }
+                }
+                catch (Exception $e){
+                    $arrResponse = array("status" => false, "message" => "Se ha producido un error", "details" => array($e->getMessage()));
+                }
+            }
+            else {
+                $arrResponse = array("status" => false, "message" => "El 'id' del producto no es valido");
+            }
+        }
+        else {
+            $arrResponse = array("status" => false, "message" => "Datos no validos");
+        }
+        echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+        die();
+    }
 }
 ?>

@@ -37,10 +37,10 @@ class VentasModel extends Mysql {
 		return $request;
 	}
 	public function insertVenta(array $datos){
-		try {
-			$datosCabecera = array($datos[6],$datos[1],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3]);
-			$datosDetalles = $datos[10];
-			$this->mysqlStartTransaction();
+		// try {
+			$datosCabecera = array($datos[6],$datos[1],$datos[8],$datos[0],$datos[4],$datos[5],$datos[9],$datos[7],$datos[2],$datos[3],$datos[10]);
+			$datosDetalles = $datos[11];
+			// $this->mysqlStartTransaction();
 			$request = $this->insertCabecera($datosCabecera);
 			$facturaId = intval($request);
 			if (is_int(intval($request)) and $request > 0) {
@@ -49,20 +49,21 @@ class VentasModel extends Mysql {
 					$request = $this->insertDetalles($facturaId, $arrDatos);
 				}
 			}
-			else {
-				throw new Exception("Algo malio sal, y no se que pueda ser", 1);
-			}
-			$this->mysqlCommit();
+			// else {
+			// 	throw new Exception("Algo malio sal, y no se que pueda ser", 1);
+			// }
+			// $this->mysqlCommit();
 			$request = "ok";
-		} catch (Exception $e) {
-			$this->mysqlRollback();
-			$request = "error. {$e}";
-		}
+		// } catch (Exception $e) {
+		// 	$this->mysqlRollback();
+		// 	$request = "error. {$e}";
+		// }
 		return $request;
 	}
 	public function deleteVenta(int $id){
-		$sql = "UPDATE facturas_venta SET FECHA_BAJA = NOW(), ESTADO_ID = 3 WHERE PROVEEDOR_ID = {$id}";
-		$request = $this->delete($sql);
+		$sql = "UPDATE facturas_venta SET FECHA_BAJA = NOW(), ESTADO_ID = ?, BAJA_EMPLEADO = ? WHERE FACTURAVENTA_ID = ?";
+		$arrData = array(2, $_SESSION['userID'], $id);
+		$request = $this->update($sql, $arrData);
 		if($request){
 			$request = "ok";
 		}
@@ -80,8 +81,8 @@ class VentasModel extends Mysql {
 		//insertar tambien formas de pago en la tabla facturaventa_formapago
 		$numero = $this->selectNumeroFactura();
 		$sql = "INSERT INTO facturas_venta(FACTURATIPO_ID, NUMERO_FACTURA, FORMAPAGO_ID, SUCURSAL_ID, CLIENTE_ID, EMPLEADO_ID, 
-		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, FECHA_EMISION, DIRECCION_ENVIO, TOTAL, IVA_TOTAL)
-		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?)";
+		TESTIGO_ID, ESTADO_ID, FECHA_ALTA, DIRECCION_ENVIO, TOTAL, IVA_TOTAL, FECHA_EMISION)
+		VALUES(?, ".intval($numero['numFactura']).", ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
 		$request = $this->insert($sql, $datos);
 		return $request;
 	}

@@ -8,6 +8,8 @@ const factura = {
     total: 0.00,
     iva: 0.00,
     subtotal: 0.00,
+    numeroFactura: 0,
+    fecha: '',
     detalle: []
 }
 $(document).ready(function () {
@@ -26,13 +28,14 @@ $(document).ready(function () {
             { "data": "RAZONSOCIAL"},
             { "data": "FECHA_EMISION" },
             { "data": "FORMAPAGO" },
+            { "data": "ESTADO" },
             { "data": "TOTAL" },
             { "data": "actions" }
         ],
         "responsive": true,
         "bDestroy": true,
         "iDisplayLength": 10,
-        "order": [[0,"asc"]]
+        "order": [[2,"desc"]]
     });
     sampleTable2 = $("#buscadorProductoTable").DataTable({
         "aProcessing": true,
@@ -59,9 +62,12 @@ $(document).ready(function () {
     });
     $("#formNuevaCompra").submit(function(e){
         e.preventDefault();
-        factura.clienteId = cliente.value;
+        factura.proveedorId = proveedorId.value;
         factura.formaPagoId = formaPago.value;
-        // console.log(factura);
+        factura.sucursalId = sucursalId.value
+        factura.numeroFactura = numeroFacturaC.value;
+        factura.fecha = fechaEmision.value;
+        console.log(factura);
         $.ajax({
             type: "POST",
             url: base_url+"Compras/setCompra/",
@@ -71,13 +77,17 @@ $(document).ready(function () {
                 if (response.status){
                     console.log(response);
                     swal("Bien!",response.message,"success").then(function(isConfirm){
-                        window.location = base_url+"ventas";
+                        window.location = base_url+"compras";
                     });
                 }
                 else {
                     swal("Atención!",response.message,"error");
                     console.log(response.message);
                 }
+            },
+            error: function(error){
+                console.log(error);
+                swal("Error!",error,"error");
             }
         });
     });
@@ -287,8 +297,8 @@ function eliminarItem(itemId, iDetalle){
 function verCompra(id){
     $("#loaderDiv").show();
     $("#dataDivTables").hide();
-    $("#ventasVerModalCenter").modal("show");
-    //cabecera de la factura de venta
+    $("#comprasVerModalCenter").modal("show");
+    //cabecera de la factura de compra
     $.ajax({
         type: "GET",
         url: base_url+"Compras/getCompra/"+id,
@@ -299,12 +309,12 @@ function verCompra(id){
                 //poner los datos el los lugares especificos de la factura
                 //cabecera
                 $("#fechaEmision").html(response.data.cabecera.FECHA_EMISION);
-                $("#numeroFacturaV").html(response.data.cabecera.NUMERO_FACTURA);
-                $("#cliente").val(response.data.cabecera.CLIENTE_ID);
-                $("#dniCliente").val(response.data.cabecera.DNI);
-                $("#nombreCliente").val(response.data.cabecera.NOMBRE+" "+response.data.cabecera.APELLIDO);
-                //forma pago
-                $("#formaPago").val(response.data.formaPago[0].FORMAPAGO_ID).trigger("change");
+                $("#numeroFacturaC").val(response.data.cabecera.NUMERO_FACTURA);
+                $("#proveedorId").val(response.data.cabecera.RAZONSOCIAL);
+                $("#formaPago").val(response.data.cabecera.FORMAPAGO_ID).trigger("change");
+                $("#sucursalId").val(response.data.cabecera.SUCURSAL_ID);
+                $("#numeroSucursal").val(response.data.cabecera.SUCURSAL);
+                $("#nombreSucursal").val(response.data.cabecera.CODIGO_SUCURSAL);
                 //detalles
                 $("#detalleCompraTableBody").html('');
                 response.data.detalle.forEach((element, index, array) => {
@@ -347,25 +357,25 @@ function anularCompra(id){
         dangerMode: true,
     }).then(function(isConfirm){
         if(isConfirm){
-            alert("equisde, coming son");
-            // $.ajax({
-            //     type: "POST",
-            //     url: base_url+"Proveedores/delProveedor/",
-            //     data: "id="+id,
-            //     dataType: "json",
-            //     success: function (response) {
-            //         if(response.status){
-            //             swal("Eliminar!",response.message,"success");
-            //             sampleTable.ajax.reload(function(){});
-            //         }
-            //         else {
-            //             swal("Atencion!",response.message,"error");
-            //         }
-            //     },
-            //     error: function(error){
-            //         swal("Atención!",error,"error");
-            //     }
-            // });
+            // alert("equisde, coming son");
+            $.ajax({
+                type: "POST",
+                url: base_url+"Compras/delCompra/",
+                data: "id="+id,
+                dataType: "json",
+                success: function (response) {
+                    if(response.status){
+                        swal("Eliminar!",response.message,"success");
+                        sampleTable.ajax.reload(function(){});
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function(error){
+                    swal("Atención!",error,"error");
+                }
+            });
         }
     });
 }

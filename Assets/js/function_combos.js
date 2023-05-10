@@ -21,7 +21,8 @@ $(document).ready(function () {
         },
         "ajax": {
             "url": base_url+"Combos/getCombos",
-            "dataSrc":""},
+            "dataSrc": "",
+        },
         "columns": [
             { "data": "RECETA_ID" },
             { "data": "NOMBRE" },
@@ -171,6 +172,9 @@ $(document).ready(function () {
             });
             // insumosList.push(response[0]);
             // console.log(insumosList);
+        },
+        error: function(error){
+            console.log(error);
         }
     });
     $.ajax({
@@ -183,9 +187,71 @@ $(document).ready(function () {
                 // console.log(element);
                 $("#listproductos").append('<option value="'+element.id+'">'+element.id+' | '+element.nom+'</option>');
             });
+        },
+        error: function(error){
+            console.log(error);
         }
     });
+    $("#formComboActualizar").submit(function(e){
+        e.preventDefault();
+        var datos = $(this).serialize();
+        console.log(datos)
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: base_url+"Combos/setComboDetalleCantidad",
+            data: datos,
+            success: function(response) {
+                console.log(response);
+                if (response.status){
+                    $("#combosAgregarModalCenter").modal("hide");
+                    $("#formComboActualizar").trigger("reset");
+                    swal("Resultado",response.message,"success");
+                    sampleTable.ajax.reload(function(){});
+                }
+                else {
+                    swal("Error",response.message,"error");
+                }
+            },
+            error: function(error){
+                console.log(error);
+                swal("Error",error,"error");
+            }
+        })
+    })
 });
+function ajaxGetCombos(id){
+    $.ajax({
+        type: "GET",
+        url: base_url+"Combos/getComboDetalleCantidad/"+id,
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            $("#comboActualizarId").val(response.data.RECETA_ID)
+            $("#comboMercaderiaId").val(response.data.MERCADERIA_ID)
+            $("#comboUnidadMeidaId").val(response.data.UNIMEDIDA_ID)
+            $("#combitoNombre").val(response.data.NOMBRE)
+            $("#combitoCantidad").val(parseFloat(response.data.CANTIDAD_ACTUAL)+" "+response.data.umNombre)
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    })
+}
+function ingresarCombo(id){
+    $("#formComboActualizar").trigger("reset")
+    ajaxGetCombos(id)
+    $("#combitoQuitar").attr("disabled",true);
+    $("#combitoAgregar").removeAttr("disabled");
+    $("#combosAgregarModalCenter").modal("show");
+}
+function quitarCombo(id){
+    $("#formComboActualizar").trigger("reset")
+    ajaxGetCombos(id)
+    $("#combitoAgregar").attr("disabled",true);
+    $("#combitoQuitar").removeAttr("disabled");
+    $("#combosAgregarModalCenter").modal("show");
+}
 function openModal(){
     $("#combosModalCenterTitle").html("Nuevo Combo");
     $(".modal-header").addClass("headerRegister").removeClass("headerUpdate"); 
@@ -261,6 +327,9 @@ function editarCombo(id){
             else {
                 swal("Error",response.message+" "+response.expected,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
         }
     });
 }
@@ -288,6 +357,9 @@ function borrarCombo(id){
                     else {
                         swal("Atencion!",response.message,"error");
                     }
+                },
+                error: function(error){
+                    console.log(error);
                 }
             });
         }
@@ -357,6 +429,41 @@ function verCombo(id){
             else {
                 swal("Atención!",response.message,"error");
             }
+        },
+        error: function(error){
+            console.log(error);
+        }
+    });
+}
+
+function restaurarCombo(id){
+    swal({
+        title: "Restaurar Combo",
+        text: "¿Quiere restaurar el combo?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then(function(isConfirm){
+        if (isConfirm) {
+            $.ajax({
+                type: "POST",
+                url: base_url+"Combos/setRestaurar",
+                dataType: "json",
+                data: "idCombo="+id,
+                success: function (response){
+                    // console.log(response)
+                    if(response.status){
+                        swal("Restaurado!",response.message,"success");
+                        sampleTable.ajax.reload();
+                    }
+                    else {
+                        swal("Atencion!",response.message,"error");
+                    }
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
         }
     });
 }

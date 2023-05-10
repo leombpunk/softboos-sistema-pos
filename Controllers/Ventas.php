@@ -3,7 +3,12 @@ class Ventas extends Controllers{
 	public function __construct(){
 		parent::__construct();
 		session_start();
-		if (isset($_SESSION["userLogin"])){
+		if(isSessionExpired()){
+            session_unset();
+            session_destroy();
+            header('location: '.base_url().'login/?m=1');
+        }
+        elseif (isset($_SESSION["userLogin"])){
 			if (empty($_SESSION["userLogin"])){
 				header('location: '.base_url().'login');
 			}
@@ -13,7 +18,7 @@ class Ventas extends Controllers{
 		}
 		getPermisos(10);
 		if ($_SESSION["permisos"][0]["LEER"] == 0){
-			header("location: ".base_url()."Dashboard");
+			header("location: ".base_url()."Dashboard/?m=Ventas");
 		}
 	}
 	public function Ventas(){
@@ -26,6 +31,9 @@ class Ventas extends Controllers{
 	}
 
 	public function nuevaVenta(){
+		if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+			header("location: ".base_url()."Dashboard/?m=Nueva%20Venta");
+		}
 		if (!isSetAperturaCaja()){
 			header("location:".base_url()."movimientosCaja");
 		}
@@ -53,10 +61,16 @@ class Ventas extends Controllers{
 			$arrData[$i]["ESTADO"] = $estado;
 			$pago = '<span class="badge badge-success">'.$arrData[$i]['FORMA_PAGO'].'</span>';
 			$arrData[$i]["FORMAPAGO"] = $pago;
-            $arrData[$i]['actions'] = '<div class="text-center">
-            <button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
-            <button onclick="anularVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular venta" type="button"><i class="fa fa-ban"></i></button>
-            </div>'; 
+			if ($arrData[$i]['ESTADO_ID'] == 2){
+				$arrData[$i]['actions'] = '<div class="text-center">
+				<button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
+				</div>';
+			} else {
+				$arrData[$i]['actions'] = '<div class="text-center">
+				<button onclick="verVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-info btn-sm" title="Ver venta" type="button"><i class="fa fa-eye"></i></button>
+				<button onclick="anularVenta('.$arrData[$i]['FACTURAVENTA_ID'].');" class="btn btn-danger btn-sm" title="Anular venta" type="button"><i class="fa fa-ban"></i></button>
+				</div>';
+			}
         }
         echo json_encode($arrData,JSON_UNESCAPED_UNICODE);
 		die();
@@ -82,11 +96,15 @@ class Ventas extends Controllers{
 		die();
 	}
 	public function setVenta(){
-		if ($_POST){
-			// $arrResponse = array("status" => true, "message" => $_POST);
-			//total subtotal e iva podria calcularlos aqui
+		if ($_SESSION["permisos"][0]["AGREGAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para crear registros en este módulo.");
+			echo json_encode($arrResponse,JSON_UNESCAPED_UNICODE);
+			die();
+		}
+		elseif ($_POST){
 			$cliente = empty($_POST["clienteId"]) ? 0 : intval(strClear($_POST["clienteId"]));
 			$formaPago = empty($_POST["formaPagoId"]) ? 0 : intval(strClear($_POST["formaPagoId"]));
+			$fecha = empty($_POST['fecha'])? "" : strClear($_POST['fecha']);
 			$total = empty($_POST["total"]) ? 0.00 : floatval(strClear($_POST["total"]));
 			$subtotal = empty($_POST["subtotal"]) ? 0.00 : floatval(strClear($_POST["subtotal"]));
 			$iva = empty($_POST["iva"]) ? 0.00 : floatval(strClear($_POST["iva"]));
@@ -154,15 +172,29 @@ class Ventas extends Controllers{
 					//datos que faltan empleadoId(quien se supone hizo la venta), sucursalId, estadoId, direccionEnvio(opcional), 
 					//tipoFactura, testigoId(es el empleado logeado que carga la factura)
 					//para formaPago cantidad de pagos creo que tambien necesita
-					$arrData = array($cliente, $formaPago, $total, $iva, $empleadoId, $testigoId, $facturaTipoId, $direccionEnvio, $sucursalId, $estadoId, $detalle);
-					$requestVenta = $this->model->insertVenta($arrData);
-					if ($requestVenta > 0){
-						$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
+					try {
+						$this->model->mysqlStartTransaction();
+						$arrData = array($cliente, $formaPago, $total, $iva, $empleadoId, $testigoId, $facturaTipoId, $direccionEnvio, $sucursalId, $estadoId, $fecha, $detalle);
+						$requestVenta = $this->model->insertVenta($arrData);
+						if ($requestVenta == "ok"){
+							$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
+						}
+						else {
+							$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $requestVenta);
+						}
+						$this->model->mysqlCommit();
+					} catch (Exception $e) {
+						$this->model->mysqlRollback();
+						$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $e);
 					}
-					//si hay algun campo incorrecto tiro el else de algo salio mal
-					else {
-						$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $requestVenta);
-					}
+					// $arrData = array($cliente, $formaPago, $total, $iva, $empleadoId, $testigoId, $facturaTipoId, $direccionEnvio, $sucursalId, $estadoId, $fecha, $detalle);
+					// $requestVenta = $this->model->insertVenta($arrData);
+					// if ($requestVenta > 0){
+					// 	$arrResponse = array("status" => true, "message" => "La factura de venta se ha dado de alta satisfactoriamente.", "data" => $requestVenta);
+					// }
+					// else {
+					// 	$arrResponse = array("status" => false, "message" => "Algo salio mal, no se pudo guardar la factura de venta.", "data" => $requestVenta);
+					// }
 				}
 			}
 		}
@@ -173,14 +205,17 @@ class Ventas extends Controllers{
 		die();
 	}
 	public function delVenta(){
-		if (isset($_POST["id"]) and is_numeric($_POST["id"])){
+		if ($_SESSION["permisos"][0]["BORRAR"] == 0){
+			$arrResponse = array("status" => false,"message" => "Usted no tiene permisos para borrar registros en este módulo.");
+		}
+		elseif (isset($_POST["id"]) and is_numeric($_POST["id"])){
 			$id = intval($_POST["id"]);
-			$arrRequest = $this->model->deleteProveedor($id);
+			$arrRequest = $this->model->deleteVenta($id);
 			if ($arrRequest == "ok"){
-                $arrResponse = array("status" => true, "message" => "Proveedor borrado correctamente.");
+                $arrResponse = array("status" => true, "message" => "Venta borrada correctamente.");
             }
             else {
-                $arrResponse = array("status" => false, "message" => "Error al eliminar al proveedor.");
+                $arrResponse = array("status" => false, "message" => "Error al eliminar la venta.");
             }
 		}
 		else {

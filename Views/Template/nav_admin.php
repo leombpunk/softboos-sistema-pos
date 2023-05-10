@@ -1,7 +1,7 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
-    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="<?= media(); ?>images/uploads/logo-icon3.png" alt="User Image">
+    <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" src="<?= media(); ?><?= $_SESSION["userDATA"]["LOGO_URL"]; ?>" alt="User Image">
         <div>
             <p class="app-sidebar__user-name"><?= $_SESSION["userDATA"]["NOMBRE"]; ?></p>
             <p class="app-sidebar__user-designation"><?= $_SESSION["userDATA"]["CARGO_DESCRIPCION"]; ?></p>
@@ -25,7 +25,7 @@
                 <li><a class="treeview-item" href="<?= base_url(); ?>clientes"><i class="icon fa fa-circle-o"></i> Clientes</a></li>
                 <li><a class="treeview-item" href="<?= base_url(); ?>empleados"><i class="icon fa fa-circle-o"></i> Empleados</a></li>
                 <li><a class="treeview-item" href="<?= base_url(); ?>proveedores"><i class="icon fa fa-circle-o"></i> Proveedores</a></li>
-                <!-- <li><a class="treeview-item" href="<?//= base_url(); ?>sucursales"><i class="icon fa fa-circle-o"></i> Sucursales</a></li> -->
+                <li><a class="treeview-item" href="<?= base_url(); ?>sucursales"><i class="icon fa fa-circle-o"></i> Sucursales</a></li>
             </ul>
         </li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-archive" aria-hidden="true"></i><span class="app-menu__label">Inventario</span><i class="treeview-indicator fa fa-angle-right"></i></a>
@@ -38,7 +38,7 @@
         </li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-bar-chart" aria-hidden="true"></i><span class="app-menu__label">Informes</span><i class="treeview-indicator fa fa-angle-right"></i></a>
             <ul class="treeview-menu">
-                <li><a class="treeview-item" href="<?= base_url(); ?>informes/today"><i class="icon fa fa-circle-o"></i> Ventas del Día</a></li>
+                <li><a class="treeview-item" href="<?= base_url(); ?>informes/today"><i class="icon fa fa-circle-o"></i> De movimientos</a></li>
             </ul>
         </li>
         <!-- <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-eye" aria-hidden="true"></i><span class="app-menu__label">Auditorias</span><i class="treeview-indicator fa fa-angle-right"></i></a>
@@ -46,6 +46,8 @@
                 <li><a class="treeview-item" href="<?//= base_url(); ?>clientes"><i class="icon fa fa-circle-o"></i> Clientes</a></li>
             </ul>
         </li> -->
-        <li><a class="app-menu__item" href="<?= base_url(); ?>opciones"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Opciones</span></a></li>
+        <!-- <li><a class="app-menu__item" href="<?//= base_url(); ?>opciones"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Opciones</span></a></li> -->
+        <li><a class="app-menu__item" href="<?= base_url(); ?>notificaciones"><i class="app-menu__icon fa fa-bell"></i><span class="app-menu__label">Notificaciones <span class="badge badge-danger">9</span>
+  <span class="sr-only">nuevas notificaciones</span></span></a></li>
         <li><a class="app-menu__item" href="<?= base_url(); ?>logout"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label"> Salir</span></a></li>
 </aside>

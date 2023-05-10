@@ -1,10 +1,11 @@
 <?php headerAdmin($data);
 getModal("modalCargos", $data);
-getModal("modalPermisos", $data); ?>
+getModal("modalPermisos", $data);
+getModal("modalCargosEmpleadosVer", $data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-briefcase" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#cargosModalCenter">
+            <h1><i class="fa fa-briefcase" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#cargosModalCenter" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar"':'disabled title="No tienes permiso"' ?>>
                 <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Cargo
             </button></h1>
         </div>
@@ -21,16 +22,13 @@ getModal("modalPermisos", $data); ?>
                         <table class="table table-hover table-striped table-sm" id="sampleTable">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>CODIGO</th>
                                     <th>DESCRIPCION</th>
-                                    <th>RANGO</th>
                                     <th>FECHA DE ALTA</th>
                                     <th>ESTADO</th>
                                     <th class="text-center">ACCIONES</th>
                                 </tr>
                             </thead>
-                            <!-- <tbody>
-                            </tbody> -->
                         </table>
                     </div>
                 </div>

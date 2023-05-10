@@ -4,7 +4,8 @@ getModal("modalClientesVer",$data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#clientesModalCenter">
+            <h1><i class="fa fa-user" aria-hidden="true"></i> <?= $data['page_title']; ?> 
+            <button class="btn btn-primary" type="button" onclick="openModal();" data-toggle="modal" data-target="#clientesModalCenter" <?= ($_SESSION["permisos"][0]["AGREGAR"] == 1)?'title="Registrar"':'disabled title="No tienes permiso"' ?>>
                 <i class="fa fa-plus" aria-hidden="true"></i> Nuevo Cliente
             </button></h1>
         </div>

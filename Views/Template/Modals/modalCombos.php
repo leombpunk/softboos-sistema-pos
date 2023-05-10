@@ -1,5 +1,5 @@
 <div class="modal fade" id="combosModalCenter" tabindex="-1" role="dialog" aria-labelledby="combosModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header headerRegister">
                 <h5 class="modal-title" id="combosModalCenterTitle"><i class="fa fa-cubes" aria-hidden="true"></i> Nuevo Combo</h5>
@@ -14,8 +14,7 @@
                         <label for="combocodproducto" class="control-label">Producto</label>
                         <input type="text" class="form-control" id="combocodproducto" list="listproductos" required>
                         <datalist id="listproductos">
-                            <!-- <option value="0">0 | Vacio</option>
-                            <option value="1">1 | Uno</option> -->
+
                         </datalist>
                     </div>
                     <div class="form-group">
@@ -38,7 +37,7 @@
                         <div class="input-group mb-3">
                             <input id="comboaddingrediente" name="comboaddingrediente" list="listingredientes" type="text" class="form-control" placeholder="Buscar ingrediente" aria-label="Recipient's username" aria-describedby="button-addon2" disabled>
                             <datalist id="listingredientes">
-                                <!-- <option value="0">0 | Vacio</option> -->
+                                
                             </datalist>
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="openModal2();" disabled>Agregar</button>

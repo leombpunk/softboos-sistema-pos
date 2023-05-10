@@ -8,7 +8,17 @@ class RubrosModel extends Mysql {
 		$request = $this->select_all($sql);
 		return $request;
 	}
+	public function selectRubrosMaster(){
+		$sql = "SELECT RUBRO_ID AS id, NOMBRE AS de, DATE(FECHA_ALTA) AS fa, ESTADO_ID AS estado FROM rubros";
+		$request = $this->select_all($sql);
+		return $request;
+	}
 	public function selectRubro(int $rubroID){
+		$sql = "SELECT RUBRO_ID AS id, NOMBRE AS de, ESTADO_ID AS est, DATE(FECHA_ALTA) AS fa, IMAGEN_URL AS img FROM rubros WHERE RUBRO_ID = {$rubroID} AND ESTADO_ID < 3";
+		$request = $this->select($sql);
+		return $request;
+	}
+	public function selectRubroMaster(int $rubroID){
 		$sql = "SELECT RUBRO_ID AS id, NOMBRE AS de, ESTADO_ID AS est, DATE(FECHA_ALTA) AS fa, IMAGEN_URL AS img FROM rubros WHERE RUBRO_ID = {$rubroID}";
 		$request = $this->select($sql);
 		return $request;
@@ -35,7 +45,6 @@ class RubrosModel extends Mysql {
 		$sql = "SELECT 1 FROM mercaderias_rubros WHERE RUBRO_ID = {$id}";
 		$request = $this->select_all($sql);
 		if (empty($request)){
-			// $sql = "DELETE FROM rubros WHERE RUBRO_ID = {$id}";
 			$sql = "UPDATE rubros SET ESTADO_ID = 3 WHERE RUBRO_ID = {$id}";
 			$request = $this->delete($sql);
 			if($request){
@@ -48,6 +57,11 @@ class RubrosModel extends Mysql {
 		else {
 			$request = "exist";
 		}
+		return $request;
+	}
+	public function restaurarRubro(int $id){
+		$sql = "UPDATE rubros SET ESTADO_ID = ? WHERE RUBRO_ID = ?";
+		$request = $this->update($sql,array(1,$id));
 		return $request;
 	}
 }
