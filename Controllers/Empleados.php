@@ -30,14 +30,6 @@ class Empleados extends Controllers{
 		$data["page_filejs"] = "function_empleados.js";
 		$this->views->getView($this,"empleados",$data);
 	}
-	public function perfil(){
-		$data["page_id"] = 5;
-		$data["page_tag"] = "Perfil | SoftBoos";
-		$data["page_title"] = "Perfil";
-		$data["page_name"] = "perfil";
-		$data["page_filejs"] = "function_empleados.js";
-		$this->views->getView($this,"perfil",$data);
-	}
 	public function getEmpleados(){
 		if ($_SESSION["userDATA"]["CARGO_ID"] == 1){
             $arrData = $this->model->selectEmpleadosMaster();

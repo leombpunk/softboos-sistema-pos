@@ -47,7 +47,14 @@
             </ul>
         </li> -->
         <!-- <li><a class="app-menu__item" href="<?//= base_url(); ?>opciones"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Opciones</span></a></li> -->
-        <li><a class="app-menu__item" href="<?= base_url(); ?>notificaciones"><i class="app-menu__icon fa fa-bell"></i><span class="app-menu__label">Notificaciones <span class="badge badge-danger">9</span>
-  <span class="sr-only">nuevas notificaciones</span></span></a></li>
+        <li>
+            <a class="app-menu__item" href="<?= base_url(); ?>notificaciones">
+                <i id="bell_menu" class="app-menu__icon fa fa-bell"></i>
+                <span class="app-menu__label">Notificaciones 
+                    <span id="notifyNumber" class="badge badge-danger"></span>
+                    <span class="sr-only">nuevas notificaciones</span>
+                </span>
+            </a>
+        </li>
         <li><a class="app-menu__item" href="<?= base_url(); ?>logout"><i class="app-menu__icon fa fa-sign-out"></i><span class="app-menu__label"> Salir</span></a></li>
 </aside>

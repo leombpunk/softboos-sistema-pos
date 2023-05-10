@@ -33,7 +33,7 @@ class Login extends Controllers{
 					$_SESSION['start'] = time();
 					$_SESSION['userID'] = intval($requestLogin["EMPLEADO_ID"]);
 					$_SESSION['userUser'] = $requestLogin["CUIL"];
-					$_SESSION['userPASS'] = $requestLogin["CONTRASENA"];
+					// $_SESSION['userPASS'] = $requestLogin["CONTRASENA"];
 					$_SESSION['userLogin'] = true;
 					$arrData = $this->model->sessionLogin($_SESSION['userID']);
 					$_SESSION['userDATA'] = $arrData;

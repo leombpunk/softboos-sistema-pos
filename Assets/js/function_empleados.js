@@ -251,10 +251,6 @@ function openModal(){
     $("#empleadosModalCenter").modal("show");
 }
 
-function openModalPerfil(){
-	$("#perfilModalCenter").modal("show");
-}
-
 $("#empleadocuil").inputmask('99-99999999-9', {
   placeholder: '__-________-_'
 });
