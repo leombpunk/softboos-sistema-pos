@@ -10,10 +10,6 @@
 Sistema POS web desarrollado con PHP y MySQL que cubre una serie de requerimientos básicos para realizar una factura comercial a nuestros clientes que va desde el manejo de usuarios, creación de productos, clientes y facturas 
 dentro del mismo sistema.
 
-# Sistema POS PHP MySQL Valiadmin
-
-Este proyecto es un sistema de punto de venta (POS) desarrollado en PHP y MySQL utilizando la plantilla Valiadmin.
-
 ## Requisitos
 
 - PHP 7.0 o superior
